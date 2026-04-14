@@ -5,7 +5,26 @@
       "Bash(git remote:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(nohup python3 *)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(cp *)",
+      "Read(/tmp/test-repos/**)",
+      "Write(/tmp/test-repos/**)",
+      "Read(/home/brogeby/projects/talentech/Mimas/setup-mimas-template-workspace/**)",
+      "Write(/home/brogeby/projects/talentech/Mimas/setup-mimas-template-workspace/**)",
+      "Read(/home/brogeby/projects/talentech/Mimas/skills/setup-mimas-template/**)",
+      "Glob(/tmp/test-repos/**)",
+      "Grep(/tmp/test-repos/**)",
+      "Bash(python3 *)",
+      "Bash(rm -f /tmp/test-repos/fastapi-python/AGENTS.md /tmp/test-repos/fastapi-python/baseline-*.md)",
+      "Bash(rm -f /tmp/test-repos/nextjs-app/AGENTS.md /tmp/test-repos/nextjs-app/baseline-*.md)",
+      "Bash(rm -rf /tmp/test-repos/nextjs-app/docs/)",
+      "Bash(rm -f /tmp/test-repos/nextjs-app/src/AGENTS.md)",
+      "Bash(rm -f /tmp/test-repos/go-backend/AGENTS.md /tmp/test-repos/go-backend/baseline-*.md)"
     ]
   }
 }

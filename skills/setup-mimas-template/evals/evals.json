@@ -1,0 +1,139 @@
+{
+  "skill_name": "setup-mimas-template",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack",
+      "files": ["/tmp/test-repos/fastapi-python"],
+      "assertions": [
+        {
+          "id": "fastapi-all-files-exist",
+          "description": "All 7 required files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
+        },
+        {
+          "id": "fastapi-stack-specificity",
+          "description": "Generated files mention the actual tech stack by name (FastAPI, pytest, SQLAlchemy/Alembic, mypy)",
+          "check": "AGENTS.md and ENGINEERING.md collectively contain: 'FastAPI', 'pytest', 'mypy', and at least one of 'SQLAlchemy'/'Alembic'"
+        },
+        {
+          "id": "fastapi-tdd-mandatory",
+          "description": "Root AGENTS.md contains the TDD mandatory rule with red-green-refactor",
+          "check": "AGENTS.md contains 'MANDATORY' and mentions RED/failing tests as part of TDD"
+        },
+        {
+          "id": "fastapi-mypy-mandatory",
+          "description": "Root AGENTS.md contains a mypy type checking mandatory rule",
+          "check": "AGENTS.md contains 'mypy' in a critical/mandatory rule section"
+        },
+        {
+          "id": "fastapi-exact-commands",
+          "description": "ENGINEERING.md commands section has correct pytest and mypy commands",
+          "check": "ENGINEERING.md contains 'pytest' as the test command and 'mypy' as the typecheck command"
+        },
+        {
+          "id": "fastapi-no-wrong-stack",
+          "description": "Files do not contain references to wrong tech stacks (TypeScript, Jest, npm, tsc)",
+          "check": "AGENTS.md and ENGINEERING.md do NOT contain 'TypeScript', 'Jest', 'npm test', or 'tsc --noEmit'"
+        },
+        {
+          "id": "fastapi-src-agents-focus",
+          "description": "src/AGENTS.md mentions FastAPI-relevant focus areas (endpoints, Pydantic, etc.)",
+          "check": "src/AGENTS.md mentions at least 2 of: endpoints/routes, Pydantic/validation/schemas, database/SQLAlchemy, OpenAI/AI"
+        },
+        {
+          "id": "fastapi-feature-template-verbatim",
+          "description": "docs/features/feature-template.md is a template, not filled in with project specifics",
+          "check": "docs/features/feature-template.md contains '[Feature Name]' or placeholder brackets — it is a template, not a completed doc"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack",
+      "files": ["/tmp/test-repos/nextjs-app"],
+      "assertions": [
+        {
+          "id": "nextjs-all-files-exist",
+          "description": "All 7 required files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
+        },
+        {
+          "id": "nextjs-stack-specificity",
+          "description": "Generated files mention Next.js, Vitest, Prisma, TypeScript, and NextAuth",
+          "check": "AGENTS.md and/or ENGINEERING.md collectively contain: 'Next.js' or 'Next', 'Vitest', 'Prisma', 'TypeScript'"
+        },
+        {
+          "id": "nextjs-tsc-mandatory",
+          "description": "Root AGENTS.md contains TypeScript correctness mandatory rule with tsc",
+          "check": "AGENTS.md contains 'tsc' or 'typecheck' in a mandatory/critical rule"
+        },
+        {
+          "id": "nextjs-vitest-not-jest",
+          "description": "Correctly identifies Vitest as the test framework, not Jest",
+          "check": "ENGINEERING.md contains 'Vitest' or 'vitest' and does NOT list 'Jest' as the test framework"
+        },
+        {
+          "id": "nextjs-exact-commands",
+          "description": "ENGINEERING.md has correct commands from package.json scripts",
+          "check": "ENGINEERING.md contains commands that match package.json scripts (e.g., 'npm run test' or 'vitest run', 'npm run typecheck' or 'tsc --noEmit', 'npm run dev')"
+        },
+        {
+          "id": "nextjs-prisma-section",
+          "description": "ENGINEERING.md includes a database section mentioning Prisma",
+          "check": "ENGINEERING.md contains a database/Prisma section with 'prisma' commands"
+        },
+        {
+          "id": "nextjs-src-agents-frontend-focus",
+          "description": "src/AGENTS.md mentions frontend-relevant focus areas (components, App Router, etc.)",
+          "check": "src/AGENTS.md mentions at least 2 of: components, App Router/routing, API routes, server components/client components, React Query/data fetching"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and at least internal/AGENTS.md — tailored to Go/chi/pgx/goose/JWT stack",
+      "files": ["/tmp/test-repos/go-backend"],
+      "assertions": [
+        {
+          "id": "go-all-root-files-exist",
+          "description": "All 6 required root/docs files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md"
+        },
+        {
+          "id": "go-subdomain-agents",
+          "description": "At least internal/AGENTS.md is created (cmd/AGENTS.md is also acceptable)",
+          "check": "At least one of: internal/AGENTS.md, cmd/AGENTS.md exists"
+        },
+        {
+          "id": "go-stack-specificity",
+          "description": "Generated files mention Go, chi, pgx, and goose by name",
+          "check": "AGENTS.md and/or ENGINEERING.md collectively contain: 'Go' (as language), 'chi', and at least one of 'pgx'/'goose'"
+        },
+        {
+          "id": "go-vet-mandatory",
+          "description": "Root AGENTS.md or ENGINEERING.md includes go vet as a mandatory check",
+          "check": "AGENTS.md or ENGINEERING.md contains 'go vet'"
+        },
+        {
+          "id": "go-test-commands",
+          "description": "ENGINEERING.md contains correct Go test commands",
+          "check": "ENGINEERING.md contains 'go test ./...' or 'make test'"
+        },
+        {
+          "id": "go-no-wrong-stack",
+          "description": "Files do not mention npm, pytest, TypeScript, or other wrong-stack tools",
+          "check": "AGENTS.md and ENGINEERING.md do NOT contain 'npm', 'pytest', 'TypeScript', or 'tsc'"
+        },
+        {
+          "id": "go-jwt-auth-section",
+          "description": "ENGINEERING.md includes an authentication section mentioning JWT",
+          "check": "ENGINEERING.md contains a section about authentication mentioning 'JWT' or 'golang-jwt'"
+        }
+      ]
+    }
+  ]
+}
