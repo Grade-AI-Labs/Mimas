@@ -162,7 +162,7 @@ If the user provides content, incorporate it into the relevant sections of `ENGI
 Run the scaffolding script to create all deterministic files — directories, universal templates, composed AGENT_WORKFLOW.md, CLAUDE.md bridge file, and starter skills. This saves tokens by avoiding LLM generation of verbatim content.
 
 ```bash
-python3 scripts/scaffold.py --target <repo-root> --platform <platform> [--skills <comma-separated>] [--no-skills]
+bash scripts/scaffold.sh --target <repo-root> --platform <platform> [--skills <comma-separated>] [--no-skills]
 ```
 
 The `--platform` flag determines:
@@ -185,7 +185,7 @@ The script is idempotent — re-running skips existing files.
 
 ### Available scripts
 
-- **`scripts/scaffold.py`** — Scaffolds verbatim files, composes AGENT_WORKFLOW.md, copies starter skills
+- **`scripts/scaffold.sh`** — Scaffolds verbatim files, composes AGENT_WORKFLOW.md, copies starter skills
 
 ---
 
