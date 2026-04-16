@@ -183,7 +183,7 @@ questions:
     header: "Guidelines"
     multiSelect: false
     options:
-      - label: "Skip (Recommended)"
+      - label: "Skip"
         description: "No org-specific guidelines — use only the auto-detected conventions."
       - label: "Yes, I'll provide them"
         description: "I'll paste a file path, URL, or content to weave into ENGINEERING.md."
