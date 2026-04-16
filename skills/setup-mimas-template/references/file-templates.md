@@ -1,6 +1,6 @@
 # File Templates
 
-Base templates for every file the skill generates. Instructions in `[brackets]` tell you what to write — replace them with real content from Phase 1. Merge in relevant sections from `tech-adapters.md` where indicated.
+Base templates for every file the skill generates. Instructions in `[brackets]` tell you what to write — replace them with real content from Phase 1 and the user interview. Merge in relevant sections from `tech-adapters.md` and `platform-adapters.md` where indicated.
 
 Every generated file should read as if a senior engineer on this project wrote it — specific, accurate, and proportionate.
 
@@ -100,13 +100,18 @@ Before marking work complete:
 - [ ] Naming conventions followed
 - [ ] Errors handled
 - [ ] Feature docs updated if contract/schema/invariant changed (see docs/AGENTS_FEATURES.md)
+[If git platform detected: insert completion checklist additions from platform-adapters.md.
+Example for GitHub:
+"- [ ] PR opened with summary and linked issues"
+"- [ ] CI checks passing"
+If no platform: omit these items.]
 ```
 
 ---
 
 ## docs/AGENT_WORKFLOW.md
 
-This file is largely universal — it describes how agents should approach work on any project. The only section to customize is "Task Management" if the repo has an existing task tracking setup.
+This file is largely universal — it describes how agents should approach work on any project. Customize the "Task Management" section if the repo has an existing task tracking setup, and add the platform-specific "Pull Requests" (or "Merge Requests") section from `platform-adapters.md`.
 
 ```markdown
 # Agent Workflow & Operating Instructions
@@ -159,6 +164,12 @@ Read this file at the start of every session.
 - When given a bug report: just fix it. Don't ask for hand-holding
 - Point at logs, errors, failing tests — then resolve them
 - Zero context switching required from the user
+
+---
+
+[If a git platform was detected or confirmed by the user, insert the Pull Requests
+(or Merge Requests for GitLab) section from platform-adapters.md here.
+If no platform: omit this section entirely.]
 
 ---
 
@@ -247,6 +258,16 @@ If no auth: omit this section.]
 what counts as a behavioral change requiring doc updates.
 See AI adapters in tech-adapters.md.
 If no AI: omit this section.]
+
+---
+
+[If a git platform and/or CI system was detected, insert the CI/CD section
+from platform-adapters.md here. If no CI detected: omit.]
+
+---
+
+[If an issue tracker was detected or confirmed, insert the issue/work-item linking
+section from platform-adapters.md here. If no tracker: omit.]
 
 ---
 

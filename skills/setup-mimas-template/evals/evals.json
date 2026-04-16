@@ -3,13 +3,18 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python. Use minimal setup.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, src/AGENTS.md, and starter skills — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack with GitHub platform",
       "files": ["/tmp/test-repos/fastapi-python"],
       "assertions": [
         {
+          "id": "fastapi-asks-minimal-or-deepdive",
+          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
+          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+        },
+        {
           "id": "fastapi-all-files-exist",
-          "description": "All 7 required files are created",
+          "description": "All 7 required instruction files are created",
           "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
         },
         {
@@ -46,18 +51,33 @@
           "id": "fastapi-feature-template-verbatim",
           "description": "docs/features/feature-template.md is a template, not filled in with project specifics",
           "check": "docs/features/feature-template.md contains '[Feature Name]' or placeholder brackets — it is a template, not a completed doc"
+        },
+        {
+          "id": "fastapi-starter-skills-exist",
+          "description": "Starter skills are scaffolded into skills/ directory",
+          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
+        },
+        {
+          "id": "fastapi-platform-detection",
+          "description": "GitHub platform is detected from git remote and reflected in generated files",
+          "check": "docs/AGENT_WORKFLOW.md or docs/ENGINEERING.md contains references to GitHub, PRs, or gh CLI commands"
         }
       ]
     },
     {
       "id": 1,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app. Use minimal setup.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, src/AGENTS.md, and starter skills — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack with GitHub platform",
       "files": ["/tmp/test-repos/nextjs-app"],
       "assertions": [
         {
+          "id": "nextjs-asks-minimal-or-deepdive",
+          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
+          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+        },
+        {
           "id": "nextjs-all-files-exist",
-          "description": "All 7 required files are created",
+          "description": "All 7 required instruction files are created",
           "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
         },
         {
@@ -89,15 +109,30 @@
           "id": "nextjs-src-agents-frontend-focus",
           "description": "src/AGENTS.md mentions frontend-relevant focus areas (components, App Router, etc.)",
           "check": "src/AGENTS.md mentions at least 2 of: components, App Router/routing, API routes, server components/client components, React Query/data fetching"
+        },
+        {
+          "id": "nextjs-starter-skills-exist",
+          "description": "Starter skills are scaffolded into skills/ directory",
+          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
+        },
+        {
+          "id": "nextjs-prd-github-variant",
+          "description": "write-a-prd skill uses the GitHub variant (mentions gh issue create or GitHub Issues)",
+          "check": "skills/write-a-prd/SKILL.md contains 'GitHub' or 'gh issue' — not Azure DevOps or local markdown"
         }
       ]
     },
     {
       "id": 2,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and at least internal/AGENTS.md — tailored to Go/chi/pgx/goose/JWT stack",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend. Use minimal setup.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, at least internal/AGENTS.md, and starter skills — tailored to Go/chi/pgx/goose/JWT stack",
       "files": ["/tmp/test-repos/go-backend"],
       "assertions": [
+        {
+          "id": "go-asks-minimal-or-deepdive",
+          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
+          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+        },
         {
           "id": "go-all-root-files-exist",
           "description": "All 6 required root/docs files are created",
@@ -132,6 +167,11 @@
           "id": "go-jwt-auth-section",
           "description": "ENGINEERING.md includes an authentication section mentioning JWT",
           "check": "ENGINEERING.md contains a section about authentication mentioning 'JWT' or 'golang-jwt'"
+        },
+        {
+          "id": "go-starter-skills-exist",
+          "description": "Starter skills are scaffolded into skills/ directory",
+          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
         }
       ]
     }
