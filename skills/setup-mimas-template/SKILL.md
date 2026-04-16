@@ -25,11 +25,13 @@ Wait for the user's answer before proceeding. If they say something ambiguous, d
 
 ## Phase 1 — Automated Discovery
 
-This phase is the same for both paths. Explore before writing anything. Use subagents for parallel research if available.
+This phase is the same for both paths. Explore before writing anything. **Launch three subagents in parallel** to maximize speed — each handles an independent research task. Collect their results before proceeding.
 
-### 1. Tech stack
+### Subagent dispatch
 
-Read config files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `tsconfig.json`, `Dockerfile`, `.github/workflows/`, `Makefile`, etc.) to find:
+Launch these three subagents simultaneously (one tool call with multiple Agent invocations):
+
+**Subagent A — Tech stack & commands.** Read config files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `tsconfig.json`, `Dockerfile`, `Makefile`, etc.) and report:
 
 - Language(s) and version(s)
 - Runtime and framework (Fastify, Express, Next.js, Django, FastAPI, chi, etc.)
@@ -39,48 +41,37 @@ Read config files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `ts
 - AI/LLM libraries (if any)
 - Package manager
 - Type checking and linting tools
+- Exact, copy-pasteable commands for: setup/install, running tests, type checking, dev server, build, lint (check `package.json` scripts, `Makefile` targets, `pyproject.toml` scripts, `Dockerfile` entrypoints)
 
-### 2. Project structure
+**Subagent B — Project structure & conventions.** List top-level directories and report:
 
-Identify **subdomains** — top-level directories that represent distinct parts of the application:
-
-- Single-package repos: typically `src/`, `app/`, `internal/`, `cmd/`
-- Monorepos: each `packages/<name>/` or `apps/<name>/`
-- Multi-part repos: `backend/`, `frontend/`, `server/`, `client/`, `api/`, `web/`
-- Ignore: `node_modules/`, `dist/`, `build/`, `.git/`, test fixtures, config dirs
-
-For each subdomain, understand its role: backend API, frontend app, shared library, CLI tool, etc.
-
-### 3. Conventions already in use
-
+- Subdomains identified (top-level dirs that represent distinct parts of the app):
+  - Single-package repos: typically `src/`, `app/`, `internal/`, `cmd/`
+  - Monorepos: each `packages/<name>/` or `apps/<name>/`
+  - Multi-part repos: `backend/`, `frontend/`, `server/`, `client/`, `api/`, `web/`
+  - Ignore: `node_modules/`, `dist/`, `build/`, `.git/`, test fixtures, config dirs
+- Role of each subdomain (backend API, frontend app, shared library, CLI tool, etc.)
 - File naming pattern (kebab-case, camelCase, snake_case)
 - Test file placement (colocated? separate `__tests__/` or `tests/` dir?)
-- Existing documentation (README.md content, any docs/ folder, wiki)
 - Module organization style (by feature? by layer? by domain?)
+- Existing documentation (README.md content, any docs/ folder)
 
-### 4. Key commands
+**Subagent C — Git platform, CI/CD & existing files.** Read `.git/config`, check for CI config files, and scan existing docs:
 
-Find the exact, copy-pasteable commands for: **setup/install**, running tests, type checking, dev server, build, lint. Check `package.json` scripts, `Makefile` targets, `pyproject.toml` scripts, or `Dockerfile` entrypoints.
+- Git platform from remote URL: `github.com` → GitHub, `dev.azure.com` / `visualstudio.com` → Azure DevOps, `gitlab.com` → GitLab, `bitbucket.org` → Bitbucket
+- CI/CD: `.github/workflows/` → GitHub Actions, `azure-pipelines.yml` → Azure Pipelines, `.gitlab-ci.yml` → GitLab CI
+- Issue tracker hints from recent commit messages (`#123` → GitHub Issues, `AB#456` → Azure DevOps, `PROJ-789` → Jira/Linear)
+- Whether `CLAUDE.md`, `AGENTS.md`, or `README.md` exist and have meaningful content (report a brief summary of what they contain)
 
-Include install/setup commands (e.g., `npm install`, `pip install -e ".[dev]"`, `go mod download`) — agents need to know how to bootstrap the project.
+### After subagents return
 
-### 5. Git platform & CI/CD (NEW)
+Combine the three reports into a unified picture. If any subagent couldn't determine something (e.g., no database found, no CI detected), that's fine — note it as "not detected" and move on.
 
-Detect from `.git/config` remote URL and config files:
-
-- **Git platform**: `github.com` → GitHub, `dev.azure.com` / `visualstudio.com` → Azure DevOps, `gitlab.com` → GitLab, `bitbucket.org` → Bitbucket
-- **CI/CD**: `.github/workflows/` → GitHub Actions, `azure-pipelines.yml` → Azure Pipelines, `.gitlab-ci.yml` → GitLab CI
-- **Issue tracker hints**: commit message patterns (`#123` → GitHub Issues, `AB#456` → Azure DevOps, `PROJ-789` → Jira/Linear)
-
-### 6. Incorporating existing files
-
-If the repo already has a `CLAUDE.md`, `AGENTS.md`, or `README.md` with meaningful conventions:
-
-- Pull the project description into the root `AGENTS.md` intro
-- Incorporate any documented conventions into `ENGINEERING.md`
-- If an existing file is empty or placeholder content, replace it
-
-If there is a populated `CLAUDE.md`, keep it — it serves a different purpose.
+For existing files:
+- Pull project description from README into root `AGENTS.md` intro
+- Incorporate documented conventions into `ENGINEERING.md`
+- If an existing `AGENTS.md` or `CLAUDE.md` is empty or placeholder, replace it
+- If there is a populated `CLAUDE.md`, keep it — it serves a different purpose
 
 ---
 
