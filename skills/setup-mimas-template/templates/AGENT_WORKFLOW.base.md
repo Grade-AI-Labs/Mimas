@@ -17,7 +17,7 @@ Read this file at the start of every session.
 
 ### 2. Subagent Strategy
 
-- Use subagents liberally to keep main context window clean
+- Use subagents liberally to keep the main context window clean
 - Offload research, exploration, and parallel analysis to subagents
 - For complex problems, throw more compute at it via subagents
 - One task per subagent for focused execution
@@ -27,7 +27,7 @@ Read this file at the start of every session.
 - After ANY correction from the user: update `tasks/lessons.md` with the pattern
 - Write rules for yourself that prevent the same mistake
 - Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
+- Review lessons at session start for relevant context
 
 ### 4. Verification Before Done
 
@@ -48,21 +48,14 @@ Read this file at the start of every session.
 - When given a bug report: just fix it. Don't ask for hand-holding
 - Point at logs, errors, failing tests — then resolve them
 - Zero context switching required from the user
-- Go fix failing CI tests without being told how
 
 ---
 
+{{PLATFORM_SECTION}}
+
 ## Task Management
 
-New work is tracked via OpenSpec changes in `openspec/changes/`.
-
-1. **Start a change**: `/opsx:new <name>` — scaffolds the change directory
-2. **Fast-forward planning**: `/opsx:ff` — generates proposal → specs → design → tasks artifacts in one pass
-3. **Implement**: `/opsx:apply` — works through task artifacts iteratively
-4. **Verify**: `/opsx:verify` — confirms implementation matches artifacts before closing
-5. **Archive**: `/opsx:archive` — marks the change complete
-
-**Lessons**: After any correction from the user, record the pattern in `tasks/lessons.md` (create the file if absent). This is orthogonal to OpenSpec — it captures agent self-improvement, not work tracking.
+Track ongoing work in `tasks/`. After any correction from the user, record the lesson in `tasks/lessons.md` (create the file if absent). This captures agent self-improvement separate from feature work.
 
 ---
 
