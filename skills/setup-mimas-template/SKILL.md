@@ -92,7 +92,7 @@ Use smart defaults for everything not auto-detected:
 
 - **Platform/PR workflow**: use what was detected; if nothing detected, omit platform-specific sections
 - **Issue tracker**: use what was detected from commit patterns; if nothing detected, default to local task tracking
-- **Starter skills**: include ALL universal skills (`grill-me`, `write-a-skill`, `document-feature`, `ubiquitous-language`) plus the `write-a-prd` variant matching the detected platform (GitHub → github variant, Azure DevOps → azure-devops variant, otherwise → generic variant)
+- **Starter skills**: include ALL universal skills (`grill-me`, `write-a-skill`, `document-feature`, `ubiquitous-language`) plus the `write-a-prd` variant matching the detected platform (GitHub → github variant, Azure DevOps → azure-devops variant, otherwise → generic variant). All skills go into `.claude/skills/`.
 - **Org guidelines**: skip (none included)
 
 Proceed directly to Phase 3.
@@ -134,7 +134,7 @@ If not confidently detected, ask:
 
 Present the available skills and let the user choose:
 
-> **Which starter skills should I scaffold into `skills/`?**
+> **Which starter skills should I scaffold into `.claude/skills/`?**
 >
 > Universal (work with any project):
 > - [x] `grill-me` — stress-test plans and designs through relentless questioning
@@ -170,6 +170,7 @@ The templates are starting points. Replace every `{{placeholder}}` and generic s
 
 | File | Purpose |
 |---|---|
+| `CLAUDE.md` | Points Claude Code to read AGENTS.md — bridge file (see below) |
 | `/AGENTS.md` | Entry point — links to docs, critical rules, completion checklist |
 | `docs/AGENT_WORKFLOW.md` | How agents plan, verify, self-improve, and handle PRs |
 | `docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
@@ -177,6 +178,18 @@ The templates are starting points. Replace every `{{placeholder}}` and generic s
 | `docs/FEATURES.md` | Feature area index (start minimal or empty) |
 | `docs/features/feature-template.md` | Template for per-service feature docs (copy verbatim from template) |
 | `<subdomain>/AGENTS.md` | One per discovered subdomain — scope and focus for that area |
+
+### CLAUDE.md bridge file
+
+Claude Code does not natively look for `AGENTS.md`. Create a `CLAUDE.md` at the repo root that points to it. If a `CLAUDE.md` already exists, **append** the instruction — don't overwrite existing content.
+
+Content to write (or append):
+
+```markdown
+Read AGENTS.md at the root of this repository at the start of every session before doing any work. It links to all other agent instruction files.
+```
+
+This keeps `CLAUDE.md` minimal — it's a pointer, not a duplicate. All actual instructions live in the AGENTS.md tree.
 
 ### Subdomain AGENTS.md rules
 
@@ -209,7 +222,7 @@ If no platform was detected and the user didn't specify one, omit platform-speci
 
 ## Phase 4 — Scaffold starter skills
 
-Copy the selected starter skills into the target repo's `skills/` directory.
+Copy the selected starter skills into the target repo's `.claude/skills/` directory.
 
 ### Universal skills
 
@@ -230,14 +243,14 @@ Located in `starter-skills/platform-variants/`. Pick the variant matching the co
 |---|---|---|
 | `write-a-prd` | `github/`, `azure-devops/`, `generic/` | GitHub → github, Azure DevOps → azure-devops, anything else → generic |
 
-Copy the selected variant's directory into `skills/write-a-prd/` in the target repo (not the variant subdirectory — flatten it).
+Copy the selected variant's directory into `.claude/skills/write-a-prd/` in the target repo (not the variant subdirectory — flatten it).
 
 ### Skills directory structure in target repo
 
 After scaffolding, the target repo should have:
 
 ```
-skills/
+.claude/skills/
 ├── grill-me/SKILL.md
 ├── write-a-skill/SKILL.md
 ├── document-feature/SKILL.md
@@ -277,3 +290,13 @@ Tell the user:
 4. Which platform/tracker was used for platform-specific content
 5. Any tech stack details you were uncertain about — be honest about gaps
 6. What they should review and customize before committing
+
+Then suggest next steps:
+
+> **Recommended next steps** (each in a fresh session to keep context clean):
+>
+> 1. **Define your domain language** — run `/ubiquitous-language` to extract a glossary of canonical terms from your codebase and team conversations. This gives agents a shared vocabulary.
+>
+> 2. **Document your key features** — run `/document-feature` for each major feature area. This populates `docs/features/` so agents understand your system's contracts and behavior.
+>
+> 3. **Review and commit** — look through the generated files, tweak anything that doesn't feel right, then commit.

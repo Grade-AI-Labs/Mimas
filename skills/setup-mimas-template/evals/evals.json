@@ -13,6 +13,11 @@
           "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
         },
         {
+          "id": "fastapi-claude-md-exists",
+          "description": "CLAUDE.md is created at root and points to AGENTS.md",
+          "check": "CLAUDE.md exists and contains a reference to AGENTS.md"
+        },
+        {
           "id": "fastapi-all-files-exist",
           "description": "All 7 required instruction files are created",
           "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
@@ -54,8 +59,8 @@
         },
         {
           "id": "fastapi-starter-skills-exist",
-          "description": "Starter skills are scaffolded into skills/ directory",
-          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
+          "description": "Starter skills are scaffolded into .claude/skills/ directory",
+          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         },
         {
           "id": "fastapi-platform-detection",
@@ -74,6 +79,11 @@
           "id": "nextjs-asks-minimal-or-deepdive",
           "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
           "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+        },
+        {
+          "id": "nextjs-claude-md-exists",
+          "description": "CLAUDE.md is created at root and points to AGENTS.md",
+          "check": "CLAUDE.md exists and contains a reference to AGENTS.md"
         },
         {
           "id": "nextjs-all-files-exist",
@@ -112,13 +122,13 @@
         },
         {
           "id": "nextjs-starter-skills-exist",
-          "description": "Starter skills are scaffolded into skills/ directory",
-          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
+          "description": "Starter skills are scaffolded into .claude/skills/ directory",
+          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         },
         {
           "id": "nextjs-prd-github-variant",
           "description": "write-a-prd skill uses the GitHub variant (mentions gh issue create or GitHub Issues)",
-          "check": "skills/write-a-prd/SKILL.md contains 'GitHub' or 'gh issue' — not Azure DevOps or local markdown"
+          "check": ".claude/skills/write-a-prd/SKILL.md contains 'GitHub' or 'gh issue' — not Azure DevOps or local markdown"
         }
       ]
     },
@@ -132,6 +142,11 @@
           "id": "go-asks-minimal-or-deepdive",
           "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
           "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+        },
+        {
+          "id": "go-claude-md-exists",
+          "description": "CLAUDE.md is created at root and points to AGENTS.md",
+          "check": "CLAUDE.md exists and contains a reference to AGENTS.md"
         },
         {
           "id": "go-all-root-files-exist",
@@ -170,8 +185,8 @@
         },
         {
           "id": "go-starter-skills-exist",
-          "description": "Starter skills are scaffolded into skills/ directory",
-          "check": "Files exist: skills/grill-me/SKILL.md, skills/write-a-skill/SKILL.md, skills/document-feature/SKILL.md, skills/ubiquitous-language/SKILL.md, skills/write-a-prd/SKILL.md"
+          "description": "Starter skills are scaffolded into .claude/skills/ directory",
+          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         }
       ]
     }
