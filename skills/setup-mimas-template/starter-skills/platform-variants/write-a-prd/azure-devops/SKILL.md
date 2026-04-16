@@ -1,6 +1,8 @@
 ---
 name: write-a-prd
 description: Create a PRD through user interview, codebase exploration, and module design, then submit as an Azure DevOps Work Item. Use when user wants to write a PRD, create a product requirements document, or plan a new feature.
+metadata:
+  author: Olof Brogeby
 ---
 
 # Write a PRD

@@ -1,6 +1,8 @@
 ---
 name: document-feature
 description: Guided walkthrough to create or update a feature doc under docs/features/ using the project's feature template. Use when user wants to document a feature, create a feature doc, or says "document feature" or "add feature docs".
+metadata:
+  author: Olof Brogeby
 ---
 
 # Document Feature
