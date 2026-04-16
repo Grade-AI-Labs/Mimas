@@ -14,15 +14,21 @@ You are scaffolding a set of instruction files that AI agents read at the start 
 
 ## Step 0 — Ask the user: Minimal or Deep-dive?
 
-Before doing anything else, ask:
+Before doing anything else, use the `AskUserQuestion` tool:
 
-> **How would you like to set this up?**
->
-> 1. **Minimal** — I auto-detect your stack, platform, and conventions, pick smart defaults, and generate everything. Takes about a minute. You can tweak the files afterward.
->
-> 2. **Deep-dive** — I auto-detect first, then walk you through the findings and let you confirm, customize, choose which skills to include, and add org-specific guidelines. More tailored, more questions.
+```
+questions:
+  - question: "How would you like to set up the agent instruction tree?"
+    header: "Setup mode"
+    multiSelect: false
+    options:
+      - label: "Minimal (Recommended)"
+        description: "Auto-detect stack, platform, and conventions. Pick smart defaults and generate everything. You can tweak files afterward."
+      - label: "Deep-dive"
+        description: "Auto-detect first, then walk through findings to confirm, customize skills, and add org-specific guidelines."
+```
 
-Wait for the user's answer before proceeding. If they say something ambiguous, default to **Minimal**.
+If the user picks "Other" or their answer is ambiguous, default to **Minimal**.
 
 ---
 
@@ -97,7 +103,7 @@ Present your findings and walk through each decision.
 
 #### 2a. Present findings
 
-Show the user what you discovered:
+Show the user what you discovered as a formatted summary:
 
 ```
 Here's what I found:
@@ -107,48 +113,83 @@ Here's what I found:
   CI:           [GitHub Actions | Azure Pipelines | GitLab CI | none detected]
   Tracker:      [GitHub Issues | Azure DevOps | Jira | Linear | none detected]
   Subdomains:   [list of discovered subdomains]
-
-Anything I got wrong?
 ```
 
-Wait for corrections before continuing.
+Then use `AskUserQuestion` to confirm and ask about work tracking in a single call. If the tracker was confidently detected, skip the tracker question. You can ask up to 4 questions per call — batch what makes sense.
 
-#### 2b. Work tracking
+```
+questions:
+  - question: "Does this look right, or should I correct anything?"
+    header: "Findings"
+    multiSelect: false
+    options:
+      - label: "Looks good (Recommended)"
+        description: "Proceed with the detected stack, platform, and subdomains as shown above."
+      - label: "Needs corrections"
+        description: "I'll tell you what to fix before we continue."
+  - question: "Where do you track issues / work items?"
+    header: "Tracker"
+    multiSelect: false
+    options:
+      - label: "GitHub Issues"
+        description: "Issues tracked in GitHub, linked with #123 in commits and PRs."
+      - label: "Azure DevOps"
+        description: "Work items tracked in Azure DevOps, linked with AB#123."
+      - label: "Jira"
+        description: "Issues tracked in Jira, linked with PROJECT-123."
+      - label: "Linear"
+        description: "Issues tracked in Linear, linked with TEAM-123."
+```
 
-If not confidently detected, ask:
+If the user picks "Needs corrections", wait for their corrections before continuing.
 
-> **Where do you track issues / work items?**
-> 1. GitHub Issues
-> 2. Azure DevOps Work Items
-> 3. Jira
-> 4. Linear
-> 5. Other / None
+#### 2b. Starter skills
 
-#### 2c. Starter skills
+Use `AskUserQuestion` with `multiSelect: true` to let the user pick skills. Since there are 6 skills total (exceeding the 4-option limit), split into two questions in a single call:
 
-Present the available skills and let the user choose:
+```
+questions:
+  - question: "Which universal skills should I include?"
+    header: "Skills"
+    multiSelect: true
+    options:
+      - label: "tdd"
+        description: "Test-driven development with red-green-refactor loop and deep module design."
+      - label: "grill-me"
+        description: "Stress-test plans and designs through relentless questioning."
+      - label: "document-feature"
+        description: "Guided walkthrough to populate feature docs from the template."
+      - label: "write-a-skill"
+        description: "Create new agent skills with proper structure."
+  - question: "Which additional skills should I include?"
+    header: "More skills"
+    multiSelect: true
+    options:
+      - label: "ubiquitous-language"
+        description: "Extract DDD-style glossary of canonical terms from conversations."
+      - label: "write-a-prd"
+        description: "Write PRDs via interview, submit to [detected platform]."
+```
 
-> **Which starter skills should I scaffold into `.claude/skills/`?**
->
-> Universal (work with any project):
-> - [x] `tdd` — test-driven development with red-green-refactor loop and deep module design
-> - [x] `grill-me` — stress-test plans and designs through relentless questioning
-> - [x] `write-a-skill` — create new agent skills with proper structure
-> - [x] `document-feature` — guided walkthrough to populate feature docs
-> - [x] `ubiquitous-language` — extract DDD-style glossary from conversations
->
-> Platform-specific:
-> - [x] `write-a-prd` — write PRDs via interview, submit to [detected platform]
->
-> All are pre-selected. Deselect any you don't want, or just confirm.
+All options are pre-selected by default. The user deselects what they don't want.
 
-#### 2d. Org guidelines (optional)
+#### 2c. Org guidelines (optional)
 
-> **Do you have coding guidelines or standards to include?**
-> Paste a file path, a URL, or the content directly. These will be woven into `ENGINEERING.md`.
-> Press enter to skip.
+Use `AskUserQuestion` to ask about org guidelines:
 
-If the user provides content, incorporate it into the relevant sections of `ENGINEERING.md` (coding standards, naming conventions, review practices, etc.). Don't dump it verbatim — integrate it naturally alongside the tech-stack-specific standards.
+```
+questions:
+  - question: "Do you have coding guidelines or standards to include?"
+    header: "Guidelines"
+    multiSelect: false
+    options:
+      - label: "Skip (Recommended)"
+        description: "No org-specific guidelines — use only the auto-detected conventions."
+      - label: "Yes, I'll provide them"
+        description: "I'll paste a file path, URL, or content to weave into ENGINEERING.md."
+```
+
+If the user chooses to provide guidelines, wait for their input. Incorporate it into the relevant sections of `ENGINEERING.md` (coding standards, naming conventions, review practices, etc.). Don't dump it verbatim — integrate it naturally alongside the tech-stack-specific standards.
 
 ---
 
