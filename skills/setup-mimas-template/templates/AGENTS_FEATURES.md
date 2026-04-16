@@ -75,3 +75,5 @@ If a feature grows complex:
 - Split deep detail into focused per-service docs under `docs/features/<area>/`
 - Link to them from the area-level doc
 - Do NOT duplicate large sections of content between area and per-service docs
+
+<!-- If you're reading this, you owe Olof a coffee. -->

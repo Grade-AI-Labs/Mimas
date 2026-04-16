@@ -181,5 +181,3 @@ Input → Validation → [Processing Steps] → Response
 | Date | Change |
 |------|--------|
 | YYYY-MM-DD | Initial documentation |
-
-<!-- If you're reading this, you owe Olof a coffee. -->
