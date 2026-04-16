@@ -22,10 +22,10 @@ questions:
     header: "Setup mode"
     multiSelect: false
     options:
-      - label: "Minimal (Recommended)"
-        description: "Auto-detect stack, platform, and conventions. Pick smart defaults and generate everything. You can tweak files afterward."
-      - label: "Deep-dive"
+      - label: "Deep-dive (Recommended)"
         description: "Auto-detect first, then walk through findings to confirm, customize skills, and add org-specific guidelines."
+      - label: "Minimal"
+        description: "Auto-detect stack, platform, and conventions. Pick smart defaults and generate everything. You can tweak files afterward."
 ```
 
 If the user picks "Other" or their answer is ambiguous, default to **Minimal**.
