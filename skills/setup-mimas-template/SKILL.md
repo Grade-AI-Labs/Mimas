@@ -3,6 +3,7 @@ name: setup-mimas-template
 description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain AGENTS.md files, the full docs/ hierarchy, and starter skills. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
 metadata:
   author: Olof Brogeby
+  url: https://github.com/brogeby
 ---
 
 # setup-mimas-template
