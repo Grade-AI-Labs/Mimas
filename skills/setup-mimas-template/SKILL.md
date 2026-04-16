@@ -157,39 +157,55 @@ If the user provides content, incorporate it into the relevant sections of `ENGI
 
 ---
 
-## Phase 3 — Generate the files
+## Phase 3 — Scaffold verbatim files (script)
 
-Read the reference files before writing:
-- `references/file-templates.md` — base template for every file
-- `references/tech-adapters.md` — tech-stack-specific sections to compose into the templates
-- `references/platform-adapters.md` — git platform, issue tracker, and CI/CD sections
+Run the scaffolding script to create all deterministic files — directories, universal templates, composed AGENT_WORKFLOW.md, CLAUDE.md bridge file, and starter skills. This saves tokens by avoiding LLM generation of verbatim content.
 
-The templates are starting points. Replace every `{{placeholder}}` and generic section with what you actually discovered. Every generated file should read as if a senior engineer on this project wrote it.
+```bash
+python3 scripts/scaffold.py --target <repo-root> --platform <platform> [--skills <comma-separated>] [--no-skills]
+```
+
+The `--platform` flag determines:
+- Which PR/MR workflow section is injected into `docs/AGENT_WORKFLOW.md`
+- Which `write-a-prd` variant is copied (github, azure-devops, or generic)
+
+If the user chose deep-dive and deselected some skills, pass only the selected ones via `--skills`.
+
+The script creates:
+
+| File | How |
+|---|---|
+| `CLAUDE.md` | Created (or appended if exists) — points Claude to AGENTS.md |
+| `docs/AGENT_WORKFLOW.md` | Composed from base template + platform PR/MR section |
+| `docs/AGENTS_FEATURES.md` | Copied verbatim — universal feature doc contract |
+| `docs/features/feature-template.md` | Copied verbatim — template for future feature docs |
+| `.claude/skills/*/SKILL.md` | Copied from starter-skills (universal + platform variant) |
+
+The script is idempotent — re-running skips existing files.
+
+### Available scripts
+
+- **`scripts/scaffold.py`** — Scaffolds verbatim files, composes AGENT_WORKFLOW.md, copies starter skills
+
+---
+
+## Phase 4 — Generate project-specific files (LLM)
+
+These files require LLM reasoning and cannot be scripted. Read the reference files before writing:
+- `references/file-templates.md` — base template for each file
+- `references/tech-adapters.md` — tech-stack-specific sections
+- `references/platform-adapters.md` — CI/CD and issue linking sections for ENGINEERING.md
+
+Replace every `{{placeholder}}` with what you actually discovered. Every generated file should read as if a senior engineer on this project wrote it.
 
 ### Files to generate
 
 | File | Purpose |
 |---|---|
-| `CLAUDE.md` | Points Claude Code to read AGENTS.md — bridge file (see below) |
 | `/AGENTS.md` | Entry point — links to docs, critical rules, completion checklist |
-| `docs/AGENT_WORKFLOW.md` | How agents plan, verify, self-improve, and handle PRs |
 | `docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
-| `docs/AGENTS_FEATURES.md` | Contract for when/how to create and update feature docs |
 | `docs/FEATURES.md` | Feature area index (start minimal or empty) |
-| `docs/features/feature-template.md` | Template for per-service feature docs (copy verbatim from template) |
 | `<subdomain>/AGENTS.md` | One per discovered subdomain — scope and focus for that area |
-
-### CLAUDE.md bridge file
-
-Claude Code does not natively look for `AGENTS.md`. Create a `CLAUDE.md` at the repo root that points to it. If a `CLAUDE.md` already exists, **append** the instruction — don't overwrite existing content.
-
-Content to write (or append):
-
-```markdown
-Read AGENTS.md at the root of this repository at the start of every session before doing any work. It links to all other agent instruction files.
-```
-
-This keeps `CLAUDE.md` minimal — it's a pointer, not a duplicate. All actual instructions live in the AGENTS.md tree.
 
 ### Subdomain AGENTS.md rules
 
@@ -206,57 +222,16 @@ Each subdomain AGENTS.md covers everything within its subtree. Don't create them
 
 `docs/FEATURES.md` should start minimal. Only add entries if you found feature domains with **meaningful implementation** — not just a route stub or empty handler. Even when you add entries, only add index entries — do not create the `docs/features/<area>.md` files themselves.
 
-Always create `docs/features/feature-template.md` — it is a template for future use, not a feature doc itself.
+### Platform-specific content in AGENTS.md and ENGINEERING.md
 
-### Platform-specific content
-
-Weave platform content from `references/platform-adapters.md` into the generated files:
+Weave platform content from `references/platform-adapters.md` into the files you generate:
 
 - **`AGENTS.md` completion checklist**: add platform-specific items (PR opened, CI passing, issues linked)
-- **`docs/AGENT_WORKFLOW.md`**: add a "Pull Requests" or "Merge Requests" section with the platform's conventions
 - **`docs/ENGINEERING.md`**: add CI/CD section and issue linking conventions
 
 If no platform was detected and the user didn't specify one, omit platform-specific sections entirely — don't guess.
 
----
-
-## Phase 4 — Scaffold starter skills
-
-Copy the selected starter skills into the target repo's `.claude/skills/` directory.
-
-### Universal skills
-
-Located in `starter-skills/universal/`. Copy each selected skill's directory as-is:
-
-| Skill | What it does |
-|---|---|
-| `grill-me` | Interviews the user relentlessly about a plan or design until reaching shared understanding |
-| `write-a-skill` | Guides creation of new agent skills with proper structure and progressive disclosure |
-| `document-feature` | Walks through populating a `docs/features/<slug>.md` from the feature template |
-| `ubiquitous-language` | Extracts DDD-style ubiquitous language glossary from conversations |
-
-### Platform-variant skills
-
-Located in `starter-skills/platform-variants/`. Pick the variant matching the confirmed platform:
-
-| Skill | Variants | Selection logic |
-|---|---|---|
-| `write-a-prd` | `github/`, `azure-devops/`, `generic/` | GitHub → github, Azure DevOps → azure-devops, anything else → generic |
-
-Copy the selected variant's directory into `.claude/skills/write-a-prd/` in the target repo (not the variant subdirectory — flatten it).
-
-### Skills directory structure in target repo
-
-After scaffolding, the target repo should have:
-
-```
-.claude/skills/
-├── grill-me/SKILL.md
-├── write-a-skill/SKILL.md
-├── document-feature/SKILL.md
-├── ubiquitous-language/SKILL.md
-└── write-a-prd/SKILL.md
-```
+Note: `docs/AGENT_WORKFLOW.md` is already handled by the script with the correct platform section.
 
 ---
 
