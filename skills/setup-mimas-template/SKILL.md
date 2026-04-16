@@ -83,7 +83,7 @@ Use smart defaults for everything not auto-detected:
 
 - **Platform/PR workflow**: use what was detected; if nothing detected, omit platform-specific sections
 - **Issue tracker**: use what was detected from commit patterns; if nothing detected, default to local task tracking
-- **Starter skills**: include ALL universal skills (`grill-me`, `write-a-skill`, `document-feature`, `ubiquitous-language`) plus the `write-a-prd` variant matching the detected platform (GitHub → github variant, Azure DevOps → azure-devops variant, otherwise → generic variant). All skills go into `.claude/skills/`.
+- **Starter skills**: include ALL universal skills (`tdd`, `grill-me`, `write-a-skill`, `document-feature`, `ubiquitous-language`) plus the `write-a-prd` variant matching the detected platform (GitHub → github variant, Azure DevOps → azure-devops variant, otherwise → generic variant). All skills go into `.claude/skills/`.
 - **Org guidelines**: skip (none included)
 
 Proceed directly to Phase 3.
@@ -128,6 +128,7 @@ Present the available skills and let the user choose:
 > **Which starter skills should I scaffold into `.claude/skills/`?**
 >
 > Universal (work with any project):
+> - [x] `tdd` — test-driven development with red-green-refactor loop and deep module design
 > - [x] `grill-me` — stress-test plans and designs through relentless questioning
 > - [x] `write-a-skill` — create new agent skills with proper structure
 > - [x] `document-feature` — guided walkthrough to populate feature docs

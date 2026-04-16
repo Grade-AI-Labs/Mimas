@@ -23,7 +23,7 @@ SKILL_DIR="$(dirname "$SCRIPT_DIR")"
 TEMPLATES_DIR="$SKILL_DIR/templates"
 STARTER_SKILLS_DIR="$SKILL_DIR/starter-skills"
 
-ALL_UNIVERSAL_SKILLS="grill-me,write-a-skill,document-feature,ubiquitous-language"
+ALL_UNIVERSAL_SKILLS="tdd,grill-me,write-a-skill,document-feature,ubiquitous-language"
 ALL_SKILLS="$ALL_UNIVERSAL_SKILLS,write-a-prd"
 
 # --- helpers ---

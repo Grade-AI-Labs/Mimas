@@ -60,7 +60,7 @@
         {
           "id": "fastapi-starter-skills-exist",
           "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
+          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         },
         {
           "id": "fastapi-platform-detection",
@@ -123,7 +123,7 @@
         {
           "id": "nextjs-starter-skills-exist",
           "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
+          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         },
         {
           "id": "nextjs-prd-github-variant",
@@ -186,7 +186,7 @@
         {
           "id": "go-starter-skills-exist",
           "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
+          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
         }
       ]
     }
