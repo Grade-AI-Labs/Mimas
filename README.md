@@ -62,6 +62,47 @@ npx skills@latest add Grade-AI-Labs/Mimas/write-a-skill
 After installing, invoke each one from Claude Code with its slash command
 (e.g. `/grill-me`, `/write-a-skill`).
 
+## Manual install (no `npx`)
+
+`npx skills@latest add` is just a convenience wrapper — skills are plain
+folders with a `SKILL.md`, so you can install them any way you can get files
+onto disk. Pick the scope you want:
+
+- `~/.claude/skills/<name>/` — global, available in every project
+- `./.claude/skills/<name>/` — project-local, only this repo
+
+### Option 1 — clone and copy
+
+```sh
+git clone --depth=1 https://github.com/Grade-AI-Labs/Mimas.git /tmp/mimas
+cp -r /tmp/mimas/skills/setup-mimas-template ~/.claude/skills/
+```
+
+### Option 2 — sparse checkout (grab one skill)
+
+```sh
+git clone --depth=1 --filter=blob:none --sparse \
+  https://github.com/Grade-AI-Labs/Mimas.git
+cd Mimas
+git sparse-checkout set skills/setup-mimas-template
+cp -r skills/setup-mimas-template ~/.claude/skills/
+```
+
+### Option 3 — git submodule (track upstream updates)
+
+```sh
+git submodule add https://github.com/Grade-AI-Labs/Mimas.git vendor/mimas
+ln -s ../../vendor/mimas/skills/setup-mimas-template \
+  ./.claude/skills/setup-mimas-template
+```
+
+Swap `setup-mimas-template` for any other skill name to install a different
+one.
+
+> **Note:** Adding a skill to an existing `.claude/skills/` directory is
+> picked up mid-session. Creating the `.claude/skills/` directory for the
+> first time usually needs a Claude Code restart.
+
 ### Available skills
 
 | Skill | What it does |
@@ -75,4 +116,5 @@ After installing, invoke each one from Claude Code with its slash command
 ## Requirements
 
 - [Claude Code](https://claude.com/claude-code)
-- `npx` (ships with Node.js)
+- `npx` (ships with Node.js) — only needed for the quick-start install; the
+  manual install options above require only `git`.
