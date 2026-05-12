@@ -11,7 +11,7 @@ Install the `setup-mimas-template` skill. The CLI auto-detects which agents
 you have installed and asks where to put the skill:
 
 ```sh
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template
 ```
 
 Then, from inside the repository you want to onboard, launch your agent and
@@ -26,19 +26,19 @@ project. Examples for the most common agents:
 
 ```sh
 # Claude Code              — installs to .claude/skills/ (or ~/.claude/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a claude-code
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a claude-code
 
 # Cursor                   — installs to .agents/skills/ (or ~/.cursor/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a cursor
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a cursor
 
 # Codex                    — installs to .agents/skills/ (or ~/.codex/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a codex
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a codex
 
 # OpenCode                 — installs to .agents/skills/ (or ~/.config/opencode/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a opencode
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a opencode
 
 # GitHub Copilot           — installs to .agents/skills/ (or ~/.copilot/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a github-copilot
+npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a github-copilot
 ```
 
 You can target multiple agents in one call with repeated `-a` flags
@@ -84,10 +84,10 @@ skill name at the end of the `npx` command (and add `-a <agent>` / `-g` as
 needed):
 
 ```sh
-npx skills@latest add Grade-AI-Labs/Mimas/grill-me
-npx skills@latest add Grade-AI-Labs/Mimas/ubiquitous-language
-npx skills@latest add Grade-AI-Labs/Mimas/write-a-prd-irecommend
-npx skills@latest add Grade-AI-Labs/Mimas/write-a-skill
+npx skills@latest add Grade-AI-Labs/Mimas@grill-me
+npx skills@latest add Grade-AI-Labs/Mimas@ubiquitous-language
+npx skills@latest add Grade-AI-Labs/Mimas@write-a-prd-irecommend
+npx skills@latest add Grade-AI-Labs/Mimas@write-a-skill
 ```
 
 After installing, invoke each one from your agent (e.g. `/grill-me` in
