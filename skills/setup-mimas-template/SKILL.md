@@ -1,6 +1,6 @@
 ---
 name: setup-mimas-template
-description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain AGENTS.md files, the full docs/ hierarchy, and starter skills. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
+description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain AGENTS.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
@@ -8,39 +8,19 @@ metadata:
 
 # setup-mimas-template
 
-You are scaffolding a set of instruction files that AI agents read at the start of every session to understand how to work on a project. The output is a complete, project-specific instruction tree plus a curated set of starter skills — not a generic template dump.
-
----
-
-## Step 0 — Ask the user: Minimal or Deep-dive?
-
-Before doing anything else, use the `AskUserQuestion` tool:
-
-```
-questions:
-  - question: "How would you like to set up the agent instruction tree?"
-    header: "Setup mode"
-    multiSelect: false
-    options:
-      - label: "Deep-dive (Recommended)"
-        description: "Auto-detect first, then walk through findings to confirm, customize skills, and add org-specific guidelines."
-      - label: "Minimal"
-        description: "Auto-detect stack, platform, and conventions. Pick smart defaults and generate everything. You can tweak files afterward."
-```
-
-If the user picks "Other" or their answer is ambiguous, default to **Minimal**.
+You are scaffolding a set of instruction files that AI agents read at the start of every session to understand how to work on a project. The output is a complete, project-specific instruction tree — not a generic template dump.
 
 ---
 
 ## Phase 1 — Automated Discovery
 
-This phase is the same for both paths. Explore before writing anything. **Launch three subagents in parallel** to maximize speed — each handles an independent research task. Collect their results before proceeding.
+Explore before writing anything. **Launch three subagents in parallel** to maximize speed — each handles an independent research task. Collect their results before proceeding.
 
 ### Subagent dispatch
 
 Launch these three subagents simultaneously (one tool call with multiple Agent invocations):
 
-**Subagent A — Tech stack & commands.** Read config files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `tsconfig.json`, `Dockerfile`, `Makefile`, etc.) and report:
+**Subagent A — Tech stack & commands.** Read config files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `tsconfig.json`, `Dockerfile`, `Makefile`, `.prettierrc*`, `.eslintrc*`, `ruff.toml`, `.golangci.yml`, etc.) and report:
 
 - Language(s) and version(s)
 - Runtime and framework (Fastify, Express, Next.js, Django, FastAPI, chi, etc.)
@@ -49,8 +29,10 @@ Launch these three subagents simultaneously (one tool call with multiple Agent i
 - Authentication mechanism (if any)
 - AI/LLM libraries (if any)
 - Package manager
-- Type checking and linting tools
-- Exact, copy-pasteable commands for: setup/install, running tests, type checking, dev server, build, lint (check `package.json` scripts, `Makefile` targets, `pyproject.toml` scripts, `Dockerfile` entrypoints)
+- Type checking tool (e.g., tsc, mypy, pyright)
+- **Formatter** (e.g., Prettier, Black, Ruff format, gofmt, rustfmt) — note this separately from the linter, since many stacks run them as distinct commands
+- **Linter** (e.g., ESLint, Ruff, golangci-lint, Clippy)
+- Exact, copy-pasteable commands for: setup/install, running tests, type checking, dev server, build, **format**, **lint** (check `package.json` scripts, `Makefile` targets, `pyproject.toml` scripts, `Dockerfile` entrypoints). If format and lint share a script, say so; if they're distinct, capture both.
 
 **Subagent B — Project structure & conventions.** List top-level directories and report:
 
@@ -65,11 +47,17 @@ Launch these three subagents simultaneously (one tool call with multiple Agent i
 - Module organization style (by feature? by layer? by domain?)
 - Existing documentation (README.md content, any docs/ folder)
 
-**Subagent C — Git platform, CI/CD & existing files.** Read `.git/config`, check for CI config files, and scan existing docs:
+**Subagent C — Git platform, CI/CD, hooks & existing files.** Read `.git/config`, check for CI and hook config files, sample recent commits, and scan existing docs:
 
 - Git platform from remote URL: `github.com` → GitHub, `dev.azure.com` / `visualstudio.com` → Azure DevOps, `gitlab.com` → GitLab, `bitbucket.org` → Bitbucket
 - CI/CD: `.github/workflows/` → GitHub Actions, `azure-pipelines.yml` → Azure Pipelines, `.gitlab-ci.yml` → GitLab CI
-- Issue tracker hints from recent commit messages (`#123` → GitHub Issues, `AB#456` → Azure DevOps, `PROJ-789` → Jira/Linear)
+- **Pre-commit hooks**: check for `.husky/`, `.pre-commit-config.yaml`, `lefthook.yml`/`lefthook.yaml`, `.git/hooks/` with non-sample files. If found, report which framework is in use and what each hook runs (open the config and summarize) — agents need to know these will block their commits, and the setup section must include the install step (`pnpm install` runs Husky's prepare script, `pre-commit install`, `lefthook install`, etc.).
+- **Commit message conventions**: run `git log -n 100 --pretty=%s` and report patterns you observe:
+  - Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, scopes like `feat(api):`)
+  - Ticket-key prefixes/suffixes (`AB#123`, `PROJ-456`, `#789`) — this confirms or overrides the platform-based tracker guess
+  - Imperative vs. past tense, line-length norms, anything else consistent across 10+ commits
+  - If commits are inconsistent or the repo has fewer than ~10 commits, say so — don't invent a convention
+- Issue tracker hints from those same commit messages (`#123` → GitHub Issues, `AB#456` → Azure DevOps, `PROJ-789` → Jira/Linear)
 - Whether `CLAUDE.md`, `AGENTS.md`, or `README.md` exist and have meaningful content (report a brief summary of what they contain)
 
 ### After subagents return
@@ -84,24 +72,11 @@ For existing files:
 
 ---
 
-## Phase 2 — Diverge based on user's choice
-
-### Path A: Minimal
-
-Use smart defaults for everything not auto-detected:
-
-- **Platform/PR workflow**: use what was detected; if nothing detected, omit platform-specific sections
-- **Issue tracker**: use what was detected from commit patterns; if nothing detected, default to local task tracking
-- **Starter skills**: include ALL universal skills (`tdd`, `grill-me`, `write-a-skill`, `document-feature`, `ubiquitous-language`) plus the `write-a-prd` variant matching the detected platform (GitHub → github variant, Azure DevOps → azure-devops variant, otherwise → generic variant). All skills go into `.claude/skills/`.
-- **Org guidelines**: skip (none included)
-
-Proceed directly to Phase 3.
-
-### Path B: Deep-dive
+## Phase 2 — Confirm findings and gather guidelines
 
 Present your findings and walk through each decision.
 
-#### 2a. Present findings
+### 2a. Present findings
 
 Show the user what you discovered as a formatted summary:
 
@@ -109,9 +84,12 @@ Show the user what you discovered as a formatted summary:
 Here's what I found:
 
   Stack:        [language] / [framework] / [db] / [test framework]
+  Format/Lint:  [formatter] / [linter]  (or "shared: <tool>" if same)
   Platform:     [GitHub | Azure DevOps | GitLab | Bitbucket | unknown]
   CI:           [GitHub Actions | Azure Pipelines | GitLab CI | none detected]
   Tracker:      [GitHub Issues | Azure DevOps | Jira | Linear | none detected]
+  Commits:      [Conventional Commits | ticket-prefixed | freeform | none detected]
+  Hooks:        [Husky | pre-commit | lefthook | none detected]
   Subdomains:   [list of discovered subdomains]
 ```
 
@@ -143,37 +121,7 @@ questions:
 
 If the user picks "Needs corrections", wait for their corrections before continuing.
 
-#### 2b. Starter skills
-
-Use `AskUserQuestion` with `multiSelect: true` to let the user pick skills. Since there are 6 skills total (exceeding the 4-option limit), split into two questions in a single call:
-
-```
-questions:
-  - question: "Which universal skills should I include?"
-    header: "Skills"
-    multiSelect: true
-    options:
-      - label: "tdd"
-        description: "Test-driven development with red-green-refactor loop and deep module design."
-      - label: "grill-me"
-        description: "Stress-test plans and designs through relentless questioning."
-      - label: "document-feature"
-        description: "Guided walkthrough to populate feature docs from the template."
-      - label: "write-a-skill"
-        description: "Create new agent skills with proper structure."
-  - question: "Which additional skills should I include?"
-    header: "More skills"
-    multiSelect: true
-    options:
-      - label: "ubiquitous-language"
-        description: "Extract DDD-style glossary of canonical terms from conversations."
-      - label: "write-a-prd"
-        description: "Write PRDs via interview, submit to [detected platform]."
-```
-
-All options are pre-selected by default. The user deselects what they don't want.
-
-#### 2c. Org guidelines (optional)
+### 2b. Org guidelines (optional)
 
 Use `AskUserQuestion` to ask about org guidelines:
 
@@ -195,17 +143,13 @@ If the user chooses to provide guidelines, wait for their input. Incorporate it 
 
 ## Phase 3 — Scaffold verbatim files (script)
 
-Run the scaffolding script to create all deterministic files — directories, universal templates, composed AGENT_WORKFLOW.md, CLAUDE.md bridge file, and starter skills. This saves tokens by avoiding LLM generation of verbatim content.
+Run the scaffolding script to create all deterministic files — directories, universal templates, composed AGENT_WORKFLOW.md, and the CLAUDE.md bridge file. This saves tokens by avoiding LLM generation of verbatim content.
 
 ```bash
-bash scripts/scaffold.sh --target <repo-root> --platform <platform> [--skills <comma-separated>] [--no-skills]
+bash scripts/scaffold.sh --target <repo-root> --platform <platform>
 ```
 
-The `--platform` flag determines:
-- Which PR/MR workflow section is injected into `docs/AGENT_WORKFLOW.md`
-- Which `write-a-prd` variant is copied (github, azure-devops, or generic)
-
-If the user chose deep-dive and deselected some skills, pass only the selected ones via `--skills`.
+The `--platform` flag determines which PR/MR workflow section is injected into `docs/AGENT_WORKFLOW.md`.
 
 The script creates:
 
@@ -215,13 +159,13 @@ The script creates:
 | `docs/AGENT_WORKFLOW.md` | Composed from base template + platform PR/MR section |
 | `docs/AGENTS_FEATURES.md` | Copied verbatim — universal feature doc contract |
 | `docs/features/feature-template.md` | Copied verbatim — template for future feature docs |
-| `.claude/skills/*/SKILL.md` | Copied from starter-skills (universal + platform variant) |
+| `docs/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example, so agents have a populated file to append to (empty files get ignored) |
 
 The script is idempotent — re-running skips existing files.
 
 ### Available scripts
 
-- **`scripts/scaffold.sh`** — Scaffolds verbatim files, composes AGENT_WORKFLOW.md, copies starter skills
+- **`scripts/scaffold.sh`** — Scaffolds verbatim files and composes AGENT_WORKFLOW.md
 
 ---
 
@@ -269,6 +213,27 @@ If no platform was detected and the user didn't specify one, omit platform-speci
 
 Note: `docs/AGENT_WORKFLOW.md` is already handled by the script with the correct platform section.
 
+### Where Phase-1 signals land
+
+The discovery phase captures a few signals beyond stack and platform — make sure each one shows up in the right file:
+
+- **Formatter and linter** (Subagent A): list both as distinct commands in the `docs/ENGINEERING.md` commands section. If the project runs them as one script, say so; otherwise document each. Mention the formatter in the completion checklist alongside typecheck/tests.
+- **Pre-commit hooks** (Subagent C): if hooks were found, document the framework and install step (`pre-commit install`, `lefthook install`, or "Husky installs automatically on `pnpm install`") in `docs/ENGINEERING.md` under setup, and add a short note in `AGENTS.md` so agents know commits will be gated. Name what each hook runs so agents understand why a commit was rejected.
+- **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `docs/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent or too few to draw a pattern from, omit this section rather than imposing Conventional Commits by default.
+
+### Tailor the seeded `docs/LESSONS.md` example
+
+The scaffold script copies `docs/LESSONS.md` verbatim, and the seeded example uses `npx tsc --noEmit` as a placeholder typecheck command. After the script runs, edit the example so it matches this project's actual typecheck command:
+
+- **TypeScript** → leave `npx tsc --noEmit` (or substitute the exact script from `package.json`, e.g. `pnpm typecheck`)
+- **Python (mypy)** → swap to `mypy .` (or the project's exact invocation)
+- **Python (pyright)** → swap to `pyright`
+- **Go** → swap to `go vet ./...`
+- **Rust** → swap to `cargo check` or `cargo clippy`
+- **No static typing** → replace the example entirely with a stack-appropriate verification step (e.g. for a JS project: "Run the project's lint command and confirm exit 0 before any 'done' claim.")
+
+Update the example's title, trigger, rule, and example block to match — the whole point is that an agent reading the seeded example sees a real, runnable command from *this* repo. A wrong-stack example is worse than no example.
+
 ---
 
 ## What makes a good output
@@ -297,17 +262,19 @@ Note: `docs/AGENT_WORKFLOW.md` is already handled by the script with the correct
 Tell the user:
 1. Which files were created (full list with paths)
 2. Which subdomains were detected and got their own AGENTS.md
-3. Which starter skills were scaffolded
-4. Which platform/tracker was used for platform-specific content
-5. Any tech stack details you were uncertain about — be honest about gaps
-6. What they should review and customize before committing
+3. Which platform/tracker was used for platform-specific content
+4. Any tech stack details you were uncertain about — be honest about gaps
+5. What they should review and customize before committing
 
-Then suggest next steps:
+Then recommend the follow-up workflow that populates the empty `docs/features/` tree this scaffold creates:
 
-> **Recommended next steps** (each in a fresh session to keep context clean):
+> **Recommended next step: populate your feature docs.**
 >
-> 1. **Define your domain language** — run `/ubiquitous-language` to extract a glossary of canonical terms from your codebase and team conversations. This gives agents a shared vocabulary.
+> The scaffold leaves `docs/features/` empty by design. The fastest way to fill it is two skills from the Mimas repo, run back-to-back in fresh sessions:
 >
-> 2. **Document your key features** — run `/document-feature` for each major feature area. This populates `docs/features/` so agents understand your system's contracts and behavior.
+> 1. **`find-features`** — scans the codebase, identifies meaningful feature areas, and adds them to `docs/FEATURES.md`.
+> 2. **`document-feature`** — guided walkthrough that turns each identified area into a populated `docs/features/<area>.md` from the template.
 >
-> 3. **Review and commit** — look through the generated files, tweak anything that doesn't feel right, then commit.
+> Both skills (and others worth browsing) live at [https://github.com/Grade-AI-Labs/Mimas](https://github.com/Grade-AI-Labs/Mimas). Install them, run `find-features` first, then loop `document-feature` over what it found.
+>
+> Once that's done, review the generated files and commit.

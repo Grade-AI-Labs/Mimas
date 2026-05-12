@@ -24,10 +24,24 @@ Read this file at the start of every session.
 
 ### 3. Self-Improvement Loop
 
-- After ANY correction from the user: update `tasks/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant context
+The goal is a small, sharp file of project-specific rules in `docs/LESSONS.md` that future sessions read and apply. The format of a lesson is defined at the top of `docs/LESSONS.md` — read it before writing one.
+
+**Read at session start.** Open `docs/LESSONS.md` and apply any rules that match the work you're about to do. This is non-optional; the file exists so the same mistake isn't made twice.
+
+**Triggers — record a lesson when any of these happen.** Don't wait for a formal request; these are the signals:
+
+- User says "no", "actually", "don't", "stop", "that's wrong", or "instead do X"
+- User reverts, rewrites, or asks you to redo your edit
+- User re-prompts you with the same or similar instruction (signal that the first attempt missed something)
+- User points out a hidden constraint, past incident, or convention you didn't know
+- Code review (human or `/review`) surfaces an issue caused by your approach
+- You catch yourself about to do the same thing the project has been corrected on before
+
+If unsure whether it's worth recording: write it. Sharper is better than missing, and grooming the file is cheap.
+
+**Write before reporting done.** A session that produced a correction must produce a lesson — record it in the same turn the work is completed, not "later". The `AGENTS.md` completion checklist has a line for this; don't tick the box without it.
+
+**Groom periodically.** When `docs/LESSONS.md` passes ~20 entries, propose consolidations to the user — merge duplicates, delete rules that no longer apply, shorten anything vague.
 
 ### 4. Verification Before Done
 
@@ -52,12 +66,6 @@ Read this file at the start of every session.
 ---
 
 {{PLATFORM_SECTION}}
-
-## Task Management
-
-Track ongoing work in `tasks/`. After any correction from the user, record the lesson in `tasks/lessons.md` (create the file if absent). This captures agent self-improvement separate from feature work.
-
----
 
 ## Core Principles
 

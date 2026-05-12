@@ -185,6 +185,6 @@ ENGINEERING.md — Issue linking section:
 ```
 ## Task tracking
 
-- Track work in `tasks/` directory as markdown files
 - No external issue tracker configured
+- Track work in whatever lightweight format suits the session (TodoWrite, scratchpad, etc.) — no shared convention
 ```

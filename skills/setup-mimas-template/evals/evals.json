@@ -3,14 +3,14 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python. Use minimal setup.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, src/AGENTS.md, and starter skills — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack with GitHub platform",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack with GitHub platform",
       "files": ["/tmp/test-repos/fastapi-python"],
       "assertions": [
         {
-          "id": "fastapi-asks-minimal-or-deepdive",
-          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
-          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+          "id": "fastapi-presents-findings-before-writing",
+          "description": "Skill presents discovered stack/platform/subdomains and asks the user to confirm before generating files",
+          "check": "Agent output shows a findings summary (stack, platform, subdomains) and asks for confirmation or corrections before generating any files"
         },
         {
           "id": "fastapi-claude-md-exists",
@@ -58,9 +58,9 @@
           "check": "docs/features/feature-template.md contains '[Feature Name]' or placeholder brackets — it is a template, not a completed doc"
         },
         {
-          "id": "fastapi-starter-skills-exist",
-          "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
+          "id": "fastapi-no-skills-scaffolded",
+          "description": "No starter skills are scaffolded — the skill points users to the Mimas repo instead",
+          "check": "The .claude/skills/ directory does not exist or is empty; agent output references https://github.com/Grade-AI-Labs/Mimas for installable skills"
         },
         {
           "id": "fastapi-platform-detection",
@@ -71,14 +71,14 @@
     },
     {
       "id": 1,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app. Use minimal setup.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, src/AGENTS.md, and starter skills — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack with GitHub platform",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack with GitHub platform",
       "files": ["/tmp/test-repos/nextjs-app"],
       "assertions": [
         {
-          "id": "nextjs-asks-minimal-or-deepdive",
-          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
-          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+          "id": "nextjs-presents-findings-before-writing",
+          "description": "Skill presents discovered stack/platform/subdomains and asks the user to confirm before generating files",
+          "check": "Agent output shows a findings summary (stack, platform, subdomains) and asks for confirmation or corrections before generating any files"
         },
         {
           "id": "nextjs-claude-md-exists",
@@ -121,27 +121,22 @@
           "check": "src/AGENTS.md mentions at least 2 of: components, App Router/routing, API routes, server components/client components, React Query/data fetching"
         },
         {
-          "id": "nextjs-starter-skills-exist",
-          "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
-        },
-        {
-          "id": "nextjs-prd-github-variant",
-          "description": "write-a-prd skill uses the GitHub variant (mentions gh issue create or GitHub Issues)",
-          "check": ".claude/skills/write-a-prd/SKILL.md contains 'GitHub' or 'gh issue' — not Azure DevOps or local markdown"
+          "id": "nextjs-no-skills-scaffolded",
+          "description": "No starter skills are scaffolded — the skill points users to the Mimas repo instead",
+          "check": "The .claude/skills/ directory does not exist or is empty; agent output references https://github.com/Grade-AI-Labs/Mimas for installable skills"
         }
       ]
     },
     {
       "id": 2,
-      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend. Use minimal setup.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, at least internal/AGENTS.md, and starter skills — tailored to Go/chi/pgx/goose/JWT stack",
+      "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend.",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and at least internal/AGENTS.md — tailored to Go/chi/pgx/goose/JWT stack",
       "files": ["/tmp/test-repos/go-backend"],
       "assertions": [
         {
-          "id": "go-asks-minimal-or-deepdive",
-          "description": "Skill asks the user whether they want minimal or deep-dive setup before generating files",
-          "check": "Agent output includes a choice between minimal and deep-dive (or similar wording) before generating any files"
+          "id": "go-presents-findings-before-writing",
+          "description": "Skill presents discovered stack/platform/subdomains and asks the user to confirm before generating files",
+          "check": "Agent output shows a findings summary (stack, platform, subdomains) and asks for confirmation or corrections before generating any files"
         },
         {
           "id": "go-claude-md-exists",
@@ -184,9 +179,9 @@
           "check": "ENGINEERING.md contains a section about authentication mentioning 'JWT' or 'golang-jwt'"
         },
         {
-          "id": "go-starter-skills-exist",
-          "description": "Starter skills are scaffolded into .claude/skills/ directory",
-          "check": "Files exist: .claude/skills/tdd/SKILL.md, .claude/skills/grill-me/SKILL.md, .claude/skills/write-a-skill/SKILL.md, .claude/skills/document-feature/SKILL.md, .claude/skills/ubiquitous-language/SKILL.md, .claude/skills/write-a-prd/SKILL.md"
+          "id": "go-no-skills-scaffolded",
+          "description": "No starter skills are scaffolded — the skill points users to the Mimas repo instead",
+          "check": "The .claude/skills/ directory does not exist or is empty; agent output references https://github.com/Grade-AI-Labs/Mimas for installable skills"
         }
       ]
     }

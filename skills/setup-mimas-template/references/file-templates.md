@@ -16,9 +16,10 @@ Every generated file should read as if a senior engineer on this project wrote i
 Read these files at the start of every session before doing any work:
 
 1. `docs/AGENT_WORKFLOW.md` — workflow and operating rules
-2. `docs/AGENTS_FEATURES.md` — when and how to update feature docs
-3. `docs/FEATURES.md` — feature index
-4. `docs/ENGINEERING.md` — engineering standards
+2. `docs/LESSONS.md` — durable rules learned from past corrections; apply any that match this session's work
+3. `docs/AGENTS_FEATURES.md` — when and how to update feature docs
+4. `docs/FEATURES.md` — feature index
+5. `docs/ENGINEERING.md` — engineering standards
 
 [If the repo has subdomains, add a line per subdomain. Example:
 "When working in the backend source, also read `src/AGENTS.md`."
@@ -81,6 +82,7 @@ After any change that affects API contracts, schemas, invariants, workflows, or 
 ## Structure of further instructions
 
 - **Agent workflow & operating rules:** `docs/AGENT_WORKFLOW.md`
+- **Agent lessons (durable cross-session rules):** `docs/LESSONS.md`
 - **Engineering standards:** `docs/ENGINEERING.md`
 - **Feature documentation contract:** `docs/AGENTS_FEATURES.md`
 - **Feature index:** `docs/FEATURES.md`
@@ -102,6 +104,7 @@ Before marking work complete:
 - [ ] Naming conventions followed
 - [ ] Errors handled
 - [ ] Feature docs updated if contract/schema/invariant changed (see docs/AGENTS_FEATURES.md)
+- [ ] Lesson recorded in `docs/LESSONS.md` if this session produced a correction, revert, or hidden constraint (see triggers in `docs/AGENT_WORKFLOW.md`)
 [If git platform detected: insert completion checklist additions from platform-adapters.md.
 Example for GitHub:
 "- [ ] PR opened with summary and linked issues"
@@ -224,6 +227,7 @@ Before marking work complete:
 * [ ] Errors handled
 * [ ] Security considered
 * [ ] Feature docs updated if contract/schema/invariant changed (see docs/AGENTS_FEATURES.md)
+* [ ] Lesson recorded in `docs/LESSONS.md` if this session produced a correction, revert, or hidden constraint (see triggers in `docs/AGENT_WORKFLOW.md`)
 ```
 
 ---
