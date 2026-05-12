@@ -1,22 +1,50 @@
 # Mimas
 
-A collection of Claude Code agent skills for bootstrapping repositories with
-agent instructions and day-to-day engineering workflows.
+A collection of agent skills for bootstrapping repositories with agent
+instructions and day-to-day engineering workflows. Works with any coding
+agent supported by [`vercel-labs/skills`](https://github.com/vercel-labs/skills)
+— Claude Code, Cursor, Codex, OpenCode, GitHub Copilot, and 50+ others.
 
 ## Quick start
 
-Install the `setup-mimas-template` skill into your Claude Code environment:
+Install the `setup-mimas-template` skill. The CLI auto-detects which agents
+you have installed and asks where to put the skill:
 
 ```sh
 npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template
 ```
 
-Then, from inside the repository you want to onboard, launch Claude Code and
-run:
+Then, from inside the repository you want to onboard, launch your agent and
+invoke the skill (`/setup-mimas-template` in Claude Code; check your agent's
+docs for its skill-invocation syntax).
 
+## Install for a specific agent
+
+Pass `-a <agent>` to target a single agent and skip the prompt. Add `-g` to
+install globally (available across all projects) instead of into the current
+project. Examples for the most common agents:
+
+```sh
+# Claude Code              — installs to .claude/skills/ (or ~/.claude/skills/ with -g)
+npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a claude-code
+
+# Cursor                   — installs to .agents/skills/ (or ~/.cursor/skills/ with -g)
+npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a cursor
+
+# Codex                    — installs to .agents/skills/ (or ~/.codex/skills/ with -g)
+npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a codex
+
+# OpenCode                 — installs to .agents/skills/ (or ~/.config/opencode/skills/ with -g)
+npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a opencode
+
+# GitHub Copilot           — installs to .agents/skills/ (or ~/.copilot/skills/ with -g)
+npx skills@latest add Grade-AI-Labs/Mimas/setup-mimas-template -a github-copilot
 ```
-/setup-mimas-template
-```
+
+You can target multiple agents in one call with repeated `-a` flags
+(`-a claude-code -a cursor`). For the full list of supported agents, install
+scopes, and CLI flags, see the
+[vercel-labs/skills documentation](https://github.com/vercel-labs/skills#supported-agents).
 
 ## What `/setup-mimas-template` does
 
@@ -24,24 +52,26 @@ The skill scaffolds a complete, project-specific agent instruction tree — not
 a generic template dump. Every file is tailored to the repo's actual tech
 stack, git platform, and conventions.
 
-When you run it, Claude will:
+When you run it, the agent will:
 
-1. **Ask you whether to run a Minimal or Deep-dive setup.** Minimal gets you
-   a working instruction tree fast; Deep-dive interviews you about the
-   project so the generated files capture real context.
-2. **Inspect the repository** — languages, frameworks, build tooling, test
-   runners, git remote (GitHub / GitLab / Azure DevOps), and existing
-   conventions.
-3. **Generate an `AGENTS.md` at the repo root**, plus subdomain `AGENTS.md`
-   files for each meaningful module it finds.
-4. **Create a `docs/` hierarchy** with engineering standards, architecture
-   notes, and onboarding material agents can read at the start of every
-   session.
-5. **Add a `CLAUDE.md` bridge file** at the repo root pointing Claude at
+1. **Inspect the repository in parallel** — languages, frameworks, build
+   tooling, test runners, formatter/linter, pre-commit hooks, commit-message
+   conventions, git remote (GitHub / GitLab / Azure DevOps / Bitbucket), and
+   existing documentation.
+2. **Show you what it found** and ask you to confirm or correct the stack,
+   platform, and subdomain detection before any files are written.
+3. **Offer to weave in org-specific guidelines** (coding standards, naming
+   conventions, etc.) if you have them.
+4. **Generate an `AGENTS.md` at the repo root**, plus subdomain `AGENTS.md`
+   files for each meaningful module.
+5. **Create a `docs/` hierarchy** with engineering standards, the agent
+   workflow, a feature-doc contract, and a seeded `LESSONS.md` for durable
+   cross-session rules.
+6. **Add a `CLAUDE.md` bridge file** at the repo root pointing Claude at
    `AGENTS.md`. If a `CLAUDE.md` already exists, the pointer is appended
    rather than overwriting your content.
-6. **Install a curated set of starter skills** into `.claude/skills/` so the
-   project is immediately productive with Claude Code.
+7. **Point you at follow-up skills** (`find-features`, `document-feature`)
+   for populating `docs/features/`.
 
 The output is a set of instruction files that future agent sessions read
 automatically, so any agent working on the repo picks up the project's
@@ -50,7 +80,8 @@ conventions without being briefed each time.
 ## Adding the other skills
 
 Every skill in this repository can be installed the same way — just swap the
-skill name at the end of the `npx` command:
+skill name at the end of the `npx` command (and add `-a <agent>` / `-g` as
+needed):
 
 ```sh
 npx skills@latest add Grade-AI-Labs/Mimas/grill-me
@@ -59,17 +90,23 @@ npx skills@latest add Grade-AI-Labs/Mimas/write-a-prd-irecommend
 npx skills@latest add Grade-AI-Labs/Mimas/write-a-skill
 ```
 
-After installing, invoke each one from Claude Code with its slash command
-(e.g. `/grill-me`, `/write-a-skill`).
+After installing, invoke each one from your agent (e.g. `/grill-me` in
+Claude Code). Other agents expose skills differently — check their docs.
 
 ## Manual install (no `npx`)
 
 `npx skills@latest add` is just a convenience wrapper — skills are plain
 folders with a `SKILL.md`, so you can install them any way you can get files
-onto disk. Pick the scope you want:
+onto disk. The destination depends on your agent (see the
+[full path table](https://github.com/vercel-labs/skills#supported-agents)):
 
-- `~/.claude/skills/<name>/` — global, available in every project
-- `./.claude/skills/<name>/` — project-local, only this repo
+- **Claude Code:** `~/.claude/skills/<name>/` (global) or
+  `./.claude/skills/<name>/` (project)
+- **Cursor / Codex / OpenCode / GitHub Copilot** (and most other agents):
+  `./.agents/skills/<name>/` (project) — the global path varies per agent
+
+The examples below use Claude Code's path (`~/.claude/skills/`); substitute
+your agent's path from the table above.
 
 ### Option 1 — clone and copy
 
@@ -99,22 +136,25 @@ ln -s ../../vendor/mimas/skills/setup-mimas-template \
 Swap `setup-mimas-template` for any other skill name to install a different
 one.
 
-> **Note:** Adding a skill to an existing `.claude/skills/` directory is
-> picked up mid-session. Creating the `.claude/skills/` directory for the
-> first time usually needs a Claude Code restart.
+> **Note:** Adding a skill to an existing skills directory is picked up
+> mid-session. Creating the directory for the first time usually needs an
+> agent restart.
 
 ### Available skills
 
 | Skill | What it does |
 | --- | --- |
-| `setup-mimas-template` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`, starter skills) tailored to the current repo. |
+| `setup-mimas-template` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Extracts a DDD-style glossary from the current conversation and writes it to `UBIQUITOUS_LANGUAGE.md`. |
 | `write-a-prd-irecommend` | Builds a PRD through interview + codebase exploration and submits it as an Azure DevOps User Story. |
-| `write-a-skill` | Guides you through authoring a new Claude Code skill with proper structure and progressive disclosure. |
+| `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
 
 ## Requirements
 
-- [Claude Code](https://claude.com/claude-code)
+- A coding agent that supports the open skills format — Claude Code, Cursor,
+  Codex, OpenCode, GitHub Copilot, or any of the
+  [50+ others](https://github.com/vercel-labs/skills#supported-agents)
+  supported by `vercel-labs/skills`.
 - `npx` (ships with Node.js) — only needed for the quick-start install; the
   manual install options above require only `git`.
