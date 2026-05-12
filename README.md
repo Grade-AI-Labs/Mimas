@@ -84,6 +84,7 @@ skill name at the end of the `npx` command (and add `-a <agent>` / `-g` as
 needed):
 
 ```sh
+npx skills@latest add Grade-AI-Labs/Mimas@find-features
 npx skills@latest add Grade-AI-Labs/Mimas@grill-me
 npx skills@latest add Grade-AI-Labs/Mimas@ubiquitous-language
 npx skills@latest add Grade-AI-Labs/Mimas@write-a-prd-irecommend
@@ -145,6 +146,7 @@ one.
 | Skill | What it does |
 | --- | --- |
 | `setup-mimas-template` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
+| `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-mimas-template`. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Extracts a DDD-style glossary from the current conversation and writes it to `UBIQUITOUS_LANGUAGE.md`. |
 | `write-a-prd-irecommend` | Builds a PRD through interview + codebase exploration and submits it as an Azure DevOps User Story. |
