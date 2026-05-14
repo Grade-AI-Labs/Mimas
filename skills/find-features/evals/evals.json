@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I just ran /setup-mimas-template on this repo and the docs/features folder is empty. Can you find the most important features and write up docs for them?",
+      "prompt": "I just ran /setup-agentic-repository on this repo and the docs/features folder is empty. Can you find the most important features and write up docs for them?",
       "expected_output": "Skill verifies prerequisites, asks how many/which features (with Top 5 / All / Number / Names options), scans the codebase, creates docs/features/<slug>.md files from the template for the chosen features, and appends entries to docs/FEATURES.md (alphabetical). Honestly leaves TODO markers where it cannot derive content from the code.",
       "files": []
     },

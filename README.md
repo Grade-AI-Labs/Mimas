@@ -7,15 +7,15 @@ agent supported by [`vercel-labs/skills`](https://github.com/vercel-labs/skills)
 
 ## Quick start
 
-Install the `setup-mimas-template` skill. The CLI auto-detects which agents
+Install the `setup-agentic-repository` skill. The CLI auto-detects which agents
 you have installed and asks where to put the skill:
 
 ```sh
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository
 ```
 
 Then, from inside the repository you want to onboard, launch your agent and
-invoke the skill (`/setup-mimas-template` in Claude Code; check your agent's
+invoke the skill (`/setup-agentic-repository` in Claude Code; check your agent's
 docs for its skill-invocation syntax).
 
 ## Install for a specific agent
@@ -26,19 +26,19 @@ project. Examples for the most common agents:
 
 ```sh
 # Claude Code              — installs to .claude/skills/ (or ~/.claude/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a claude-code
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository -a claude-code
 
 # Cursor                   — installs to .agents/skills/ (or ~/.cursor/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a cursor
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository -a cursor
 
 # Codex                    — installs to .agents/skills/ (or ~/.codex/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a codex
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository -a codex
 
 # OpenCode                 — installs to .agents/skills/ (or ~/.config/opencode/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a opencode
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository -a opencode
 
 # GitHub Copilot           — installs to .agents/skills/ (or ~/.copilot/skills/ with -g)
-npx skills@latest add Grade-AI-Labs/Mimas@setup-mimas-template -a github-copilot
+npx skills@latest add Grade-AI-Labs/Mimas@setup-agentic-repository -a github-copilot
 ```
 
 You can target multiple agents in one call with repeated `-a` flags
@@ -46,7 +46,7 @@ You can target multiple agents in one call with repeated `-a` flags
 scopes, and CLI flags, see the
 [vercel-labs/skills documentation](https://github.com/vercel-labs/skills#supported-agents).
 
-## What `/setup-mimas-template` does
+## What `/setup-agentic-repository` does
 
 The skill scaffolds a complete, project-specific agent instruction tree — not
 a generic template dump. Every file is tailored to the repo's actual tech
@@ -112,7 +112,7 @@ your agent's path from the table above.
 
 ```sh
 git clone --depth=1 https://github.com/Grade-AI-Labs/Mimas.git /tmp/mimas
-cp -r /tmp/mimas/skills/setup-mimas-template ~/.claude/skills/
+cp -r /tmp/mimas/skills/setup-agentic-repository ~/.claude/skills/
 ```
 
 ### Option 2 — sparse checkout (grab one skill)
@@ -121,19 +121,19 @@ cp -r /tmp/mimas/skills/setup-mimas-template ~/.claude/skills/
 git clone --depth=1 --filter=blob:none --sparse \
   https://github.com/Grade-AI-Labs/Mimas.git
 cd Mimas
-git sparse-checkout set skills/setup-mimas-template
-cp -r skills/setup-mimas-template ~/.claude/skills/
+git sparse-checkout set skills/setup-agentic-repository
+cp -r skills/setup-agentic-repository ~/.claude/skills/
 ```
 
 ### Option 3 — git submodule (track upstream updates)
 
 ```sh
 git submodule add https://github.com/Grade-AI-Labs/Mimas.git vendor/mimas
-ln -s ../../vendor/mimas/skills/setup-mimas-template \
-  ./.claude/skills/setup-mimas-template
+ln -s ../../vendor/mimas/skills/setup-agentic-repository \
+  ./.claude/skills/setup-agentic-repository
 ```
 
-Swap `setup-mimas-template` for any other skill name to install a different
+Swap `setup-agentic-repository` for any other skill name to install a different
 one.
 
 > **Note:** Adding a skill to an existing skills directory is picked up
@@ -144,8 +144,8 @@ one.
 
 | Skill | What it does |
 | --- | --- |
-| `setup-mimas-template` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
-| `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-mimas-template`. |
+| `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
+| `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Extracts a DDD-style glossary from the current conversation and writes it to `UBIQUITOUS_LANGUAGE.md`. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |

@@ -6,7 +6,7 @@ Durable rules for AI agents working on this project. Read this file at session s
 
 **At session start:** scan the rules below. If any match the work you're about to do, apply them.
 
-**During the session:** if the user corrects you, reverts your edit, or re-prompts with the same instruction — that is a signal to record a lesson before closing the task. See the trigger list in `docs/AGENT_WORKFLOW.md`.
+**During the session:** if the user corrects you, reverts your edit, or re-prompts with the same instruction — that is a signal to record a lesson before closing the task. See the trigger list in `{{DOCS_DIR}}/AGENT_WORKFLOW.md`.
 
 **Format of a lesson:** every entry uses the four-slot template below. Brevity matters — if you can't state the rule in one sentence, the lesson isn't sharp enough yet.
 

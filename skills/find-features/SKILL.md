@@ -1,6 +1,6 @@
 ---
 name: find-features
-description: Discover feature areas in the current repository that are not yet documented under `docs/features/`, then create populated feature docs from the canonical template. Use whenever the user wants to find undocumented features, fill out `docs/features/`, catch up on missing feature documentation, document feature X/Y/Z, or mentions "find features". This is the natural follow-up to `setup-mimas-template`, which scaffolds the empty `docs/features/` tree this skill populates.
+description: Discover feature areas in the current repository that are not yet documented under `docs/features/`, then create populated feature docs from the canonical template. Use whenever the user wants to find undocumented features, fill out `docs/features/`, catch up on missing feature documentation, document feature X/Y/Z, or mentions "find features". This is the natural follow-up to `setup-agentic-repository`, which scaffolds the empty `docs/features/` tree this skill populates.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
@@ -10,7 +10,7 @@ metadata:
 
 Discover feature areas in this repository that are missing from `docs/features/`, then create a populated markdown file for each one — following the contract in `docs/AGENTS_FEATURES.md` and the template at `docs/features/feature-template.md`.
 
-The Mimas template (`setup-mimas-template`) scaffolds an empty `docs/features/` tree. This skill is the next step — it fills it in.
+The Mimas template (`setup-agentic-repository`) scaffolds an empty `docs/features/` tree. This skill is the next step — it fills it in.
 
 ---
 
@@ -22,7 +22,7 @@ Confirm the repo has been initialized with the Mimas template. Check for:
 - `docs/features/feature-template.md` — the canonical template
 - `docs/FEATURES.md` — the feature index
 
-If any of those are missing, tell the user this skill is designed to run after `setup-mimas-template` and stop. Don't try to scaffold them yourself — that is the other skill's job.
+If any of those are missing, tell the user this skill is designed to run after `setup-agentic-repository` and stop. Don't try to scaffold them yourself — that is the other skill's job.
 
 Read `docs/AGENTS_FEATURES.md` and the root `AGENTS.md` (plus any subdomain `CONTEXT.md` files) so you know:
 

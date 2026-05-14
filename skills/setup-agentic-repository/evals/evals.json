@@ -1,5 +1,5 @@
 {
-  "skill_name": "setup-mimas-template",
+  "skill_name": "setup-agentic-repository",
   "evals": [
     {
       "id": 0,
@@ -19,8 +19,33 @@
         },
         {
           "id": "fastapi-all-files-exist",
-          "description": "All 7 required instruction files are created",
-          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/CONTEXT.md"
+          "description": "All required instruction files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/AGENTS_CONTEXT.md, docs/AGENTS_ADRS.md, docs/FEATURES.md, docs/features/feature-template.md, docs/adr/0001-record-architectural-decisions.md, src/CONTEXT.md"
+        },
+        {
+          "id": "fastapi-context-consumer-exists",
+          "description": "docs/AGENTS_CONTEXT.md is scaffolded and references CONTEXT.md upkeep triggers",
+          "check": "docs/AGENTS_CONTEXT.md exists and contains both 'Vocabulary' and 'Triggers' (case-insensitive)"
+        },
+        {
+          "id": "fastapi-adr-consumer-exists",
+          "description": "docs/AGENTS_ADRS.md is scaffolded and references the 3-criteria gate",
+          "check": "docs/AGENTS_ADRS.md exists and contains 'Hard to reverse', 'Surprising without context', and 'trade-offs'"
+        },
+        {
+          "id": "fastapi-adr-seed-exists",
+          "description": "docs/adr/0001-record-architectural-decisions.md is scaffolded as the seeded meta-ADR",
+          "check": "docs/adr/0001-record-architectural-decisions.md exists and contains 'ADR-0001' and 'Nygard'"
+        },
+        {
+          "id": "fastapi-subdomain-context-domain-bearing",
+          "description": "src/CONTEXT.md contains a Vocabulary section (domain-bearing, not procedural)",
+          "check": "src/CONTEXT.md contains a '## Vocabulary' heading and does NOT contain 'You MUST follow' or 'Focus here on' (those were the old procedural template)"
+        },
+        {
+          "id": "fastapi-workflow-has-context-adr-triggers",
+          "description": "docs/AGENT_WORKFLOW.md contains both CONTEXT.md upkeep and ADR upkeep sections",
+          "check": "docs/AGENT_WORKFLOW.md contains both 'CONTEXT.md upkeep' and 'ADR upkeep' as section headings"
         },
         {
           "id": "fastapi-stack-specificity",
@@ -87,8 +112,33 @@
         },
         {
           "id": "nextjs-all-files-exist",
-          "description": "All 7 required instruction files are created",
-          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/CONTEXT.md"
+          "description": "All required instruction files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/AGENTS_CONTEXT.md, docs/AGENTS_ADRS.md, docs/FEATURES.md, docs/features/feature-template.md, docs/adr/0001-record-architectural-decisions.md, src/CONTEXT.md"
+        },
+        {
+          "id": "nextjs-context-consumer-exists",
+          "description": "docs/AGENTS_CONTEXT.md is scaffolded and references CONTEXT.md upkeep triggers",
+          "check": "docs/AGENTS_CONTEXT.md exists and contains both 'Vocabulary' and 'Triggers' (case-insensitive)"
+        },
+        {
+          "id": "nextjs-adr-consumer-exists",
+          "description": "docs/AGENTS_ADRS.md is scaffolded and references the 3-criteria gate",
+          "check": "docs/AGENTS_ADRS.md exists and contains 'Hard to reverse', 'Surprising without context', and 'trade-offs'"
+        },
+        {
+          "id": "nextjs-adr-seed-exists",
+          "description": "docs/adr/0001-record-architectural-decisions.md is scaffolded as the seeded meta-ADR",
+          "check": "docs/adr/0001-record-architectural-decisions.md exists and contains 'ADR-0001' and 'Nygard'"
+        },
+        {
+          "id": "nextjs-subdomain-context-domain-bearing",
+          "description": "src/CONTEXT.md contains a Vocabulary section (domain-bearing, not procedural)",
+          "check": "src/CONTEXT.md contains a '## Vocabulary' heading and does NOT contain 'You MUST follow' or 'Focus here on'"
+        },
+        {
+          "id": "nextjs-workflow-has-context-adr-triggers",
+          "description": "docs/AGENT_WORKFLOW.md contains both CONTEXT.md upkeep and ADR upkeep sections",
+          "check": "docs/AGENT_WORKFLOW.md contains both 'CONTEXT.md upkeep' and 'ADR upkeep' as section headings"
         },
         {
           "id": "nextjs-stack-specificity",
@@ -145,8 +195,33 @@
         },
         {
           "id": "go-all-root-files-exist",
-          "description": "All 6 required root/docs files are created",
-          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md"
+          "description": "All required root/docs files are created",
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/AGENTS_CONTEXT.md, docs/AGENTS_ADRS.md, docs/FEATURES.md, docs/features/feature-template.md, docs/adr/0001-record-architectural-decisions.md"
+        },
+        {
+          "id": "go-context-consumer-exists",
+          "description": "docs/AGENTS_CONTEXT.md is scaffolded and references CONTEXT.md upkeep triggers",
+          "check": "docs/AGENTS_CONTEXT.md exists and contains both 'Vocabulary' and 'Triggers' (case-insensitive)"
+        },
+        {
+          "id": "go-adr-consumer-exists",
+          "description": "docs/AGENTS_ADRS.md is scaffolded and references the 3-criteria gate",
+          "check": "docs/AGENTS_ADRS.md exists and contains 'Hard to reverse', 'Surprising without context', and 'trade-offs'"
+        },
+        {
+          "id": "go-adr-seed-exists",
+          "description": "docs/adr/0001-record-architectural-decisions.md is scaffolded as the seeded meta-ADR",
+          "check": "docs/adr/0001-record-architectural-decisions.md exists and contains 'ADR-0001' and 'Nygard'"
+        },
+        {
+          "id": "go-subdomain-context-domain-bearing",
+          "description": "internal/CONTEXT.md or cmd/CONTEXT.md contains a Vocabulary section (domain-bearing)",
+          "check": "At least one of internal/CONTEXT.md or cmd/CONTEXT.md contains a '## Vocabulary' heading and does NOT contain 'You MUST follow' or 'Focus here on'"
+        },
+        {
+          "id": "go-workflow-has-context-adr-triggers",
+          "description": "docs/AGENT_WORKFLOW.md contains both CONTEXT.md upkeep and ADR upkeep sections",
+          "check": "docs/AGENT_WORKFLOW.md contains both 'CONTEXT.md upkeep' and 'ADR upkeep' as section headings"
         },
         {
           "id": "go-subdomain-agents",

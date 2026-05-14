@@ -1,12 +1,12 @@
 ---
-name: setup-mimas-template
-description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain CONTEXT.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md / CONTEXT.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
+name: setup-agentic-repository
+description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain CONTEXT.md files, and the full agents-docs/ hierarchy (a sibling of any existing docs/, kept separate so human-maintained project docs stay untouched). Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md / CONTEXT.md files, create engineering docs for agents, or mentions "set up agentic repository" or "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
 ---
 
-# setup-mimas-template
+# setup-agentic-repository
 
 You are scaffolding a set of instruction files that AI agents read at the start of every session to understand how to work on a project. The output is a complete, project-specific instruction tree — not a generic template dump.
 
@@ -93,7 +93,7 @@ Here's what I found:
   Subdomains:   [list of discovered subdomains]
 ```
 
-Then use `AskUserQuestion` to confirm and ask about work tracking in a single call. If the tracker was confidently detected, skip the tracker question. You can ask up to 4 questions per call — batch what makes sense.
+Then use `AskUserQuestion` to confirm findings and ask about work tracking in a single call. If the tracker was confidently detected, skip the tracker question. You can ask up to 4 questions per call — batch what makes sense.
 
 ```
 questions:
@@ -149,17 +149,20 @@ Run the scaffolding script to create all deterministic files — directories, un
 bash scripts/scaffold.sh --target <repo-root> --platform <platform>
 ```
 
-The `--platform` flag determines which PR/MR workflow section is injected into `docs/AGENT_WORKFLOW.md`.
+The `--platform` flag determines which PR/MR workflow section is injected into `agents-docs/AGENT_WORKFLOW.md`. The scaffold lands in `agents-docs/` by default — a sibling of any existing `docs/`, so human-maintained project docs stay untouched. An optional `--docs-dir <dir>` flag is available if you have a strong reason to put the agent tree elsewhere (e.g. `docs/agents`), but the default is the right answer almost always.
 
 The script creates:
 
 | File | How |
 |---|---|
 | `CLAUDE.md` | Created (or appended if exists) — points Claude to AGENTS.md |
-| `docs/AGENT_WORKFLOW.md` | Composed from base template + platform PR/MR section |
-| `docs/AGENTS_FEATURES.md` | Copied verbatim — universal feature doc contract |
-| `docs/features/feature-template.md` | Copied verbatim — template for future feature docs |
-| `docs/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example, so agents have a populated file to append to (empty files get ignored) |
+| `agents-docs/AGENT_WORKFLOW.md` | Composed from base template + platform PR/MR section |
+| `agents-docs/AGENTS_FEATURES.md` | Copied verbatim — universal feature doc contract |
+| `agents-docs/AGENTS_CONTEXT.md` | Copied verbatim — CONTEXT.md consumer/producer contract |
+| `agents-docs/AGENTS_ADRS.md` | Copied verbatim — ADR consumer/producer contract |
+| `agents-docs/features/feature-template.md` | Copied verbatim — template for future feature docs |
+| `agents-docs/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example |
+| `agents-docs/adr/0001-record-architectural-decisions.md` | Copied verbatim — seeded meta-ADR demonstrating the Nygard short form |
 
 The script is idempotent — re-running skips existing files.
 
@@ -176,16 +179,17 @@ These files require LLM reasoning and cannot be scripted. Read the reference fil
 - `references/tech-adapters.md` — tech-stack-specific sections
 - `references/platform-adapters.md` — CI/CD and issue linking sections for ENGINEERING.md
 
-Replace every `{{placeholder}}` with what you actually discovered. Every generated file should read as if a senior engineer on this project wrote it.
+Replace every `{{placeholder}}` with what you actually discovered. The references use `{{DOCS_DIR}}` wherever the agent docs root path appears — substitute `agents-docs` for every occurrence as you write each file (or whatever value was passed to `--docs-dir` if it was overridden). Don't leave the placeholder in final output. Every generated file should read as if a senior engineer on this project wrote it.
 
 ### Files to generate
 
 | File | Purpose |
 |---|---|
 | `/AGENTS.md` | Entry point — links to docs, critical rules, completion checklist |
-| `docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
-| `docs/FEATURES.md` | Feature area index (start minimal or empty) |
-| `<subdomain>/CONTEXT.md` | One per discovered subdomain — scope and focus for that area |
+| `agents-docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
+| `agents-docs/FEATURES.md` | Feature area index (start minimal or empty) |
+| `<subdomain>/CONTEXT.md` | One per discovered subdomain — domain-bearing: vocabulary, relationships, IO, invariants |
+| `agents-docs/CONTEXT-MAP.md` | **Only when ≥2 subdomains** — index of bounded contexts and cross-context relationships |
 
 ### Subdomain CONTEXT.md rules
 
@@ -198,32 +202,47 @@ Create one `CONTEXT.md` at the **top level** of each subdomain — not deeper:
 
 Each subdomain CONTEXT.md covers everything within its subtree. Don't create them for utility folders, config dirs, or generated output.
 
+**Content is domain-bearing, not procedural.** The file template (in `references/file-templates.md`) has these sections: *Vocabulary*, *Relationships*, *Boundaries / IO*, *Invariants*, *Flagged ambiguities*. Scaffold the skeleton eagerly so agents know where to write, but only populate sections from what you actually discovered in Phase 1:
+
+- **Vocabulary**: leave the table with a placeholder row unless Phase 1 surfaced clear domain terms (route names, table names, distinctive type names). Don't invent entries — the producer triggers in `agents-docs/AGENT_WORKFLOW.md` fill it in lazily.
+- **Boundaries / IO**: populate from observed entry points (HTTP routes, event handlers, exported modules). If unclear, leave a placeholder.
+- **Invariants**: usually empty at scaffold time — these emerge during use.
+
+Agent-procedural rules (TDD, typecheck, focus areas) do NOT belong in `CONTEXT.md`. Those live in `/AGENTS.md` and `agents-docs/ENGINEERING.md`.
+
+### CONTEXT-MAP.md rules
+
+Generate `agents-docs/CONTEXT-MAP.md` **only when ≥2 subdomains** have their own `CONTEXT.md`. Single-context repos skip this file entirely.
+
+Populate from Phase 1 discoveries — one row per subdomain with name, one-line purpose, observed public surface (HTTP routes / events emitted / exported types), and the path to its `CONTEXT.md`. The *Relationships* section captures cross-context coupling observed during exploration (shared types, event flows, dependency direction). If relationships aren't obvious from the code, leave the section with a placeholder bullet — they get filled in lazily.
+
 ### Feature index
 
-`docs/FEATURES.md` should start minimal. Only add entries if you found feature domains with **meaningful implementation** — not just a route stub or empty handler. Even when you add entries, only add index entries — do not create the `docs/features/<area>.md` files themselves.
+`agents-docs/FEATURES.md` should start minimal. Only add entries if you found feature domains with **meaningful implementation** — not just a route stub or empty handler. Even when you add entries, only add index entries — do not create the `agents-docs/features/<area>.md` files themselves.
 
 ### Platform-specific content in AGENTS.md and ENGINEERING.md
 
 Weave platform content from `references/platform-adapters.md` into the files you generate:
 
 - **`AGENTS.md` completion checklist**: add platform-specific items (PR opened, CI passing, issues linked)
-- **`docs/ENGINEERING.md`**: add CI/CD section and issue linking conventions
+- **`agents-docs/ENGINEERING.md`**: add CI/CD section and issue linking conventions
 
 If no platform was detected and the user didn't specify one, omit platform-specific sections entirely — don't guess.
 
-Note: `docs/AGENT_WORKFLOW.md` is already handled by the script with the correct platform section.
+Note: `agents-docs/AGENT_WORKFLOW.md` is already handled by the script with the correct platform section.
 
 ### Where Phase-1 signals land
 
 The discovery phase captures a few signals beyond stack and platform — make sure each one shows up in the right file:
 
-- **Formatter and linter** (Subagent A): list both as distinct commands in the `docs/ENGINEERING.md` commands section. If the project runs them as one script, say so; otherwise document each. Mention the formatter in the completion checklist alongside typecheck/tests.
-- **Pre-commit hooks** (Subagent C): if hooks were found, document the framework and install step (`pre-commit install`, `lefthook install`, or "Husky installs automatically on `pnpm install`") in `docs/ENGINEERING.md` under setup, and add a short note in `AGENTS.md` so agents know commits will be gated. Name what each hook runs so agents understand why a commit was rejected.
-- **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `docs/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent or too few to draw a pattern from, omit this section rather than imposing Conventional Commits by default.
+- **Formatter and linter** (Subagent A): list both as distinct commands in the `agents-docs/ENGINEERING.md` commands section. If the project runs them as one script, say so; otherwise document each. Mention the formatter in the completion checklist alongside typecheck/tests.
+- **Pre-commit hooks** (Subagent C): if hooks were found, document the framework and install step (`pre-commit install`, `lefthook install`, or "Husky installs automatically on `pnpm install`") in `agents-docs/ENGINEERING.md` under setup, and add a short note in `AGENTS.md` so agents know commits will be gated. Name what each hook runs so agents understand why a commit was rejected.
+- **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `agents-docs/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent or too few to draw a pattern from, omit this section rather than imposing Conventional Commits by default.
+- **Subdomains** (Subagent B): each detected subdomain gets a domain-bearing `<subdomain>/CONTEXT.md` (skeleton scaffolded, content populated from observed entry points and naming). If ≥2 subdomains exist, also generate `agents-docs/CONTEXT-MAP.md` with one row per subdomain. Single-subdomain repos skip the map.
 
-### Tailor the seeded `docs/LESSONS.md` example
+### Tailor the seeded `agents-docs/LESSONS.md` example
 
-The scaffold script copies `docs/LESSONS.md` verbatim, and the seeded example uses `npx tsc --noEmit` as a placeholder typecheck command. After the script runs, edit the example so it matches this project's actual typecheck command:
+The scaffold script copies `agents-docs/LESSONS.md` verbatim, and the seeded example uses `npx tsc --noEmit` as a placeholder typecheck command. After the script runs, edit the example so it matches this project's actual typecheck command:
 
 - **TypeScript** → leave `npx tsc --noEmit` (or substitute the exact script from `package.json`, e.g. `pnpm typecheck`)
 - **Python (mypy)** → swap to `mypy .` (or the project's exact invocation)
@@ -266,14 +285,14 @@ Tell the user:
 4. Any tech stack details you were uncertain about — be honest about gaps
 5. What they should review and customize before committing
 
-Then recommend the follow-up workflow that populates the empty `docs/features/` tree this scaffold creates:
+Then recommend the follow-up workflow that populates the empty `agents-docs/features/` tree this scaffold creates:
 
 > **Recommended next step: populate your feature docs.**
 >
-> The scaffold leaves `docs/features/` empty by design. The fastest way to fill it is two skills from the Mimas repo, run back-to-back in fresh sessions:
+> The scaffold leaves `agents-docs/features/` empty by design. The fastest way to fill it is two skills from the Mimas repo, run back-to-back in fresh sessions:
 >
-> 1. **`find-features`** — scans the codebase, identifies meaningful feature areas, and adds them to `docs/FEATURES.md`.
-> 2. **`document-feature`** — guided walkthrough that turns each identified area into a populated `docs/features/<area>.md` from the template.
+> 1. **`find-features`** — scans the codebase, identifies meaningful feature areas, and adds them to `agents-docs/FEATURES.md`.
+> 2. **`document-feature`** — guided walkthrough that turns each identified area into a populated `agents-docs/features/<area>.md` from the template.
 >
 > Both skills (and others worth browsing) live at [https://github.com/Grade-AI-Labs/Mimas](https://github.com/Grade-AI-Labs/Mimas). Install them, run `find-features` first, then loop `document-feature` over what it found.
 >
