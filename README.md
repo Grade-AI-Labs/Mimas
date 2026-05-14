@@ -70,7 +70,7 @@ When you run it, the agent will:
 6. **Add a `CLAUDE.md` bridge file** at the repo root pointing Claude at
    `AGENTS.md`. If a `CLAUDE.md` already exists, the pointer is appended
    rather than overwriting your content.
-7. **Point you at follow-up skills** (`find-features`, `document-feature`)
+7. **Point you at follow-up skills** (`find-features`, `document-features`)
    for populating `docs/features/`.
 
 The output is a set of instruction files that future agent sessions read
@@ -85,6 +85,7 @@ needed):
 
 ```sh
 npx skills@latest add Grade-AI-Labs/Mimas@find-features
+npx skills@latest add Grade-AI-Labs/Mimas@document-features
 npx skills@latest add Grade-AI-Labs/Mimas@grill-me
 npx skills@latest add Grade-AI-Labs/Mimas@ubiquitous-language
 npx skills@latest add Grade-AI-Labs/Mimas@write-a-skill
@@ -146,6 +147,7 @@ one.
 | --- | --- |
 | `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
 | `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
+| `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Extracts a DDD-style glossary from the current conversation and writes it to `UBIQUITOUS_LANGUAGE.md`. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
