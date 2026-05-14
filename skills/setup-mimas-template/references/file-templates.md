@@ -20,6 +20,12 @@ Read these files at the start of every session before doing any work:
 3. `docs/AGENTS_FEATURES.md` — when and how to update feature docs
 4. `docs/FEATURES.md` — feature index
 5. `docs/ENGINEERING.md` — engineering standards
+[If multi-context (≥2 subdomains): "6. `docs/CONTEXT-MAP.md` — index of bounded contexts in this repo"]
+
+Reference on-demand (when the workflow triggers them — see `docs/AGENT_WORKFLOW.md` §§ 4–5):
+
+- `docs/AGENTS_CONTEXT.md` — contract for updating `CONTEXT.md` / `CONTEXT-MAP.md`
+- `docs/AGENTS_ADRS.md` — contract for writing architecture decision records
 
 [If the repo has subdomains, add a line per subdomain. Example:
 "When working in the backend source, also read `src/CONTEXT.md`."
@@ -85,11 +91,15 @@ After any change that affects API contracts, schemas, invariants, workflows, or 
 - **Agent lessons (durable cross-session rules):** `docs/LESSONS.md`
 - **Engineering standards:** `docs/ENGINEERING.md`
 - **Feature documentation contract:** `docs/AGENTS_FEATURES.md`
+- **CONTEXT documentation contract:** `docs/AGENTS_CONTEXT.md`
+- **ADR contract:** `docs/AGENTS_ADRS.md`
 - **Feature index:** `docs/FEATURES.md`
 - **Feature docs:** `docs/features/`
+- **Architecture decisions:** `docs/adr/`
+[If multi-context (≥2 subdomains): "- **Context map:** `docs/CONTEXT-MAP.md`"]
 [Add one line per subdomain. Example:
-"- **Backend source instructions:** `src/CONTEXT.md`"
-"- **Frontend instructions:** `frontend/CONTEXT.md`"]
+"- **Backend source domain:** `src/CONTEXT.md`"
+"- **Frontend domain:** `frontend/CONTEXT.md`"]
 
 Keep this file minimal. Do not duplicate detailed rules here.
 
@@ -104,6 +114,8 @@ Before marking work complete:
 - [ ] Naming conventions followed
 - [ ] Errors handled
 - [ ] Feature docs updated if contract/schema/invariant changed (see docs/AGENTS_FEATURES.md)
+- [ ] `CONTEXT.md` updated if a domain term was resolved or introduced (see docs/AGENTS_CONTEXT.md)
+- [ ] ADR written if a hard-to-reverse decision was made (see docs/AGENTS_ADRS.md)
 - [ ] Lesson recorded in `docs/LESSONS.md` if this session produced a correction, revert, or hidden constraint (see triggers in `docs/AGENT_WORKFLOW.md`)
 [If git platform detected: insert completion checklist additions from platform-adapters.md.
 Example for GitHub:
@@ -227,6 +239,8 @@ Before marking work complete:
 * [ ] Errors handled
 * [ ] Security considered
 * [ ] Feature docs updated if contract/schema/invariant changed (see docs/AGENTS_FEATURES.md)
+* [ ] `CONTEXT.md` updated if a domain term was resolved or introduced (see docs/AGENTS_CONTEXT.md)
+* [ ] ADR written if a hard-to-reverse decision was made (see docs/AGENTS_ADRS.md)
 * [ ] Lesson recorded in `docs/LESSONS.md` if this session produced a correction, revert, or hidden constraint (see triggers in `docs/AGENT_WORKFLOW.md`)
 ```
 
@@ -275,27 +289,80 @@ _No feature areas documented yet. Add entries as you build out the system._
 
 ## `<subdomain>/CONTEXT.md`
 
-Create one per discovered subdomain. The purpose is to tell an agent entering this directory what it owns and what rules apply here.
+Create one per discovered subdomain. **Domain-bearing, not procedural** — captures the bounded-context vocabulary, relationships, IO, and invariants. Agent rules (TDD, typecheck, etc.) live in `/AGENTS.md`, not here. Implementation detail (file paths, request schemas) lives in `docs/features/`, not here.
+
+Scaffold the skeleton eagerly so agents know where to write. Leave Vocabulary / Invariants empty until real content arrives — they get filled in lazily via the triggers in `docs/AGENT_WORKFLOW.md`.
 
 ```markdown
-# [Subdomain Name] Instructions
+# [Subdomain Name]
 
-This directory contains the [describe what this subdomain is — e.g. "Fastify REST API",
-"React frontend application", "shared Go packages", "Python data pipeline"].
+[One or two sentences describing what this subdomain owns, in domain terms — not "this is the React frontend code". Example: "Owns recruitment-content generation: turning a recruiter brief into structured job posts, screening questions, and interview prompts."]
 
-You MUST follow:
-- Root TDD [and type checking if applicable] rules (see `/AGENTS.md`)
-- `docs/ENGINEERING.md` standards
+> **Format reference:**
+> - **Vocabulary** — bold term, one-sentence definition, aliases to avoid.
+> - **Relationships** — bullets with bold terms and cardinality.
+> - **Boundaries / IO** — what this subdomain exposes and consumes.
+> - **Invariants** — rules that always hold.
+> - **Flagged ambiguities** — terms in dispute with proposed resolutions.
+>
+> See `docs/AGENTS_CONTEXT.md` for the contract. Update in the same turn a trigger fires (see `docs/AGENT_WORKFLOW.md` § CONTEXT.md upkeep).
 
-Focus here on:
-[List 4-6 things an agent working in this subdomain should pay attention to.
-Be specific to what you actually found in this directory. Examples:
-- "API route definitions and request validation"
-- "Database query correctness and migration safety"
-- "React component contracts and prop types"
-- "Authentication middleware and token handling"
-- "AI prompt management and chain configuration"
-- "CLI argument parsing and error reporting"]
+## Vocabulary
 
-If a change introduces or modifies a feature area, follow `docs/AGENTS_FEATURES.md`.
+| Term | Definition | Aliases to avoid |
+|------|------------|------------------|
+| **[Term]** | [One-sentence definition.] | [Synonym1, Synonym2] |
+
+## Relationships
+
+- [Example: "A **Candidate** has zero or more **Applications**."]
+- [Example: "An **Application** belongs to exactly one **Role**."]
+
+## Boundaries / IO
+
+- **Exposes:** [public surface — REST endpoints, events emitted, shared types other subdomains consume]
+- **Consumes:** [what this subdomain reads from other subdomains — events subscribed, shared services, cross-context types]
+
+## Invariants
+
+- [Example: "An **Application** cannot exist without a **Candidate**."]
+
+## Flagged ambiguities
+
+- [Terms still in dispute. Resolve via the triggers in `docs/AGENT_WORKFLOW.md` and move resolutions into the Vocabulary table above.]
+
+---
+
+*Agent-procedural rules (TDD, typecheck, etc.) live in `/AGENTS.md`. Implementation detail belongs in `docs/features/`. This file is the bounded-context domain artefact.*
+```
+
+---
+
+## docs/CONTEXT-MAP.md
+
+Only generated when **≥2 subdomains** are detected. Single-context repos skip this file — the single `CONTEXT.md` is enough.
+
+```markdown
+# Context Map
+
+Bounded contexts in this system. Before working in a subdomain, read its `CONTEXT.md`. See `docs/AGENTS_CONTEXT.md` for the contract.
+
+## Contexts
+
+| Context | Purpose | Public surface | CONTEXT.md |
+|---------|---------|----------------|------------|
+| **[name]** | [one-line purpose] | [one-line: endpoints / events emitted / shared types] | `[path]/CONTEXT.md` |
+
+## Relationships
+
+[Document cross-context coupling — upstream/downstream, shared types, events. Examples:
+- "**Recruitment** is upstream of **Assessment** via the `candidate-created` event."
+- "**Offer** depends on **Recruitment** for the shared `Candidate` type."
+- "**Sourcing** and **Recruitment** are partners — they share the `Application` lifecycle bidirectionally."]
+
+## Rules for agents
+
+- Add a row when a new subdomain gains its own `CONTEXT.md`.
+- Update the public surface or relationships when they change.
+- Keep this file scannable — one row per context, terse purpose strings.
 ```

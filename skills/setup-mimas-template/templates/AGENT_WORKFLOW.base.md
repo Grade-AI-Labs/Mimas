@@ -43,21 +43,48 @@ If unsure whether it's worth recording: write it. Sharper is better than missing
 
 **Groom periodically.** When `docs/LESSONS.md` passes ~20 entries, propose consolidations to the user — merge duplicates, delete rules that no longer apply, shorten anything vague.
 
-### 4. Verification Before Done
+### 4. CONTEXT.md upkeep
+
+Read `CONTEXT.md` (or `docs/CONTEXT-MAP.md` → per-subdomain `CONTEXT.md`) when working in a subdomain. Use its vocabulary verbatim **where defined** in code, tests, issues, and commits. If a needed term isn't in the glossary, treat it as a trigger (see below) rather than silently inventing a synonym; the full contract lives in `docs/AGENTS_CONTEXT.md`.
+
+**Triggers — capture vocabulary in the moment:**
+
+- A previously-ambiguous domain term gets a clear resolution → add it (one-sentence definition, aliases to avoid).
+- User corrects your terminology → record the correct term; mark the wrong one as an alias to avoid.
+- A new feature introduces a concept absent from the glossary → add it before claiming the feature done.
+- You catch yourself inventing a synonym because the right term isn't there → flag the gap; don't silently coin a new term.
+
+**Write before reporting done.** Update the relevant `CONTEXT.md` in the same turn the trigger fires. Append-only — add new entries, don't reshuffle existing ones. The format is documented at the top of each `CONTEXT.md`. See `docs/AGENTS_CONTEXT.md` for the full contract.
+
+### 5. ADR upkeep
+
+Read `docs/adr/` when about to change anything that crosses an existing decision boundary. If your work would contradict an ADR, surface it explicitly — never silently override.
+
+**Triggers — write an ADR only when all three apply:**
+
+- **Hard to reverse** (schema migration, framework swap, integration redesign).
+- **Surprising without context** (future engineers will question the approach).
+- **Result of genuine trade-offs** (real alternatives existed and you chose deliberately).
+
+If all three apply: write the ADR in the same turn as the decision. Next number (4-digit zero-padded), kebab-case slug, Nygard short form — see `docs/adr/0001-record-architectural-decisions.md` for the canonical example and `docs/AGENTS_ADRS.md` for the contract. If any of the three is missing: don't write one.
+
+**Supersede, don't delete.** Overturned decisions get a new ADR; the old one stays with a `Superseded by ADR-NNNN` note.
+
+### 6. Verification Before Done
 
 - Never mark a task complete without proving it works
 - Diff behavior between main and your changes when relevant
 - Ask yourself: "Would a staff engineer approve this?"
 - Run tests, check logs, demonstrate correctness
 
-### 5. Demand Elegance (Balanced)
+### 7. Demand Elegance (Balanced)
 
 - For non-trivial changes: pause and ask "is there a more elegant way?"
 - If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
 - Skip this for simple, obvious fixes — don't over-engineer
 - Challenge your own work before presenting it
 
-### 6. Autonomous Bug Fixing
+### 8. Autonomous Bug Fixing
 
 - When given a bug report: just fix it. Don't ask for hand-holding
 - Point at logs, errors, failing tests — then resolve them

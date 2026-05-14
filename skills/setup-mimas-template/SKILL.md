@@ -158,8 +158,11 @@ The script creates:
 | `CLAUDE.md` | Created (or appended if exists) — points Claude to AGENTS.md |
 | `docs/AGENT_WORKFLOW.md` | Composed from base template + platform PR/MR section |
 | `docs/AGENTS_FEATURES.md` | Copied verbatim — universal feature doc contract |
+| `docs/AGENTS_CONTEXT.md` | Copied verbatim — CONTEXT.md consumer/producer contract |
+| `docs/AGENTS_ADRS.md` | Copied verbatim — ADR consumer/producer contract |
 | `docs/features/feature-template.md` | Copied verbatim — template for future feature docs |
-| `docs/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example, so agents have a populated file to append to (empty files get ignored) |
+| `docs/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example |
+| `docs/adr/0001-record-architectural-decisions.md` | Copied verbatim — seeded meta-ADR demonstrating the Nygard short form |
 
 The script is idempotent — re-running skips existing files.
 
@@ -185,7 +188,8 @@ Replace every `{{placeholder}}` with what you actually discovered. Every generat
 | `/AGENTS.md` | Entry point — links to docs, critical rules, completion checklist |
 | `docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
 | `docs/FEATURES.md` | Feature area index (start minimal or empty) |
-| `<subdomain>/CONTEXT.md` | One per discovered subdomain — scope and focus for that area |
+| `<subdomain>/CONTEXT.md` | One per discovered subdomain — domain-bearing: vocabulary, relationships, IO, invariants |
+| `docs/CONTEXT-MAP.md` | **Only when ≥2 subdomains** — index of bounded contexts and cross-context relationships |
 
 ### Subdomain CONTEXT.md rules
 
@@ -197,6 +201,20 @@ Create one `CONTEXT.md` at the **top level** of each subdomain — not deeper:
 - `frontend/` → `frontend/CONTEXT.md`
 
 Each subdomain CONTEXT.md covers everything within its subtree. Don't create them for utility folders, config dirs, or generated output.
+
+**Content is domain-bearing, not procedural.** The file template (in `references/file-templates.md`) has these sections: *Vocabulary*, *Relationships*, *Boundaries / IO*, *Invariants*, *Flagged ambiguities*. Scaffold the skeleton eagerly so agents know where to write, but only populate sections from what you actually discovered in Phase 1:
+
+- **Vocabulary**: leave the table with a placeholder row unless Phase 1 surfaced clear domain terms (route names, table names, distinctive type names). Don't invent entries — the producer triggers in `docs/AGENT_WORKFLOW.md` fill it in lazily.
+- **Boundaries / IO**: populate from observed entry points (HTTP routes, event handlers, exported modules). If unclear, leave a placeholder.
+- **Invariants**: usually empty at scaffold time — these emerge during use.
+
+Agent-procedural rules (TDD, typecheck, focus areas) do NOT belong in `CONTEXT.md`. Those live in `/AGENTS.md` and `docs/ENGINEERING.md`.
+
+### CONTEXT-MAP.md rules
+
+Generate `docs/CONTEXT-MAP.md` **only when ≥2 subdomains** have their own `CONTEXT.md`. Single-context repos skip this file entirely.
+
+Populate from Phase 1 discoveries — one row per subdomain with name, one-line purpose, observed public surface (HTTP routes / events emitted / exported types), and the path to its `CONTEXT.md`. The *Relationships* section captures cross-context coupling observed during exploration (shared types, event flows, dependency direction). If relationships aren't obvious from the code, leave the section with a placeholder bullet — they get filled in lazily.
 
 ### Feature index
 
@@ -220,6 +238,7 @@ The discovery phase captures a few signals beyond stack and platform — make su
 - **Formatter and linter** (Subagent A): list both as distinct commands in the `docs/ENGINEERING.md` commands section. If the project runs them as one script, say so; otherwise document each. Mention the formatter in the completion checklist alongside typecheck/tests.
 - **Pre-commit hooks** (Subagent C): if hooks were found, document the framework and install step (`pre-commit install`, `lefthook install`, or "Husky installs automatically on `pnpm install`") in `docs/ENGINEERING.md` under setup, and add a short note in `AGENTS.md` so agents know commits will be gated. Name what each hook runs so agents understand why a commit was rejected.
 - **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `docs/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent or too few to draw a pattern from, omit this section rather than imposing Conventional Commits by default.
+- **Subdomains** (Subagent B): each detected subdomain gets a domain-bearing `<subdomain>/CONTEXT.md` (skeleton scaffolded, content populated from observed entry points and naming). If ≥2 subdomains exist, also generate `docs/CONTEXT-MAP.md` with one row per subdomain. Single-subdomain repos skip the map.
 
 ### Tailor the seeded `docs/LESSONS.md` example
 

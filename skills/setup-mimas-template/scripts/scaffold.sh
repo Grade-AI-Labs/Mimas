@@ -133,6 +133,23 @@ STATUS=$(copy_if_missing "$TEMPLATES_DIR/LESSONS.md" "$TARGET/docs/LESSONS.md")
 add_file_entry "docs/LESSONS.md" "$STATUS"
 log "$STATUS: docs/LESSONS.md"
 
+# 4c. docs/AGENTS_CONTEXT.md — universal, verbatim — CONTEXT.md consumer/producer contract
+STATUS=$(copy_if_missing "$TEMPLATES_DIR/AGENTS_CONTEXT.md" "$TARGET/docs/AGENTS_CONTEXT.md")
+add_file_entry "docs/AGENTS_CONTEXT.md" "$STATUS"
+log "$STATUS: docs/AGENTS_CONTEXT.md"
+
+# 4d. docs/AGENTS_ADRS.md — universal, verbatim — ADR consumer/producer contract
+STATUS=$(copy_if_missing "$TEMPLATES_DIR/AGENTS_ADRS.md" "$TARGET/docs/AGENTS_ADRS.md")
+add_file_entry "docs/AGENTS_ADRS.md" "$STATUS"
+log "$STATUS: docs/AGENTS_ADRS.md"
+
+# 4e. docs/adr/0001-record-architectural-decisions.md — seeded meta-ADR
+mkdir -p "$TARGET/docs/adr"
+log "dir: docs/adr/"
+STATUS=$(copy_if_missing "$TEMPLATES_DIR/ADR_0001.md" "$TARGET/docs/adr/0001-record-architectural-decisions.md")
+add_file_entry "docs/adr/0001-record-architectural-decisions.md" "$STATUS"
+log "$STATUS: docs/adr/0001-record-architectural-decisions.md"
+
 # 5. docs/AGENT_WORKFLOW.md — composed from base + platform section
 if [[ -f "$TARGET/docs/AGENT_WORKFLOW.md" ]]; then
   add_file_entry "docs/AGENT_WORKFLOW.md" "skipped"
@@ -163,7 +180,7 @@ CREATED_FILES=$(echo "[$FILES_JSON]" | grep -o '"created"' | wc -l)
 # Summary
 log ""
 log "Scaffolded $CREATED_FILES files."
-log "LLM still needs to generate: AGENTS.md, ENGINEERING.md, FEATURES.md, subdomain CONTEXT.md files."
+log "LLM still needs to generate: AGENTS.md, ENGINEERING.md, FEATURES.md, subdomain CONTEXT.md files (and docs/CONTEXT-MAP.md if multi-context)."
 
 # JSON report to stdout
 cat <<REPORT
