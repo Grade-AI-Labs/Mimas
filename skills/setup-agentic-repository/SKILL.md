@@ -1,12 +1,12 @@
 ---
-name: setup-mimas-template
-description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain CONTEXT.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md / CONTEXT.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
+name: setup-agentic-repository
+description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain CONTEXT.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md / CONTEXT.md files, create engineering docs for agents, or mentions "set up agentic repository" or "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
 ---
 
-# setup-mimas-template
+# setup-agentic-repository
 
 You are scaffolding a set of instruction files that AI agents read at the start of every session to understand how to work on a project. The output is a complete, project-specific instruction tree — not a generic template dump.
 
