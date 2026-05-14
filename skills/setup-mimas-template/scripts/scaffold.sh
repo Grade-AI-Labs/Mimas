@@ -4,7 +4,7 @@
 # Creates directories, copies universal template files, and composes
 # AGENT_WORKFLOW.md with platform-specific sections. The LLM only needs
 # to generate project-specific files (AGENTS.md, ENGINEERING.md,
-# FEATURES.md, subdomain AGENTS.md).
+# FEATURES.md, subdomain CONTEXT.md).
 #
 # Usage:
 #   bash scripts/scaffold.sh --target /path/to/repo --platform github
@@ -163,7 +163,7 @@ CREATED_FILES=$(echo "[$FILES_JSON]" | grep -o '"created"' | wc -l)
 # Summary
 log ""
 log "Scaffolded $CREATED_FILES files."
-log "LLM still needs to generate: AGENTS.md, ENGINEERING.md, FEATURES.md, subdomain AGENTS.md files."
+log "LLM still needs to generate: AGENTS.md, ENGINEERING.md, FEATURES.md, subdomain CONTEXT.md files."
 
 # JSON report to stdout
 cat <<REPORT

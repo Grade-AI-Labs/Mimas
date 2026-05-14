@@ -62,7 +62,7 @@ When you run it, the agent will:
    platform, and subdomain detection before any files are written.
 3. **Offer to weave in org-specific guidelines** (coding standards, naming
    conventions, etc.) if you have them.
-4. **Generate an `AGENTS.md` at the repo root**, plus subdomain `AGENTS.md`
+4. **Generate an `AGENTS.md` at the repo root**, plus subdomain `CONTEXT.md`
    files for each meaningful module.
 5. **Create a `docs/` hierarchy** with engineering standards, the agent
    workflow, a feature-doc contract, and a seeded `LESSONS.md` for durable

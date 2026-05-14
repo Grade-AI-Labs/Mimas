@@ -24,7 +24,7 @@ Confirm the repo has been initialized with the Mimas template. Check for:
 
 If any of those are missing, tell the user this skill is designed to run after `setup-mimas-template` and stop. Don't try to scaffold them yourself — that is the other skill's job.
 
-Read `docs/AGENTS_FEATURES.md` and the root `AGENTS.md` (plus any subdomain `AGENTS.md` files) so you know:
+Read `docs/AGENTS_FEATURES.md` and the root `AGENTS.md` (plus any subdomain `CONTEXT.md` files) so you know:
 
 - what counts as a feature area — a named concept with dedicated logic in the codebase, identified by naming and behavior, not folder structure alone
 - the split between area-level docs (`docs/features/<area>.md`) and per-service docs (`docs/features/<area>/<service>.md`)

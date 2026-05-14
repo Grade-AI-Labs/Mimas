@@ -1,6 +1,6 @@
 # Tech-Stack Adapters
 
-Building blocks for `docs/ENGINEERING.md` and subdomain `AGENTS.md` files. Pick the adapters that match what you discovered in Phase 1. Combine and customize — don't copy blindly.
+Building blocks for `docs/ENGINEERING.md` and subdomain `CONTEXT.md` files. Pick the adapters that match what you discovered in Phase 1. Combine and customize — don't copy blindly.
 
 ---
 
@@ -183,7 +183,7 @@ Integration tests that require a database: use Testcontainers or a local DB in D
 
 ### Fastify (Node.js)
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - API contracts and route definitions
 - Plugin registration and lifecycle hooks
 - Schema validation (Fastify JSON Schema or Zod)
@@ -195,7 +195,7 @@ Dev server: `npm run dev` (typically nodemon or tsx --watch)
 
 ### Express (Node.js)
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - Route definitions and middleware chain
 - Request validation (zod, joi, or express-validator)
 - Error handling middleware
@@ -206,7 +206,7 @@ Dev server: `npm run dev`
 
 ### NestJS
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - Module, controller, service structure
 - DTOs and class-validator decorators
 - Guards and interceptors
@@ -217,7 +217,7 @@ Dev server: `npm run start:dev`
 
 ### Next.js
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - App Router vs Pages Router (note which is used)
 - Server components vs client components
 - API routes (app/api/ or pages/api/)
@@ -229,7 +229,7 @@ Build check: `npm run build`
 
 ### React (Vite or CRA)
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - Component structure and prop contracts
 - State management (Redux, Zustand, Context, etc.)
 - Routing (React Router, TanStack Router)
@@ -240,7 +240,7 @@ Dev server: `npm run dev`
 
 ### Django
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - URL routing and view definitions
 - Serializers and model validation
 - Middleware and authentication
@@ -251,7 +251,7 @@ Dev server: `python manage.py runserver`
 
 ### FastAPI
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - Endpoint definitions and Pydantic schemas
 - Dependency injection
 - Middleware and authentication
@@ -262,7 +262,7 @@ Dev server: `uvicorn app.main:app --reload`
 
 ### ASP.NET
 ```
-Focus areas for subdomain AGENTS.md:
+Focus areas for subdomain CONTEXT.md:
 - Controller/endpoint definitions
 - Model binding and validation
 - Middleware pipeline
@@ -406,7 +406,7 @@ Dev server: `dotnet run` or `dotnet watch`
 
 ### LangChain (JS/Python)
 ```
-Focus note for subdomain AGENTS.md:
+Focus note for subdomain CONTEXT.md:
 - LangChain chains, runnables, and prompts live in `{{ai_module_path}}`
 - Prompt changes count as behavioral changes — update feature docs
 - Langfuse (or equivalent) traces all LLM calls; check traces when debugging AI behavior
@@ -414,14 +414,14 @@ Focus note for subdomain AGENTS.md:
 
 ### Vercel AI SDK
 ```
-Focus note for subdomain AGENTS.md:
+Focus note for subdomain CONTEXT.md:
 - AI SDK `streamText`, `generateText`, `generateObject` calls live in `{{ai_module_path}}`
 - Model config (model name, temperature, system prompt) counts as a contract — document changes
 ```
 
 ### OpenAI SDK (direct)
 ```
-Focus note for subdomain AGENTS.md:
+Focus note for subdomain CONTEXT.md:
 - OpenAI API calls in `{{ai_module_path}}`
 - Prompt text and model name are behavioral contracts — update feature docs if changed
 - Never hardcode API keys; use environment variables
@@ -429,7 +429,7 @@ Focus note for subdomain AGENTS.md:
 
 ### Anthropic SDK
 ```
-Focus note for subdomain AGENTS.md:
+Focus note for subdomain CONTEXT.md:
 - Anthropic API calls in `{{ai_module_path}}`
 - System prompts and model parameters are behavioral contracts — update feature docs if changed
 - Never hardcode API keys; use environment variables
@@ -437,7 +437,7 @@ Focus note for subdomain AGENTS.md:
 
 ### Semantic Kernel (.NET)
 ```
-Focus note for subdomain AGENTS.md:
+Focus note for subdomain CONTEXT.md:
 - Semantic Kernel plugins and functions in `{{ai_module_path}}`
 - Prompt templates and function configurations are behavioral contracts
 - Never hardcode API keys; use configuration/secrets

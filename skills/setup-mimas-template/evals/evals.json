@@ -4,7 +4,7 @@
     {
       "id": 0,
       "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/fastapi-python.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack with GitHub platform",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/CONTEXT.md — all tailored to FastAPI/Python/SQLAlchemy/Alembic/pytest/mypy/OpenAI stack with GitHub platform",
       "files": ["/tmp/test-repos/fastapi-python"],
       "assertions": [
         {
@@ -20,7 +20,7 @@
         {
           "id": "fastapi-all-files-exist",
           "description": "All 7 required instruction files are created",
-          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/CONTEXT.md"
         },
         {
           "id": "fastapi-stack-specificity",
@@ -49,8 +49,8 @@
         },
         {
           "id": "fastapi-src-agents-focus",
-          "description": "src/AGENTS.md mentions FastAPI-relevant focus areas (endpoints, Pydantic, etc.)",
-          "check": "src/AGENTS.md mentions at least 2 of: endpoints/routes, Pydantic/validation/schemas, database/SQLAlchemy, OpenAI/AI"
+          "description": "src/CONTEXT.md mentions FastAPI-relevant focus areas (endpoints, Pydantic, etc.)",
+          "check": "src/CONTEXT.md mentions at least 2 of: endpoints/routes, Pydantic/validation/schemas, database/SQLAlchemy, OpenAI/AI"
         },
         {
           "id": "fastapi-feature-template-verbatim",
@@ -72,7 +72,7 @@
     {
       "id": 1,
       "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/nextjs-app.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/AGENTS.md — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack with GitHub platform",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and src/CONTEXT.md — tailored to Next.js 14/TypeScript/Vitest/Prisma/NextAuth stack with GitHub platform",
       "files": ["/tmp/test-repos/nextjs-app"],
       "assertions": [
         {
@@ -88,7 +88,7 @@
         {
           "id": "nextjs-all-files-exist",
           "description": "All 7 required instruction files are created",
-          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/AGENTS.md"
+          "check": "Files exist: AGENTS.md, docs/AGENT_WORKFLOW.md, docs/ENGINEERING.md, docs/AGENTS_FEATURES.md, docs/FEATURES.md, docs/features/feature-template.md, src/CONTEXT.md"
         },
         {
           "id": "nextjs-stack-specificity",
@@ -117,8 +117,8 @@
         },
         {
           "id": "nextjs-src-agents-frontend-focus",
-          "description": "src/AGENTS.md mentions frontend-relevant focus areas (components, App Router, etc.)",
-          "check": "src/AGENTS.md mentions at least 2 of: components, App Router/routing, API routes, server components/client components, React Query/data fetching"
+          "description": "src/CONTEXT.md mentions frontend-relevant focus areas (components, App Router, etc.)",
+          "check": "src/CONTEXT.md mentions at least 2 of: components, App Router/routing, API routes, server components/client components, React Query/data fetching"
         },
         {
           "id": "nextjs-no-skills-scaffolded",
@@ -130,7 +130,7 @@
     {
       "id": 2,
       "prompt": "Set up the Mimas agent instruction file tree for the repository at /tmp/test-repos/go-backend.",
-      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and at least internal/AGENTS.md — tailored to Go/chi/pgx/goose/JWT stack",
+      "expected_output": "AGENTS.md at root, full docs/ hierarchy, and at least internal/CONTEXT.md — tailored to Go/chi/pgx/goose/JWT stack",
       "files": ["/tmp/test-repos/go-backend"],
       "assertions": [
         {
@@ -150,8 +150,8 @@
         },
         {
           "id": "go-subdomain-agents",
-          "description": "At least internal/AGENTS.md is created (cmd/AGENTS.md is also acceptable)",
-          "check": "At least one of: internal/AGENTS.md, cmd/AGENTS.md exists"
+          "description": "At least internal/CONTEXT.md is created (cmd/CONTEXT.md is also acceptable)",
+          "check": "At least one of: internal/CONTEXT.md, cmd/CONTEXT.md exists"
         },
         {
           "id": "go-stack-specificity",

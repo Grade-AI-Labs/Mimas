@@ -1,6 +1,6 @@
 ---
 name: setup-mimas-template
-description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain AGENTS.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
+description: Scaffold the Mimas agent instruction file tree for any repository — AGENTS.md at root, subdomain CONTEXT.md files, and the full docs/ hierarchy. Every file is tailored to the repo's actual tech stack, git platform, and conventions. Use this skill whenever someone wants to set up agent instructions, onboard a repo for AI-assisted development, add AGENTS.md / CONTEXT.md files, create engineering docs for agents, or mentions "mimas template". Even if they just say "set up this repo for agents" or "add agent docs", this is the skill to use.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
@@ -185,18 +185,18 @@ Replace every `{{placeholder}}` with what you actually discovered. Every generat
 | `/AGENTS.md` | Entry point — links to docs, critical rules, completion checklist |
 | `docs/ENGINEERING.md` | Engineering standards — testing, language, naming, DB, auth, CI/CD, commands |
 | `docs/FEATURES.md` | Feature area index (start minimal or empty) |
-| `<subdomain>/AGENTS.md` | One per discovered subdomain — scope and focus for that area |
+| `<subdomain>/CONTEXT.md` | One per discovered subdomain — scope and focus for that area |
 
-### Subdomain AGENTS.md rules
+### Subdomain CONTEXT.md rules
 
-Create one `AGENTS.md` at the **top level** of each subdomain — not deeper:
+Create one `CONTEXT.md` at the **top level** of each subdomain — not deeper:
 
-- `src/` → `src/AGENTS.md` (not `src/routes/AGENTS.md`)
-- `internal/` → `internal/AGENTS.md` (not `internal/handlers/AGENTS.md`)
-- `packages/auth/` → `packages/auth/AGENTS.md`
-- `frontend/` → `frontend/AGENTS.md`
+- `src/` → `src/CONTEXT.md` (not `src/routes/CONTEXT.md`)
+- `internal/` → `internal/CONTEXT.md` (not `internal/handlers/CONTEXT.md`)
+- `packages/auth/` → `packages/auth/CONTEXT.md`
+- `frontend/` → `frontend/CONTEXT.md`
 
-Each subdomain AGENTS.md covers everything within its subtree. Don't create them for utility folders, config dirs, or generated output.
+Each subdomain CONTEXT.md covers everything within its subtree. Don't create them for utility folders, config dirs, or generated output.
 
 ### Feature index
 
@@ -261,7 +261,7 @@ Update the example's title, trigger, rule, and example block to match — the wh
 
 Tell the user:
 1. Which files were created (full list with paths)
-2. Which subdomains were detected and got their own AGENTS.md
+2. Which subdomains were detected and got their own CONTEXT.md
 3. Which platform/tracker was used for platform-specific content
 4. Any tech stack details you were uncertain about — be honest about gaps
 5. What they should review and customize before committing

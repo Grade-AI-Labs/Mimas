@@ -22,8 +22,8 @@ Read these files at the start of every session before doing any work:
 5. `docs/ENGINEERING.md` — engineering standards
 
 [If the repo has subdomains, add a line per subdomain. Example:
-"When working in the backend source, also read `src/AGENTS.md`."
-"When working on the frontend, also read `frontend/AGENTS.md`."]
+"When working in the backend source, also read `src/CONTEXT.md`."
+"When working on the frontend, also read `frontend/CONTEXT.md`."]
 
 ---
 
@@ -88,8 +88,8 @@ After any change that affects API contracts, schemas, invariants, workflows, or 
 - **Feature index:** `docs/FEATURES.md`
 - **Feature docs:** `docs/features/`
 [Add one line per subdomain. Example:
-"- **Backend source instructions:** `src/AGENTS.md`"
-"- **Frontend instructions:** `frontend/AGENTS.md`"]
+"- **Backend source instructions:** `src/CONTEXT.md`"
+"- **Frontend instructions:** `frontend/CONTEXT.md`"]
 
 Keep this file minimal. Do not duplicate detailed rules here.
 
@@ -273,7 +273,7 @@ _No feature areas documented yet. Add entries as you build out the system._
 
 ---
 
-## `<subdomain>/AGENTS.md`
+## `<subdomain>/CONTEXT.md`
 
 Create one per discovered subdomain. The purpose is to tell an agent entering this directory what it owns and what rules apply here.
 
