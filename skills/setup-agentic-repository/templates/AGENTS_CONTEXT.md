@@ -3,7 +3,7 @@
 Domain documentation lives in **`CONTEXT.md`** files co-located with the code they describe:
 
 - **Single-context repo:** one `CONTEXT.md` at the root (or at the top of the single subdomain).
-- **Multi-context repo:** one `CONTEXT.md` per subdomain (e.g. `src/CONTEXT.md`, `frontend/CONTEXT.md`), indexed by `docs/CONTEXT-MAP.md`.
+- **Multi-context repo:** one `CONTEXT.md` per subdomain (e.g. `src/CONTEXT.md`, `frontend/CONTEXT.md`), indexed by `{{DOCS_DIR}}/CONTEXT-MAP.md`.
 
 This document defines how agents must detect, document, and maintain domain knowledge as the codebase grows.
 
@@ -22,9 +22,9 @@ A subdomain's `CONTEXT.md` is a **domain artefact**, not an agent-rule file. It 
 - **Invariants** — rules that always hold within this subdomain.
 - **Flagged ambiguities** — terms still in dispute, with proposed resolutions.
 
-Agent-procedural rules (TDD, typecheck, formatter) live in `/AGENTS.md` and `docs/ENGINEERING.md` — never in `CONTEXT.md`.
+Agent-procedural rules (TDD, typecheck, formatter) live in `/AGENTS.md` and `{{DOCS_DIR}}/ENGINEERING.md` — never in `CONTEXT.md`.
 
-Implementation detail (file paths, function names, request schemas) belongs in `docs/features/<area>.md` — never in `CONTEXT.md`.
+Implementation detail (file paths, function names, request schemas) belongs in `{{DOCS_DIR}}/features/<area>.md` — never in `CONTEXT.md`.
 
 ## What `CONTEXT-MAP.md` is for
 
@@ -40,7 +40,7 @@ Only exists when ≥2 subdomains have their own `CONTEXT.md`. Single-context rep
 
 Before working in a subdomain:
 
-1. Read that subdomain's `CONTEXT.md`. If `docs/CONTEXT-MAP.md` exists, start there to locate the right one.
+1. Read that subdomain's `CONTEXT.md`. If `{{DOCS_DIR}}/CONTEXT-MAP.md` exists, start there to locate the right one.
 2. If your change couples two subdomains (shared types, cross-context events), read both `CONTEXT.md`s.
 3. Skip files that don't exist. **Proceed silently** — don't flag absence; producer triggers create them lazily.
 
@@ -56,7 +56,7 @@ If the concept you need isn't in the glossary yet, that's a signal:
 
 ### Update in the moment
 
-When a trigger fires — see `docs/AGENT_WORKFLOW.md` § 4 CONTEXT.md upkeep for the canonical trigger list — update the relevant `CONTEXT.md` in the same turn, before reporting work done. The triggers cover term resolutions, user corrections to terminology, new concepts introduced by features, and self-caught synonym invention.
+When a trigger fires — see `{{DOCS_DIR}}/AGENT_WORKFLOW.md` § 4 CONTEXT.md upkeep for the canonical trigger list — update the relevant `CONTEXT.md` in the same turn, before reporting work done. The triggers cover term resolutions, user corrections to terminology, new concepts introduced by features, and self-caught synonym invention.
 
 ### Append-only discipline
 
@@ -66,7 +66,7 @@ When a trigger fires — see `docs/AGENT_WORKFLOW.md` § 4 CONTEXT.md upkeep for
 
 ### Multi-context: keep the map current
 
-When adding a new subdomain `CONTEXT.md`, add a row to `docs/CONTEXT-MAP.md` in the same task. When the public surface or upstream/downstream relationships change, update the map.
+When adding a new subdomain `CONTEXT.md`, add a row to `{{DOCS_DIR}}/CONTEXT-MAP.md` in the same task. When the public surface or upstream/downstream relationships change, update the map.
 
 ---
 

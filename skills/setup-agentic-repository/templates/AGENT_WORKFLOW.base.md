@@ -24,9 +24,9 @@ Read this file at the start of every session.
 
 ### 3. Self-Improvement Loop
 
-The goal is a small, sharp file of project-specific rules in `docs/LESSONS.md` that future sessions read and apply. The format of a lesson is defined at the top of `docs/LESSONS.md` — read it before writing one.
+The goal is a small, sharp file of project-specific rules in `{{DOCS_DIR}}/LESSONS.md` that future sessions read and apply. The format of a lesson is defined at the top of `{{DOCS_DIR}}/LESSONS.md` — read it before writing one.
 
-**Read at session start.** Open `docs/LESSONS.md` and apply any rules that match the work you're about to do. This is non-optional; the file exists so the same mistake isn't made twice.
+**Read at session start.** Open `{{DOCS_DIR}}/LESSONS.md` and apply any rules that match the work you're about to do. This is non-optional; the file exists so the same mistake isn't made twice.
 
 **Triggers — record a lesson when any of these happen.** Don't wait for a formal request; these are the signals:
 
@@ -41,11 +41,11 @@ If unsure whether it's worth recording: write it. Sharper is better than missing
 
 **Write before reporting done.** A session that produced a correction must produce a lesson — record it in the same turn the work is completed, not "later". The `AGENTS.md` completion checklist has a line for this; don't tick the box without it.
 
-**Groom periodically.** When `docs/LESSONS.md` passes ~20 entries, propose consolidations to the user — merge duplicates, delete rules that no longer apply, shorten anything vague.
+**Groom periodically.** When `{{DOCS_DIR}}/LESSONS.md` passes ~20 entries, propose consolidations to the user — merge duplicates, delete rules that no longer apply, shorten anything vague.
 
 ### 4. CONTEXT.md upkeep
 
-Read `CONTEXT.md` (or `docs/CONTEXT-MAP.md` → per-subdomain `CONTEXT.md`) when working in a subdomain. Use its vocabulary verbatim **where defined** in code, tests, issues, and commits. If a needed term isn't in the glossary, treat it as a trigger (see below) rather than silently inventing a synonym; the full contract lives in `docs/AGENTS_CONTEXT.md`.
+Read `CONTEXT.md` (or `{{DOCS_DIR}}/CONTEXT-MAP.md` → per-subdomain `CONTEXT.md`) when working in a subdomain. Use its vocabulary verbatim **where defined** in code, tests, issues, and commits. If a needed term isn't in the glossary, treat it as a trigger (see below) rather than silently inventing a synonym; the full contract lives in `{{DOCS_DIR}}/AGENTS_CONTEXT.md`.
 
 **Triggers — capture vocabulary in the moment:**
 
@@ -54,11 +54,11 @@ Read `CONTEXT.md` (or `docs/CONTEXT-MAP.md` → per-subdomain `CONTEXT.md`) when
 - A new feature introduces a concept absent from the glossary → add it before claiming the feature done.
 - You catch yourself inventing a synonym because the right term isn't there → flag the gap; don't silently coin a new term.
 
-**Write before reporting done.** Update the relevant `CONTEXT.md` in the same turn the trigger fires. Append-only — add new entries, don't reshuffle existing ones. The format is documented at the top of each `CONTEXT.md`. See `docs/AGENTS_CONTEXT.md` for the full contract.
+**Write before reporting done.** Update the relevant `CONTEXT.md` in the same turn the trigger fires. Append-only — add new entries, don't reshuffle existing ones. The format is documented at the top of each `CONTEXT.md`. See `{{DOCS_DIR}}/AGENTS_CONTEXT.md` for the full contract.
 
 ### 5. ADR upkeep
 
-Read `docs/adr/` when about to change anything that crosses an existing decision boundary. If your work would contradict an ADR, surface it explicitly — never silently override.
+Read `{{DOCS_DIR}}/adr/` when about to change anything that crosses an existing decision boundary. If your work would contradict an ADR, surface it explicitly — never silently override.
 
 **Triggers — write an ADR only when all three apply:**
 
@@ -66,7 +66,7 @@ Read `docs/adr/` when about to change anything that crosses an existing decision
 - **Surprising without context** (future engineers will question the approach).
 - **Result of genuine trade-offs** (real alternatives existed and you chose deliberately).
 
-If all three apply: write the ADR in the same turn as the decision. Next number (4-digit zero-padded), kebab-case slug, Nygard short form — see `docs/adr/0001-record-architectural-decisions.md` for the canonical example and `docs/AGENTS_ADRS.md` for the contract. If any of the three is missing: don't write one.
+If all three apply: write the ADR in the same turn as the decision. Next number (4-digit zero-padded), kebab-case slug, Nygard short form — see `{{DOCS_DIR}}/adr/0001-record-architectural-decisions.md` for the canonical example and `{{DOCS_DIR}}/AGENTS_ADRS.md` for the contract. If any of the three is missing: don't write one.
 
 **Supersede, don't delete.** Overturned decisions get a new ADR; the old one stays with a `Superseded by ADR-NNNN` note.
 

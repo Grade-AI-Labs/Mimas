@@ -1,9 +1,9 @@
 # Agent Instructions: Feature Areas & Documentation
 
-All feature documentation lives under **`docs/features/`**:
+All feature documentation lives under **`{{DOCS_DIR}}/features/`**:
 
-- **Area-level docs** (`docs/features/<area>.md`): concept-first overview of a feature area — responsibilities, boundaries, key concepts.
-- **Per-service docs** (`docs/features/<area>/<service>.md`): API contracts, request/response schemas, implementation details, changelogs.
+- **Area-level docs** (`{{DOCS_DIR}}/features/<area>.md`): concept-first overview of a feature area — responsibilities, boundaries, key concepts.
+- **Per-service docs** (`{{DOCS_DIR}}/features/<area>/<service>.md`): API contracts, request/response schemas, implementation details, changelogs.
 
 This document defines how agents must detect, document, and maintain feature knowledge as the codebase grows.
 
@@ -25,12 +25,12 @@ Feature areas are identified **by naming and behavior**, not by folder structure
 
 ## Feature Documentation Contract (MANDATORY)
 
-### When to create or update area-level docs (`docs/features/<slug>.md`)
+### When to create or update area-level docs (`{{DOCS_DIR}}/features/<slug>.md`)
 
-- New feature area introduced → create `docs/features/<slug>.md` and add to `docs/FEATURES.md` (alphabetical).
+- New feature area introduced → create `{{DOCS_DIR}}/features/<slug>.md` and add to `{{DOCS_DIR}}/FEATURES.md` (alphabetical).
 - Changes to **responsibilities, boundaries, workflows, or high-level behavior** → update the relevant area doc in the same task.
 
-### When to create or update per-service docs (`docs/features/<area>/<service>.md`)
+### When to create or update per-service docs (`{{DOCS_DIR}}/features/<area>/<service>.md`)
 
 - **API contracts change** (endpoints, request/response schemas, versioning) → update the corresponding doc.
 - **New API or capability** → create a per-service doc and link it from the area doc.
@@ -49,21 +49,21 @@ If a change affects any of the following, update the **appropriate** doc in the 
 You MUST:
 - Create or update the new feature doc(s)
 - Add a short note near the top (e.g. "Renamed from …" or "Merged from …")
-- Update `docs/FEATURES.md` as needed
+- Update `{{DOCS_DIR}}/FEATURES.md` as needed
 
 ---
 
 ## How to write feature docs
 
-**Area-level docs (`docs/features/<area>.md`):**
+**Area-level docs (`{{DOCS_DIR}}/features/<area>.md`):**
 - concept-first, not file-path-first
 - responsibilities and boundaries
 - key concepts and vocabulary
 - links to per-service docs for API and implementation detail
 
-**Per-service docs (`docs/features/<area>/<service>.md`):**
+**Per-service docs (`{{DOCS_DIR}}/features/<area>/<service>.md`):**
 - API endpoint, request/response, business logic, technical implementation, testing, changelog
-- Use [`docs/features/feature-template.md`](./features/feature-template.md) as the canonical template
+- Use [`{{DOCS_DIR}}/features/feature-template.md`](./features/feature-template.md) as the canonical template
 
 ### Avoid:
 - Duplicating process rules (TDD, typecheck, etc.) in feature docs
@@ -72,7 +72,7 @@ You MUST:
 ### Progressive disclosure
 
 If a feature grows complex:
-- Split deep detail into focused per-service docs under `docs/features/<area>/`
+- Split deep detail into focused per-service docs under `{{DOCS_DIR}}/features/<area>/`
 - Link to them from the area-level doc
 - Do NOT duplicate large sections of content between area and per-service docs
 

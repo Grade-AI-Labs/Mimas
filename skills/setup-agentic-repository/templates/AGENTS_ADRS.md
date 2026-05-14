@@ -1,6 +1,6 @@
 # Agent Instructions: Architecture Decision Records (ADRs)
 
-Architectural decisions live in **`docs/adr/`** as numbered Markdown files (`NNNN-slug.md`).
+Architectural decisions live in **`{{DOCS_DIR}}/adr/`** as numbered Markdown files (`NNNN-slug.md`).
 
 This document defines how agents must detect, document, and maintain architectural decisions as the codebase grows.
 
@@ -18,7 +18,7 @@ A short record of an architectural decision that future engineers (and agents) w
 - Conventional: `Status` (usually `Accepted` for new ADRs; `Superseded by ADR-MMMM` once overturned).
 - Optional: `Considered Options`, `Consequences` — add only when they genuinely help. Most ADRs won't need them.
 
-See `docs/adr/0001-record-architectural-decisions.md` for the canonical example — a minimal four-section ADR that matches the typical shape.
+See `{{DOCS_DIR}}/adr/0001-record-architectural-decisions.md` for the canonical example — a minimal four-section ADR that matches the typical shape.
 
 The value is in recording **that a decision was made** and **why** — not in completing formal sections.
 
@@ -28,13 +28,13 @@ The value is in recording **that a decision was made** and **why** — not in co
 
 ### When to write an ADR
 
-The canonical criteria — the 3-criteria gate — live in `docs/AGENT_WORKFLOW.md` § 5 ADR upkeep. Read those before writing. In short: write an ADR only when the decision is **hard to reverse**, **surprising without context**, and the **result of genuine trade-offs**. If any of the three is missing, don't.
+The canonical criteria — the 3-criteria gate — live in `{{DOCS_DIR}}/AGENT_WORKFLOW.md` § 5 ADR upkeep. Read those before writing. In short: write an ADR only when the decision is **hard to reverse**, **surprising without context**, and the **result of genuine trade-offs**. If any of the three is missing, don't.
 
 Suitable topics: architectural patterns, integration approaches, significant technology selections, scope boundaries, intentional deviations from standard practices, non-obvious rejections of alternatives.
 
 ### Read before crossing decision boundaries
 
-Before non-trivial changes in an area, scan `docs/adr/` for decisions that touch it. If your work would contradict an existing ADR:
+Before non-trivial changes in an area, scan `{{DOCS_DIR}}/adr/` for decisions that touch it. If your work would contradict an existing ADR:
 
 - **Surface it explicitly**, don't silently override. Phrase it as: "_Contradicts ADR-NNNN (slug) — but worth reopening because…_"
 - If the contradiction is intentional, write a new ADR that supersedes the old one (see below).
@@ -45,7 +45,7 @@ When the 3-criteria gate is met, write the ADR before reporting the task done. T
 
 ### Numbering
 
-Scan `docs/adr/` for the highest existing number; the new ADR is `NNNN+1`. Use 4-digit zero-padded numbers (`0001`, `0002`, …).
+Scan `{{DOCS_DIR}}/adr/` for the highest existing number; the new ADR is `NNNN+1`. Use 4-digit zero-padded numbers (`0001`, `0002`, …).
 
 Slugs are kebab-case and describe the decision concisely: `0042-postgres-for-write-model.md`, `0043-event-sourced-orders.md`.
 

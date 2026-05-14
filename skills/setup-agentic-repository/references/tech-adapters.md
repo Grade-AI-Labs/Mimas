@@ -1,6 +1,6 @@
 # Tech-Stack Adapters
 
-Building blocks for `docs/ENGINEERING.md` and subdomain `CONTEXT.md` files. Pick the adapters that match what you discovered in Phase 1. Combine and customize — don't copy blindly.
+Building blocks for `{{DOCS_DIR}}/ENGINEERING.md` and subdomain `CONTEXT.md` files. Pick the adapters that match what you discovered in Phase 1. Combine and customize — don't copy blindly.
 
 ---
 
