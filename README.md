@@ -149,7 +149,7 @@ one.
 | `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
 | `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
-| `ubiquitous-language` | Extracts a DDD-style glossary from the current conversation and writes it to `UBIQUITOUS_LANGUAGE.md`. |
+| `ubiquitous-language` | Interviews you about the domain vocabulary one term at a time, then appends the resulting glossary into the appropriate `CONTEXT.md` scaffolded by `setup-agentic-repository`. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
 
 ## Requirements

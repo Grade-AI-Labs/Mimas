@@ -1,0 +1,29 @@
+{
+  "skill_name": "ubiquitous-language",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We keep flip-flopping between 'Candidate' and 'Applicant' across the codebase, and 'account' is being used for two different things. Can you nail down the vocabulary for the recruitment subdomain?",
+      "expected_output": "Skill verifies <docs-dir>/AGENTS_CONTEXT.md exists, locates the recruitment subdomain's CONTEXT.md (via CONTEXT-MAP.md if multi-context), reads the existing Vocabulary table, then interviews the user one question at a time via AskUserQuestion — leading with a Recommended canonical for Candidate vs. Applicant and asking the user to split 'account' into two distinct terms. Appends the resolutions to the Vocabulary table in CONTEXT.md without reshuffling existing rows. Does not write a sidecar UBIQUITOUS_LANGUAGE.md. Does not commit.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "fill in the CONTEXT.md vocabulary for this repo",
+      "expected_output": "Skill verifies prerequisites, picks the target CONTEXT.md (single-context: the only one; multi-context: asks the user which subdomain), reads the existing file plus any unresolved entries in Flagged ambiguities, then drives an interview prioritizing existing flagged ambiguities first, then synonyms observed in the conversation, then new concepts. Appends results following the append-only rule from <docs-dir>/AGENTS_CONTEXT.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "we just decided that what we've been calling a 'job' is actually a 'Role' and a 'Posting' — they're different. Capture that.",
+      "expected_output": "Skill recognizes this as an overloaded-term resolution, confirms with one focused question (or accepts the user's statement if explicit), and appends two new rows to CONTEXT.md's Vocabulary table — **Role** and **Posting** — each with one-sentence definitions and 'job' listed in the aliases-to-avoid column. If 'job' was previously in the Vocabulary table or Flagged ambiguities, the skill handles it via supersession (new entry referencing the old) rather than rewriting history.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I want to write a glossary of domain terms for this project",
+      "expected_output": "Skill recognizes 'glossary of domain terms' as ubiquitous-language work, verifies the Mimas template is set up, points the user at the existing CONTEXT.md infrastructure (does NOT propose creating a standalone UBIQUITOUS_LANGUAGE.md), and runs the interview-then-append flow against the appropriate CONTEXT.md.",
+      "files": []
+    }
+  ]
+}

@@ -3,26 +3,32 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I just ran /setup-agentic-repository on this repo and the docs/features folder is empty. Can you find the most important features and write up docs for them?",
-      "expected_output": "Skill verifies prerequisites, asks how many/which features (with Top 5 / All / Number / Names options), scans the codebase, creates docs/features/<slug>.md files from the template for the chosen features, and appends entries to docs/FEATURES.md (alphabetical). Honestly leaves TODO markers where it cannot derive content from the code.",
+      "prompt": "I just ran /setup-agentic-repository on this repo and the features folder is empty. Can you find the most important features and write up docs for them?",
+      "expected_output": "Skill verifies prerequisites by discovering the agent docs directory (reading AGENTS.md or searching for AGENTS_FEATURES.md — typically agents-docs/ but may be elsewhere), asks how many/which features (with Top 5 / All / Number / Names options), scans the codebase, creates <docs-dir>/features/<slug>.md files from the template for the chosen features, and appends entries to <docs-dir>/FEATURES.md (alphabetical). Honestly leaves TODO markers where it cannot derive content from the code.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "we have some feature docs already but I think auth and billing are missing — can you check and add what's missing?",
-      "expected_output": "Skill inventories existing docs/features/, treats the user's free-text answer 'auth and billing' as the named list, verifies both exist in the codebase (skipping or flagging any that don't), and creates only the missing area docs while leaving already-documented features alone.",
+      "expected_output": "Skill discovers the docs dir, inventories the existing <docs-dir>/features/, treats the user's free-text answer 'auth and billing' as the named list, verifies both exist in the codebase (skipping or flagging any that don't), and creates only the missing area docs while leaving already-documented features alone.",
       "files": []
     },
     {
       "id": 3,
       "prompt": "find every undocumented feature in this repo and document them all",
-      "expected_output": "Skill interprets 'every' as 'all', discovers every feature area with meaningful implementation that lacks an area doc, filters out stubs, ranks by significance, and creates one doc per area plus FEATURES.md entries. Reports back rejected candidates with reasons.",
+      "expected_output": "Skill interprets 'every' as 'all', discovers every feature area with meaningful implementation that lacks an area doc in the discovered <docs-dir>/features/, filters out stubs, ranks by significance, and creates one doc per area plus <docs-dir>/FEATURES.md entries. Reports back rejected candidates with reasons.",
       "files": []
     },
     {
       "id": 4,
       "prompt": "find 3 features that aren't documented yet",
-      "expected_output": "Skill parses '3' as a numeric limit, discovers undocumented features, takes the top 3 by significance, and creates docs and FEATURES.md entries for exactly those three. Other candidates are listed in the final report as 'not selected this round'.",
+      "expected_output": "Skill parses '3' as a numeric limit, discovers undocumented features in the discovered docs dir, takes the top 3 by significance, and creates docs and <docs-dir>/FEATURES.md entries for exactly those three. Other candidates are listed in the final report as 'not selected this round'.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "the docs are under agents-docs/ in this repo, find any feature areas we haven't written up yet",
+      "expected_output": "Skill reads AGENTS.md (or falls back to searching for AGENTS_FEATURES.md), confirms the docs dir is agents-docs/, uses agents-docs/AGENTS_FEATURES.md as the contract and agents-docs/features/feature-template.md as the template, and writes new docs into agents-docs/features/. Does not hardcode 'docs/' anywhere in the output.",
       "files": []
     }
   ]

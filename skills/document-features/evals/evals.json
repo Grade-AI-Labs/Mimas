@@ -4,25 +4,31 @@
     {
       "id": 1,
       "prompt": "find-features just listed auth, billing, and search as undocumented. Please go document all three.",
-      "expected_output": "Skill verifies prerequisites, takes the three named features, inventories docs/features/ to confirm none are already documented, dispatches one subagent per feature in a single message (so they run in parallel), then writes docs/features/auth.md, docs/features/billing.md, docs/features/search.md from the template, and appends three entries to docs/FEATURES.md (alphabetical). Leaves TODO markers where content cannot be derived from the code. Does not commit.",
+      "expected_output": "Skill verifies prerequisites by discovering the agent docs directory (typically agents-docs/, but may be elsewhere — read from AGENTS.md), takes the three named features, inventories <docs-dir>/features/ to confirm none are already documented, dispatches one subagent per feature in a single message (so they run in parallel), substitutes the discovered <docs-dir> value into each subagent prompt before dispatching, then writes <docs-dir>/features/auth.md, <docs-dir>/features/billing.md, <docs-dir>/features/search.md from the template, and appends three entries to <docs-dir>/FEATURES.md (alphabetical). Leaves TODO markers where content cannot be derived from the code. Does not commit.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "document every undocumented feature in this repo",
-      "expected_output": "Skill parses 'every' as 'all', identifies undocumented feature areas with meaningful implementation, dispatches subagents in parallel batches capped at 10 per batch, writes one doc per feature, and updates docs/FEATURES.md. If there are more than 10 features, runs a second batch after the first finishes. Reports back which features were skipped and why.",
+      "expected_output": "Skill discovers the docs dir, parses 'every' as 'all', identifies undocumented feature areas with meaningful implementation, dispatches subagents in parallel batches capped at 10 per batch (with the discovered <docs-dir> substituted into each subagent prompt), writes one doc per feature, and updates <docs-dir>/FEATURES.md. If there are more than 10 features, runs a second batch after the first finishes. Reports back which features were skipped and why.",
       "files": []
     },
     {
       "id": 3,
       "prompt": "write the docs for billing",
-      "expected_output": "Skill treats 'billing' as a single named feature, checks docs/features/billing.md does not already exist, locates billing in the codebase, dispatches one subagent to document it, writes docs/features/billing.md from the template, and adds an entry to docs/FEATURES.md. If billing already has a doc or cannot be located, the skill surfaces that instead of silently creating something.",
+      "expected_output": "Skill discovers the docs dir, treats 'billing' as a single named feature, checks <docs-dir>/features/billing.md does not already exist, locates billing in the codebase, dispatches one subagent to document it (with <docs-dir> substituted into the prompt), writes <docs-dir>/features/billing.md from the template, and adds an entry to <docs-dir>/FEATURES.md. If billing already has a doc or cannot be located, the skill surfaces that instead of silently creating something.",
       "files": []
     },
     {
       "id": 4,
       "prompt": "document the top 5 undocumented features",
-      "expected_output": "Skill parses '5' as a numeric limit, identifies undocumented feature areas, ranks by significance, takes the top 5, dispatches 5 subagents in parallel in a single message, writes 5 docs from the template, and updates docs/FEATURES.md with 5 alphabetical entries. Other candidates are listed in the final report as 'not selected this round'.",
+      "expected_output": "Skill discovers the docs dir, parses '5' as a numeric limit, identifies undocumented feature areas, ranks by significance, takes the top 5, dispatches 5 subagents in parallel in a single message (each with <docs-dir> substituted), writes 5 docs from the template, and updates <docs-dir>/FEATURES.md with 5 alphabetical entries. Other candidates are listed in the final report as 'not selected this round'.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "this repo uses --docs-dir docs/agents for its agent docs. document the auth feature.",
+      "expected_output": "Skill discovers the docs dir is docs/agents/ (from AGENTS.md path references), dispatches a single subagent with docs/agents substituted into the subagent prompt template, writes docs/agents/features/auth.md, and updates docs/agents/FEATURES.md. Does not hardcode agents-docs/ or docs/features/ — uses the discovered path everywhere.",
       "files": []
     }
   ]
