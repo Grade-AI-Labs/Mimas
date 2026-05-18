@@ -1,6 +1,6 @@
 ---
 name: document-features
-description: Populate `<docs-dir>/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. The agent docs directory is discovered from `AGENTS.md` — typically `agents-docs/` (the `setup-agentic-repository` default) but may be elsewhere if `--docs-dir` was used. Use whenever the user wants to document features, fill out feature docs, write up specific features (e.g. "document auth and billing"), document all undocumented features, or follow up on `find-features` discovery. This is the natural sequel to `find-features`: that skill identifies what is missing, this skill writes the docs in parallel.
+description: Populate `<docs-dir>/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. The agent docs directory is discovered from `AGENTS.md` — typically `agents-docs/` (the `setup-agentic-repository` default) but may be elsewhere if `--docs-dir` was used. Use whenever the user wants to document features, fill out feature docs, write up specific features (e.g. "document auth and billing"), document all undocumented features, or follow up on `find-features` discovery. This is the natural sequel to `find-features` — that skill identifies what is missing, this skill writes the docs in parallel.
 metadata:
   author: Olof Brogeby
   url: https://github.com/brogeby
