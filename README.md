@@ -88,6 +88,7 @@ npx skills@latest add Grade-AI-Labs/Mimas@find-features
 npx skills@latest add Grade-AI-Labs/Mimas@document-features
 npx skills@latest add Grade-AI-Labs/Mimas@grill-me
 npx skills@latest add Grade-AI-Labs/Mimas@ubiquitous-language
+npx skills@latest add Grade-AI-Labs/Mimas@write-a-prd
 npx skills@latest add Grade-AI-Labs/Mimas@write-a-skill
 ```
 
@@ -150,6 +151,7 @@ one.
 | `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Interviews you about the domain vocabulary one term at a time, then appends the resulting glossary into the appropriate `CONTEXT.md` scaffolded by `setup-agentic-repository`. |
+| `write-a-prd` | Creates a PRD through user interview, codebase exploration, and module design, then submits it as a GitHub issue. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
 
 ## Requirements
