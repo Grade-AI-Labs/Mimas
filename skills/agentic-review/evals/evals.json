@@ -1,0 +1,143 @@
+{
+  "skill_name": "agentic-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run an orchestrated review for this PR. The branch changes touch backend/, frontend/, and shared contracts, and some files overlap module boundaries.",
+      "expected_output": "Skill discovers <docs-dir>, validates ENGINEERING.md + context ownership from AGENTS.md/CONTEXT-MAP.md, resolves PR-style review scope using deterministic base resolution (user override -> origin/HEAD symbolic ref -> origin/main -> origin/master -> main -> master), builds review-plan plus per-specialist diff artifacts and immutable review-result/review-manifest artifacts under <docs-dir>/review/, routes overlapping files to multiple relevant specialists, dispatches specialists in parallel, records specialist attestations, and returns deduplicated severity-ordered findings with explicit completion_state.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review my current worktree changes locally; I am on the base branch and have staged and unstaged edits.",
+      "expected_output": "Skill detects base-branch context and falls back to local review mode, includes staged + unstaged (+ untracked) changes in the file inventory, creates review-plan-<date>-local.md plus scoped diffs and immutable review-result/review-manifest artifacts, dispatches specialists from CONTEXT ownership plus relevant cross-cut reviewers, and returns consolidated findings with attestation coverage and completion status.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Please run agentic-review in this repository that has no AGENTS.md and no AGENTS_CONTEXT.md yet.",
+      "expected_output": "Skill fails fast on prerequisites, explains that setup-agentic-repository must be run first, and does not attempt to scaffold missing setup artifacts itself.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Review this change set with migration files, schema changes, and data backfill scripts.",
+      "expected_output": "Skill routes migration/schema/data files to both owning module specialists and migrations-data-safety cross-cut specialist, requires evidence-backed safety findings (including rollback/backfill risk), records specialist attestations for routed specialists, and surfaces explicit verification requirements/testing gaps in final output.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Specialists reported mixed severities for similar issues across API and security reviews. Consolidate the final review.",
+      "expected_output": "Skill merges duplicate root causes, preserves highest severity and strongest evidence when specialist outputs conflict, keeps actionable recommended fixes, and emits final findings ordered by severity then impact without dropping specialist attestation coverage data.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Run agentic-review on this tiny refactor where no actionable defects are expected.",
+      "expected_output": "Skill still creates canonical plan + scoped diff artifacts + immutable review-result/review-manifest outputs, executes specialist review coverage, and returns explicit 'no actionable findings' with standards compliance, testing gaps/unverified areas, attestation ledger, and completion status.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Run agentic-review where <docs-dir>/review/policies/POLICY_INDEX.md and module policy files already exist.",
+      "expected_output": "Skill treats project policy as mandatory when present: loads POLICY_INDEX.md, attaches global + module policy files to specialist prompts, enforces rule-aware findings, and includes a Project policy compliance section with rule ids and pass/fail/unknown statuses.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Run agentic-review in a repo that has AGENTS/ENGINEERING/CONTEXT docs but no review policy files yet.",
+      "expected_output": "Skill proceeds with baseline review (soft bootstrap), includes standards compliance from ENGINEERING.md, applies built-in audit defaults, and explicitly recommends running review-policy-builder to enable strict project policy and policy-governed audit compliance checks.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Run agentic-review where ENGINEERING.md is missing but other setup artifacts exist.",
+      "expected_output": "Skill fails fast because ENGINEERING.md is a required prerequisite for standards-grounded review, and reports actionable remediation instead of continuing.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Run agentic-review with policy files that include active inheritance automation rules, and a changed Controller class that does not extend its expected MainController base.",
+      "expected_output": "Skill parses automatable policy rules before specialist dispatch, runs deterministic inheritance_suffix checks on changed files, emits a severity-tagged finding with file+line evidence and standards_policy_refs containing the violated rule id, and marks that rule status as fail in Project policy compliance.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Run agentic-review with inheritance automation rules where all changed Service and Controller classes follow the expected base-class pattern.",
+      "expected_output": "Skill executes deterministic policy checks and reports pass status for applicable rule ids, while still running specialist review and returning consolidated findings (or explicit no actionable findings) with attestation coverage and completion state.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Run agentic-review on changed files that use syntax the inheritance checker cannot parse reliably.",
+      "expected_output": "Skill reports policy compliance status unknown for affected rule ids, does not fabricate fail/pass outcomes, and adds concrete verification guidance under Testing gaps / unverified areas.",
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "Run agentic-review in a repo with policy files present but no automation metadata blocks on any rules.",
+      "expected_output": "Skill preserves backward compatibility by skipping deterministic policy checks, proceeds with baseline specialist-driven review, and still reports Project policy compliance from available policy rules.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "Run agentic-review where every required module and routed cross-cut specialist returns either findings or no-actionable-findings.",
+      "expected_output": "Skill records attestations for all required specialists, sets completion_state=complete, emits no completion blockers, and reflects full route + attestation completeness in both review-result and review-manifest artifacts.",
+      "files": []
+    },
+    {
+      "id": 15,
+      "prompt": "Run agentic-review where one required specialist output is missing due to dispatch failure.",
+      "expected_output": "Skill emits a missing attestation entry for the failed specialist, sets completion_state=incomplete under fail-closed rules, and includes explicit completion blockers in both final report and manifest.",
+      "files": []
+    },
+    {
+      "id": 16,
+      "prompt": "Run agentic-review with POLICY_INDEX.md containing a Review Audit Contract section.",
+      "expected_output": "Skill loads and applies policy-defined audit governance fields (contract version, completion mode, required attestation fields/categories, transparency mode), and reports policy-contract as the audit-governance source in artifacts.",
+      "files": []
+    },
+    {
+      "id": 17,
+      "prompt": "Run agentic-review with policy files present but no Review Audit Contract section in POLICY_INDEX.md.",
+      "expected_output": "Skill applies compatibility fallback defaults for audit governance, marks fallback-defaults as active source, and continues with fail-closed attestation completion behavior.",
+      "files": []
+    },
+    {
+      "id": 18,
+      "prompt": "Run agentic-review and verify audit transparency output requirements.",
+      "expected_output": "Skill produces a specialist attestation ledger with summary fields and links/paths to scoped diffs and raw specialist output artifacts (without embedding full specialist transcripts inline).",
+      "files": []
+    },
+    {
+      "id": 19,
+      "prompt": "Run agentic-review with policy rules that include inheritance automation blocks where selector or expectation subfields are missing.",
+      "expected_output": "Skill handles malformed automation metadata without crashing, records affected rule ids as policy compliance status unknown with explicit malformed-metadata reason, and continues specialist dispatch plus final artifact generation.",
+      "files": []
+    },
+    {
+      "id": 20,
+      "prompt": "Run agentic-review in a repo where refs/remotes/origin/HEAD resolves to refs/remotes/origin/main.",
+      "expected_output": "Skill resolves base branch deterministically by preferring the origin/HEAD symbolic ref target and runs PR-style review against origin/main when current branch differs.",
+      "files": []
+    },
+    {
+      "id": 21,
+      "prompt": "Run agentic-review in a repo where refs/remotes/origin/HEAD resolves to refs/remotes/origin/master.",
+      "expected_output": "Skill resolves base branch deterministically by preferring the origin/HEAD symbolic ref target and runs PR-style review against origin/master when current branch differs.",
+      "files": []
+    },
+    {
+      "id": 22,
+      "prompt": "Run agentic-review in a repo where refs/remotes/origin/HEAD resolves to refs/remotes/origin/develop.",
+      "expected_output": "Skill resolves base branch deterministically by preferring the origin/HEAD symbolic ref target and runs PR-style review against origin/develop when current branch differs, without assuming main/master defaults.",
+      "files": []
+    },
+    {
+      "id": 23,
+      "prompt": "Run agentic-review in a repo where no base candidates exist and no explicit base override is provided.",
+      "expected_output": "Skill fails over from unresolved PR base detection to local review mode and inventories staged, unstaged, and untracked changes without attempting an invalid base...HEAD comparison.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "skill_name": "review-policy-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up project-specific review policy for this multi-module onion-architecture backend and make sure call flow boundaries are enforced.",
+      "expected_output": "Skill discovers <docs-dir>, reads AGENTS.md + ENGINEERING.md + CONTEXT-MAP.md + relevant CONTEXT.md + ADRs, runs structured interview for missing architecture constraints, and writes <docs-dir>/review/policies/global-policy.md plus module-<slug>.md files and POLICY_INDEX.md with required rule metadata including onion dependency/call-flow checks and review audit contract metadata.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "This is a single-context API service. Create review policy artifacts we can feed to agentic-review.",
+      "expected_output": "Skill creates global-policy.md and one module policy file for the single context, keeps rules backend/API-focused, and writes POLICY_INDEX.md mapping the module/subtree plus a Review Audit Contract section for attestation/completion governance.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Use ADR constraints when building policy and flag any contradiction with my requested exceptions.",
+      "expected_output": "Skill imports ADR-backed constraints into rules with source=adr, and when user-provided checks conflict with ADRs, marks affected rules/status as needs-decision with explicit conflict notes in policy files and POLICY_INDEX.md.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Rerun review-policy-builder after policy files already exist and preserve rule IDs where intent is unchanged.",
+      "expected_output": "Skill performs merge/update instead of overwrite, preserves stable IDs for unchanged rules, marks obsolete rules deprecated rather than deleting, updates metadata timestamps, and keeps POLICY_INDEX.md (including Review Audit Contract section) synchronized.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I have not set up AGENTS/ENGINEERING/CONTEXT artifacts in this repo yet. Run review-policy-builder anyway.",
+      "expected_output": "Skill fails fast with actionable remediation that setup-agentic-repository must be run/fixed first, and does not fabricate policy files without required prerequisites.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Validate that the generated policy rules are machine-usable for agentic-review consumption.",
+      "expected_output": "Skill ensures every rule contains required metadata fields (id, title, scope, severity, intent, check_logic, evidence_expectation, allowed_exceptions, source, optional related_adr, status) and valid severity values, then reports any schema gaps explicitly.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Mine this repo for inheritance conventions and generate policy checks for dominant patterns like *Controller -> *MainController and *Service -> *MainService.",
+      "expected_output": "Skill mines class inheritance patterns, computes evidence-backed candidate confidence, auto-promotes candidates only when min_samples>=4 and adoption_ratio>=0.85, asks for explicit confirm/reject, and writes confirmed rules with automation.check_type=inheritance_suffix using module-first scope.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "The repository has mixed inheritance styles and no clear dominant base-class convention. Build policy carefully.",
+      "expected_output": "Skill surfaces exploratory convention candidates with evidence, does not auto-persist low-confidence patterns, and requires user confirmation before adding any inheritance automation rule.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Some legacy modules intentionally violate the new inheritance convention. Include those exceptions in policy.",
+      "expected_output": "Skill captures explicit allowed_exceptions in the affected inheritance rules instead of silently failing policy generation, keeps stable rule IDs where intent is unchanged, and documents automatable rule coverage in POLICY_INDEX.md.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Generate policy artifacts that support auditable specialist sign-off in agentic-review.",
+      "expected_output": "Skill writes a POLICY_INDEX.md Review Audit Contract section that defines audit_contract_version, completion_mode=fail-closed, required attestation fields, required specialist categories, and transparency_mode='summary + artifact links'.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Validate POLICY_INDEX.md audit governance schema for agentic-review compatibility.",
+      "expected_output": "Skill verifies the Review Audit Contract section exists and is machine-usable, reports missing/invalid audit-governance fields explicitly, and ensures values map cleanly to agentic-review attestation/completion behavior.",
+      "files": []
+    }
+  ]
+}
