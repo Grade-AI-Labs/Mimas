@@ -87,6 +87,7 @@ needed):
 npx skills@latest add Grade-AI-Labs/Mimas@find-features
 npx skills@latest add Grade-AI-Labs/Mimas@document-features
 npx skills@latest add Grade-AI-Labs/Mimas@review-policy-builder
+npx skills@latest add Grade-AI-Labs/Mimas@review-policy-rule-builder
 npx skills@latest add Grade-AI-Labs/Mimas@agentic-review
 npx skills@latest add Grade-AI-Labs/Mimas@grill-me
 npx skills@latest add Grade-AI-Labs/Mimas@ubiquitous-language
@@ -151,8 +152,9 @@ one.
 | `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
 | `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
 | `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
-| `review-policy-builder` | Builds and maintains project/module-specific review policy under `review/policies/` by combining repository docs with structured user input, so `agentic-review` can enforce architecture/domain checks deterministically. |
-| `agentic-review` | Runs orchestrated post-setup code review by deriving module specialists from `AGENTS.md` + `CONTEXT.md`/`CONTEXT-MAP.md`, generating canonical review artifacts, dispatching specialist subagents, and returning deduplicated severity-ordered findings. |
+| `review-policy-builder` | Bootstraps and maintains project/module-specific review policy under `review/policies/` by combining repository docs with structured user input. |
+| `review-policy-rule-builder` | Adds, updates, or deprecates individual rules in existing `review/policies/` artifacts (`global-policy.md` and `module-<slug>.md`). Natural follow-up to `review-policy-builder` for incremental rule-level edits. |
+| `agentic-review` | Runs orchestrated code review by deriving module specialists from `AGENTS.md` + `CONTEXT.md`/`CONTEXT-MAP.md`, consuming policy artifacts for deterministic checks, dispatching specialist subagents, and returning deduplicated severity-ordered findings. |
 | `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
 | `ubiquitous-language` | Interviews you about the domain vocabulary one term at a time, then appends the resulting glossary into the appropriate `CONTEXT.md` scaffolded by `setup-agentic-repository`. |
 | `write-a-prd` | Creates a PRD through user interview, codebase exploration, and module design, then writes it as a local markdown file. |
