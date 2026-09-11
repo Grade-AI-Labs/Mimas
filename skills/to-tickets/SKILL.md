@@ -23,7 +23,7 @@ Ask first — never assume, and never publish to a tracker the user hasn't agree
 
 ### If they want them published, find the tracker
 
-Look in the agent instructions you were given — `AGENTS.md`, `CLAUDE.md`, or whichever instruction files this project uses — plus any tracker configuration they point to, for a named tracker and its triage label vocabulary. It counts as available only if you can both *name* it (GitHub, Linear, Jira, …) and *reach* it with the tools you have.
+Look in the agent instructions you were given — `AGENTS.md`, `CLAUDE.md`, or whichever instruction files this project uses — plus any tracker configuration they point to, for a named tracker. It counts as available only if you can both *name* it (GitHub, Linear, Jira, …) and *reach* it with the tools you have.
 
 - **Available** → the **real issue tracker** form in step 5.
 - **Not available** → say so plainly, naming where you looked, and fall back to the **local files** form. Don't stall on it. If the user names a tracker or points you at its configuration on the spot, use that instead, and offer to record it in the project's agent instructions so the next session doesn't have to ask.
@@ -84,7 +84,7 @@ Iterate until the user approves the breakdown.
 Write the approved tickets to the destination settled in **Output destination**. The tickets are the same either way; only the shape of the blocking edges changes:
 
 - **Local files** → write one file per ticket under the OS temp directory, in `<os-temp-dir>/<feature-slug>/issues/<NN>-<slug>.md` — not in the workspace. Resolve `<os-temp-dir>` from the environment rather than hardcoding it (`$TMPDIR` on macOS, `$TMPDIR` or `/tmp` on Linux, `%TEMP%` on Windows). Number from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below: one ticket per file, never a single combined file. When done, list the absolute paths you wrote, and warn the user that the OS may clear the temp directory, so anything worth keeping should be moved or pushed to a tracker.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply whatever labelling convention the project's agent instructions document; if they document none, apply none.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
@@ -97,8 +97,6 @@ Do NOT close or modify any parent issue.
 **What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective, not a layer-by-layer implementation list.
 
 **Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
-
-**Status:** ready-for-agent
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2

@@ -64,14 +64,15 @@ When you run it, the agent will:
    conventions, etc.) if you have them.
 4. **Generate an `AGENTS.md` at the repo root**, plus subdomain `CONTEXT.md`
    files for each meaningful module.
-5. **Create a `docs/` hierarchy** with engineering standards, the agent
-   workflow, a feature-doc contract, and a seeded `LESSONS.md` for durable
-   cross-session rules.
+5. **Create an `agents-docs/` hierarchy** — kept as a sibling of any existing
+   `docs/` so human-maintained project docs stay untouched — with engineering
+   standards, the agent workflow, a feature-doc contract, and a seeded
+   `LESSONS.md` for durable cross-session rules.
 6. **Add a `CLAUDE.md` bridge file** at the repo root pointing Claude at
    `AGENTS.md`. If a `CLAUDE.md` already exists, the pointer is appended
    rather than overwriting your content.
 7. **Point you at follow-up skills** (`find-features`, `document-features`)
-   for populating `docs/features/`.
+   for populating `agents-docs/features/`.
 
 The output is a set of instruction files that future agent sessions read
 automatically, so any agent working on the repo picks up the project's
@@ -149,9 +150,9 @@ one.
 
 | Skill | What it does |
 | --- | --- |
-| `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
-| `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
-| `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
+| `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `agents-docs/`) tailored to the current repo. |
+| `find-features` | Discovers feature areas missing from `agents-docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
+| `document-features` | Populates `agents-docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
 | `review-policy-builder` | Bootstraps and maintains project/module-specific review policy under `review/policies/` by combining repository docs with structured user input. |
 | `review-policy-rule-builder` | Adds, updates, or deprecates individual rules in existing `review/policies/` artifacts (`global-policy.md` and `module-<slug>.md`). Natural follow-up to `review-policy-builder` for incremental rule-level edits. |
 | `agentic-review` | Runs orchestrated code review by deriving module specialists from `AGENTS.md` + `CONTEXT.md`/`CONTEXT-MAP.md`, consuming policy artifacts for deterministic checks, dispatching specialist subagents, and returning deduplicated severity-ordered findings. |

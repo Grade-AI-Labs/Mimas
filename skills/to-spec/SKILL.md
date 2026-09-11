@@ -21,9 +21,9 @@ Ask first — never assume, and never publish to a tracker the user hasn't agree
 
 ### If they want it published, find the tracker
 
-Look in the agent instructions you were given — `AGENTS.md`, `CLAUDE.md`, or whichever instruction files this project uses — plus any tracker configuration they point to, for a named tracker and its triage label vocabulary. It counts as available only if you can both *name* it (GitHub, Linear, Jira, …) and *reach* it with the tools you have.
+Look in the agent instructions you were given — `AGENTS.md`, `CLAUDE.md`, or whichever instruction files this project uses — plus any tracker configuration they point to, for a named tracker. It counts as available only if you can both *name* it (GitHub, Linear, Jira, …) and *reach* it with the tools you have.
 
-- **Available** → publish the spec as an issue there, applying the `ready-for-agent` triage label; no need for additional triage.
+- **Available** → publish the spec as an issue there. Apply whatever labelling convention the project's agent instructions document; if they document none, apply none.
 - **Not available** → say so plainly, naming where you looked, and fall back to the local file. Don't stall on it. If the user names a tracker or points you at its configuration on the spot, use that instead, and offer to record it in the project's agent instructions so the next session doesn't have to ask.
 
 ### If they decline, or no tracker is available
