@@ -3,7 +3,7 @@ name: grill-me
 description: Grill the user relentlessly about a plan, decision, or idea until reaching shared understanding, working the design tree a round of questions at a time. Use when the user wants to stress-test a plan or design, or uses any 'grill' trigger phrase such as "grill me".
 metadata:
   author: Olof Brogeby & Matt Pocock
-  url: https://github.com/brogeby
+  url: https://github.com/brogeby, https://github.com/mattpocock
 ---
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.

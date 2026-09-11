@@ -4,7 +4,7 @@ description: "Turn the current conversation into a spec: no interview, just synt
 disable-model-invocation: true
 metadata:
   author: Olof Brogeby & Matt Pocock
-  url: https://github.com/brogeby
+  url: https://github.com/brogeby, https://github.com/mattpocock
 ---
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.

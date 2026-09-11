@@ -4,7 +4,7 @@ description: Break a plan, spec, or the current conversation into a set of trace
 disable-model-invocation: true
 metadata:
   author: Olof Brogeby & Matt Pocock
-  url: https://github.com/brogeby
+  url: https://github.com/brogeby, https://github.com/mattpocock
 ---
 
 # To Tickets
