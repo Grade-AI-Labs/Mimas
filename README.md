@@ -64,14 +64,15 @@ When you run it, the agent will:
    conventions, etc.) if you have them.
 4. **Generate an `AGENTS.md` at the repo root**, plus subdomain `CONTEXT.md`
    files for each meaningful module.
-5. **Create a `docs/` hierarchy** with engineering standards, the agent
-   workflow, a feature-doc contract, and a seeded `LESSONS.md` for durable
-   cross-session rules.
+5. **Create an `agents-docs/` hierarchy** — kept as a sibling of any existing
+   `docs/` so human-maintained project docs stay untouched — with engineering
+   standards, the agent workflow, a feature-doc contract, and a seeded
+   `LESSONS.md` for durable cross-session rules.
 6. **Add a `CLAUDE.md` bridge file** at the repo root pointing Claude at
    `AGENTS.md`. If a `CLAUDE.md` already exists, the pointer is appended
    rather than overwriting your content.
 7. **Point you at follow-up skills** (`find-features`, `document-features`)
-   for populating `docs/features/`.
+   for populating `agents-docs/features/`.
 
 The output is a set of instruction files that future agent sessions read
 automatically, so any agent working on the repo picks up the project's
@@ -149,14 +150,19 @@ one.
 
 | Skill | What it does |
 | --- | --- |
-| `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `docs/`) tailored to the current repo. |
-| `find-features` | Discovers feature areas missing from `docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
-| `document-features` | Populates `docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
+| `setup-agentic-repository` | Scaffolds the Mimas agent instruction tree (`AGENTS.md`, `agents-docs/`) tailored to the current repo. |
+| `find-features` | Discovers feature areas missing from `agents-docs/features/` and creates populated feature docs from the template. Natural follow-up to `setup-agentic-repository`. |
+| `document-features` | Populates `agents-docs/features/<slug>.md` for one, several, or every undocumented feature area by dispatching up to 10 parallel subagents — one per feature. Natural follow-up to `find-features`. |
 | `review-policy-builder` | Bootstraps and maintains project/module-specific review policy under `review/policies/` by combining repository docs with structured user input. |
 | `review-policy-rule-builder` | Adds, updates, or deprecates individual rules in existing `review/policies/` artifacts (`global-policy.md` and `module-<slug>.md`). Natural follow-up to `review-policy-builder` for incremental rule-level edits. |
 | `agentic-review` | Runs orchestrated code review by deriving module specialists from `AGENTS.md` + `CONTEXT.md`/`CONTEXT-MAP.md`, consuming policy artifacts for deterministic checks, dispatching specialist subagents, and returning deduplicated severity-ordered findings. |
-| `grill-me` | Interviews you relentlessly about a plan or design until every branch of the decision tree is resolved. |
+| `grill-me` | Interviews you relentlessly about a plan or design, working the design tree one round of questions at a time until the frontier is empty. |
+| `grill-with-docs` | Runs `grill-me` and `domain-modeling` together — a relentless design interview that also captures the glossary and ADRs as decisions land. |
+| `domain-modeling` | Sharpens the domain model mid-design: challenges terms, stress-tests relationships with concrete scenarios, and writes resolutions into `CONTEXT.md` and ADRs following the scaffolded contracts. |
 | `ubiquitous-language` | Interviews you about the domain vocabulary one term at a time, then appends the resulting glossary into the appropriate `CONTEXT.md` scaffolded by `setup-agentic-repository`. |
+| `to-spec` | Turns the current conversation into a spec with no further interview, then publishes it to your issue tracker or writes it to the OS temp directory. |
+| `to-tickets` | Breaks a plan or spec into tracer-bullet tickets with explicit blocking edges, published to your issue tracker or written as one markdown file per ticket in the OS temp directory. |
+| `handoff` | Compacts the current conversation into a handoff document in the OS temp directory so a fresh agent can pick the work up. |
 | `write-a-prd` | Creates a PRD through user interview, codebase exploration, and module design, then writes it as a local markdown file. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
 
@@ -168,3 +174,25 @@ one.
   supported by `vercel-labs/skills`.
 - `npx` (ships with Node.js) — only needed for the quick-start install; the
   manual install options above require only `git`.
+
+## Credits
+
+Several skills here are derived from [`mattpocock/skills`](https://github.com/mattpocock/skills),
+MIT licensed, © 2026 Matt Pocock:
+
+- **`handoff`** — used as-is.
+- **`grill-me`** — adapted from his `grilling` skill, kept under the existing
+  Mimas name so current invocations keep working.
+- **`grill-with-docs`**, **`to-spec`**, **`to-tickets`**, **`domain-modeling`** —
+  adapted to fit the Mimas instruction tree: `agents-docs/` paths, the
+  `CONTEXT.md` and ADR contracts that `setup-agentic-repository` scaffolds, and
+  a publishing flow that asks before using an issue tracker and falls back to
+  the OS temp directory.
+
+Thanks to Matt for the originals.
+
+## License
+
+MIT — see [LICENSE](./LICENSE). Portions are derived from
+[`mattpocock/skills`](https://github.com/mattpocock/skills) under the same
+licence; see [Credits](#credits) above.
