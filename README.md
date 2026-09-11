@@ -189,3 +189,9 @@ MIT licensed, © 2026 Matt Pocock:
   the OS temp directory.
 
 Thanks to Matt for the originals.
+
+## License
+
+MIT — see [LICENSE](./LICENSE). Portions are derived from
+[`mattpocock/skills`](https://github.com/mattpocock/skills) under the same
+licence; see [Credits](#credits) above.
