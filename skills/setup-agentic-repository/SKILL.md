@@ -112,7 +112,7 @@ questions:
       - label: "GitHub Issues"
         description: "Issues tracked in GitHub, linked with #123 in commits and PRs."
       - label: "Azure DevOps"
-        description: "Work items tracked in Azure DevOps, linked with AB#123."
+        description: "Work items tracked in Azure Boards, linked with #123 in commits and attached to PRs (AB#123 from GitHub)."
       - label: "Jira"
         description: "Issues tracked in Jira, linked with PROJECT-123."
       - label: "Linear"
