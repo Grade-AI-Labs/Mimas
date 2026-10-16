@@ -46,7 +46,7 @@ AGENT_WORKFLOW.md — Pull Requests section:
 
 - Create a feature branch for every change: `<type>/<short-description>` (e.g. `feat/add-retry-logic`, `fix/null-pointer-webhook`)
 - Open a PR in Azure DevOps — include a summary and test plan
-- Link the work item as the linking section of `ENGINEERING.md` describes; `AB#<id>` only works from GitHub and does nothing in Azure Repos
+- Link the work item as the linking section of `ENGINEERING.md` describes, when the repo has a tracker; `AB#<id>` only works from GitHub and does nothing in Azure Repos
 - Ensure all build validation policies pass
 - After merge, delete the feature branch
 ```
@@ -146,6 +146,8 @@ ENGINEERING.md — Issue linking section:
 
 **Detection:** platform is Azure DevOps, or commit messages contain `AB#` pattern
 
+Keep the bullet that matches where the code lives.
+
 ENGINEERING.md — Work item linking section:
 ```
 ## Work item linking
@@ -158,13 +160,16 @@ ENGINEERING.md — Work item linking section:
 
 **Detection:** commit messages contain `[A-Z]+-\d+` pattern (e.g. `PROJ-123`)
 
+Ask whether Jira's development integration for the platform is connected (e.g. Azure DevOps for Jira, GitHub for Jira, GitLab for Jira Cloud, Bitbucket Cloud's built-in link) and keep the matching bullet.
+
 ENGINEERING.md — Issue linking section:
 ```
 ## Issue linking
 
-- Put the Jira key in the branch name and at the start of commit messages and the PR title (`PROJECT-123 Add retry logic`); Jira's development integrations link each of them by the key in its own text
+- Put the Jira key in the branch name and at the start of commit messages and the PR title (`PROJECT-123 Add retry logic`)
+- Integration connected: Jira links the branch, commits and PR to the issue by that key. In Azure Repos the PR itself shows nothing from Jira, so end its description with a link to the issue
+- No integration: nothing links by itself, so end the PR description with a link to the issue and add the PR link to the issue
 - Use smart commits for transitions where configured: `PROJECT-123 #done`
-- Include issue keys in PR descriptions for traceability
 ```
 
 ### Linear
