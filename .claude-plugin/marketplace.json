@@ -1,0 +1,14 @@
+{
+  "name": "mimas",
+  "owner": { "name": "Grade-AI-Labs" },
+  "metadata": { "description": "Engineering skills and agents for Claude Code." },
+  "plugins": [
+    {
+      "name": "dev-workflow",
+      "source": "./plugins/dev-workflow",
+      "description": "Matt Pocock's engineering skills plus tiered worker agents and a /orchestrate-spec orchestrator.",
+      "version": "0.1.0",
+      "category": "skill"
+    }
+  ]
+}

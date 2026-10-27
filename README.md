@@ -166,6 +166,54 @@ one.
 | `write-a-prd` | Creates a PRD through user interview, codebase exploration, and module design, then writes it as a local markdown file. |
 | `write-a-skill` | Guides you through authoring a new agent skill with proper structure and progressive disclosure. |
 
+## Plugin marketplace
+
+This repo is also a Claude Code plugin marketplace, `mimas`:
+
+| Plugin | What it does |
+| --- | --- |
+| [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills (vendored, unchanged) plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
+
+Install:
+
+```
+/plugin marketplace add Grade-AI-Labs/Mimas
+/plugin install dev-workflow@mimas
+```
+
+Or in one step: `/plugin install dev-workflow --marketplace Grade-AI-Labs/Mimas`.
+
+To offer the plugin to everyone working in a repo, add this to that repo's
+`.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "mimas": { "source": { "source": "github", "repo": "Grade-AI-Labs/Mimas" } }
+  },
+  "enabledPlugins": { "dev-workflow@mimas": true }
+}
+```
+
+The plugin ships Matt's upstream `domain-modeling`, `grill-me`,
+`grill-with-docs`, `handoff`, `to-spec` and `to-tickets`, not the Mimas
+adaptations in `skills/`. Plugin skills are namespaced
+(`/dev-workflow:to-spec`), but if you also install the Mimas skills, both
+versions of the model-invoked ones can trigger.
+
+### Updating the vendored skills
+
+```bash
+scripts/sync-upstream.sh          # or: scripts/sync-upstream.sh <ref>
+```
+
+The script needs `git` and `node`. It replaces every vendored skill in
+`plugins/dev-workflow/skills/` with upstream's promoted set, leaves
+`orchestrate-spec` alone, and records the commit in
+`plugins/dev-workflow/UPSTREAM`. Review the diff, then bump `version` in both
+`plugins/dev-workflow/.claude-plugin/plugin.json` and the `dev-workflow`
+entry in `.claude-plugin/marketplace.json` before committing.
+
 ## Requirements
 
 - A coding agent that supports the open skills format — Claude Code, Cursor,
