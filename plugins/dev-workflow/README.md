@@ -53,9 +53,9 @@ To offer it to everyone working in a repo, see the project-scope snippet in the 
 
 Run the orchestrator session on your strongest model at high effort: the judgement lives there.
 
-## With savvy-progress
+## With dev-progress
 
-If the [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress) mod is installed, the orchestrator drives its progress bar and workers report steps to its agents panel. Without it those calls are skipped.
+If the [dev-progress](../dev-progress) mod is installed, the orchestrator drives its progress bar and workers report steps to its agents panel. Without it those calls are skipped.
 
 ## Don't install twice
 

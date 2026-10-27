@@ -7,8 +7,15 @@
       "name": "dev-workflow",
       "source": "./plugins/dev-workflow",
       "description": "Matt Pocock's engineering skills plus tiered worker agents and a /orchestrate-spec orchestrator.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "skill"
+    },
+    {
+      "name": "dev-progress",
+      "source": "./plugins/dev-progress",
+      "description": "Mod: progress bar above the prompt and a live agents panel for /orchestrate-spec; shows any subagents. Forked from savvy-progress.",
+      "version": "0.1.0",
+      "category": "mod"
     }
   ]
 }

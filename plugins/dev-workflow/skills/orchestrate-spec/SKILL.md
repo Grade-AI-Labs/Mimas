@@ -98,4 +98,4 @@ Triage the findings yourself. Send every finding worth fixing to **one** worker 
 
 ## Progress bar (optional)
 
-If the tool `mcp__savvy-progress__progress` is among your tools, including as a deferred tool (load it with ToolSearch `select:mcp__savvy-progress__progress`), keep it current: after section 1, `title`, `total` (ticket count), `tasks` (`[{ title, tier, after }]`), `phase: "delegate"`; on each accept, `done`; `phase: "review"` during section 6; `finished: true` at close. Skip silently if the tool is absent.
+If the tool `mcp__dev-progress__progress` is among your tools, including as a deferred tool (load it with ToolSearch `select:mcp__dev-progress__progress`), keep it current: after section 1, `title`, `total` (ticket count), `tasks` (`[{ title, tier, after }]`), `phase: "delegate"`; on each accept, `done`; `phase: "review"` during section 6; `finished: true` at close. Skip silently if the tool is absent.

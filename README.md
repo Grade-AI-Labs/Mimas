@@ -173,17 +173,19 @@ This repo is also a Claude Code plugin marketplace, `mimas`:
 | Plugin | What it does |
 | --- | --- |
 | [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills (vendored, unchanged) plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
+| [`dev-progress`](./plugins/dev-progress) | Mod: a progress bar above the prompt and a live agents panel that `/orchestrate-spec` and its agents report to. Forked from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress). |
 
 Install:
 
 ```
 /plugin marketplace add Grade-AI-Labs/Mimas
 /plugin install dev-workflow@mimas
+/plugin install dev-progress@mimas
 ```
 
 Or in one step: `/plugin install dev-workflow --marketplace Grade-AI-Labs/Mimas`.
 
-To offer the plugin to everyone working in a repo, add this to that repo's
+To offer the plugins to everyone working in a repo, add this to that repo's
 `.claude/settings.json`:
 
 ```json
@@ -191,7 +193,7 @@ To offer the plugin to everyone working in a repo, add this to that repo's
   "extraKnownMarketplaces": {
     "mimas": { "source": { "source": "github", "repo": "Grade-AI-Labs/Mimas" } }
   },
-  "enabledPlugins": { "dev-workflow@mimas": true }
+  "enabledPlugins": { "dev-workflow@mimas": true, "dev-progress@mimas": true }
 }
 ```
 
