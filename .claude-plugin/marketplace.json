@@ -1,6 +1,6 @@
 {
   "name": "mimas",
-  "owner": { "name": "Grade-AI-Labs" },
+  "owner": { "name": "Talentech AI" },
   "metadata": { "description": "Engineering skills and agents for Claude Code." },
   "plugins": [
     {
