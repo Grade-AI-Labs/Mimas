@@ -1,0 +1,329 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throw away. Question: what should JDM-car agent icons look like, and how should they move,
+  as an alternative to dev-progress's crab costumes (hooks/register.tsx, COSTUMES / CRAB_CSS)?
+  Three variants switchable via ?variant=A|B|C (or ← / →): A side view cruising, B rear view, C side view racing.
+  Same rules as the crabs: a 30×28 pixel grid of <rect>s, pure CSS animation, every period divides one second.
+  Open this file in a browser; nothing to install.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JDM Agent Icons</title>
+<style>
+:root{--font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif}
+body{margin:0;font-family:var(--font);background:#ecebe8;color:#1f1f1f;padding:24px 16px 96px}
+h1{font-size:18px;margin:0 0 4px}
+.note{color:#6b6b68;font-size:13px;max-width:900px;margin:0 0 20px;line-height:1.45}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1200px}
+.pane{border-radius:12px;padding:16px;overflow:hidden}
+.pane.light{background:#fff;--t:#1f1f1f;--s:#6b6b68;--m:#9a9a96;--k:#ecebe8;--ln:#e4e4e1;--tile:#f4f3f0}
+.pane.dark{background:#1f1f1e;--t:#ececec;--s:#a8a8a4;--m:#7d7d79;--k:#2c2c2b;--ln:#333331;--tile:#262625}
+.pane h2{font-size:12px;font-weight:600;margin:16px 0 8px;color:var(--s);text-transform:uppercase;letter-spacing:.04em}
+.pane h2:first-child{margin-top:0}
+.gallery{display:flex;flex-wrap:wrap;gap:10px}
+.card{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--s);width:128px;text-align:center;background:var(--tile);border-radius:8px;padding:8px 0}
+.card b{color:var(--t);font-size:11.5px;font-weight:600}
+svg text.t{fill:var(--t)} svg text.s{fill:var(--s)} svg .k{fill:var(--k)} svg .m{fill:var(--m)} svg .ln{stroke:var(--ln)}
+svg .live{animation:p 1.6s ease-in-out infinite}@keyframes p{50%{opacity:.3}}
+#bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:#111;color:#fff;border-radius:999px;padding:6px 8px;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:13px;z-index:10}
+#bar button{background:#333;color:#fff;border:0;border-radius:999px;width:32px;height:32px;font-size:16px;cursor:pointer}
+#bar span{min-width:230px;text-align:center}
+.state{white-space:pre-wrap;font:11px/1.5 ui-monospace,SFMono-Regular,monospace;color:#6b6b68;margin-top:16px;max-width:1200px}
+
+/* --- the cars. Wheels and ground marks sit outside .bd, so they don't bob with the body. */
+.wb,.fla,.flb,.pop,.hl,.brk,.g-rb,.g-da,.g-db,.g-sa,.g-sb,.g-pf{opacity:0}
+.run g{transform-box:fill-box}
+.run .wa{animation:fa .25s steps(1) infinite}.run .wb{animation:fb .25s steps(1) infinite}
+@keyframes fa{50%{opacity:0}}@keyframes fb{50%{opacity:1}}
+.run .bd{animation:bob .5s steps(1) infinite -.125s}
+@keyframes bob{50%{transform:translateY(1px)}}
+@keyframes flick{75%{opacity:1}87.5%{opacity:0}}@keyframes flick2{87.5%{opacity:1}}
+@keyframes hop{25%{transform:translateY(-1px)}50%{transform:translateY(-2px)}75%{transform:translateY(-1px)}}
+@keyframes hop2{25%{transform:translateY(-2px)}50%{transform:translateY(-4px)}75%{transform:translateY(-2px)}}
+@keyframes jig{50%{transform:translateY(-1px)}}
+@keyframes wink{0%{opacity:1}50%{opacity:0}}
+@keyframes flash{0%{opacity:1}12.5%{opacity:0}25%{opacity:1}37.5%{opacity:0}}
+@keyframes puff{25%{opacity:1;transform:translateY(0)}50%{opacity:1;transform:translateY(1px)}75%{opacity:0}}
+@keyframes sway{25%{transform:translateX(-1px)}75%{transform:translateX(1px)}}
+@keyframes wheelie{50%{transform:rotate(-5deg)}}
+@keyframes jump{25%{transform:translateY(-2px)}50%{transform:translateY(-3px)}75%{transform:translateY(-1px)}}
+@keyframes shake{50%{transform:translateX(1px)}}
+
+/* A: side view, cruising. One small signature per car. */
+.v-A.run.c-fable .fla{animation:flick 1s steps(1) infinite}.v-A.run.c-fable .flb{animation:flick2 1s steps(1) infinite}
+.v-A.run.c-heavy .hl{animation:flash 1s steps(1) infinite}
+.v-A.run.c-careful .pop{animation:wink 1s steps(1) infinite}
+.v-A.run.c-medium .g-da{animation:fb .5s steps(1) infinite}.v-A.run.c-medium .g-db{animation:fa .5s steps(1) infinite;opacity:1}
+.run.c-light .wa,.run.c-light .wb{animation-duration:.125s}.run.c-light .bd{animation-duration:.25s}
+.c-light .pop{opacity:1}
+.v-A.run.c-explore .car{animation:hop 1s steps(1) infinite}
+.run.c-other .cg{animation:jig .5s steps(1) infinite -.25s}
+
+/* B: rear view. The body sways, brake lights pulse, the exhaust puffs. */
+.v-B .tire{opacity:1}
+.v-B.run .bd{animation:sway 1s steps(1) infinite}
+.v-B.run .brk{animation:fb 1s steps(1) infinite}
+.v-B.run .g-pf{animation:puff .5s steps(1) infinite}
+.v-B.run.c-fable .fla,.v-B.run.c-careful .fla{animation:flick 1s steps(1) infinite}.v-B.run.c-fable .flb,.v-B.run.c-careful .flb{animation:flick2 1s steps(1) infinite}
+.v-B.run.c-explore .car{animation:hop 1s steps(1) infinite}
+
+/* C: side view, racing. The road scrolls and every car does its trick. */
+.v-C:not(.run) .g-ra{opacity:0}
+.v-C.run .g-ra{animation:fa .25s steps(1) infinite}.v-C.run .g-rb{animation:fb .25s steps(1) infinite}
+.v-C.run.c-fable .fla,.v-C.run.c-heavy .fla{animation:flick .5s steps(1) infinite}.v-C.run.c-fable .flb,.v-C.run.c-heavy .flb{animation:flick2 .5s steps(1) infinite}
+.v-C.run.c-heavy .car{transform-origin:0 100%;animation:wheelie 1s ease-in-out infinite}
+.v-C.run.c-careful .fla{animation:fb .25s steps(1) infinite}.v-C.run.c-careful .flb{animation:fa .25s steps(1) infinite;opacity:1}
+.v-C.run.c-careful .pop{opacity:1}
+.v-C.run.c-medium .car{animation:jump 1s steps(1) infinite}
+.v-C.run.c-medium .g-da{animation:flick 1s steps(1) infinite}.v-C.run.c-medium .g-db{animation:flick2 1s steps(1) infinite}
+.v-C.run.c-light .car{animation:shake .25s steps(1) infinite}
+.v-C.run.c-light .g-sa{animation:fb .5s steps(1) infinite}.v-C.run.c-light .g-sb{animation:fa .5s steps(1) infinite;opacity:1}
+.v-C.run.c-explore .car{animation:hop2 1s steps(1) infinite}
+.v-C.run.c-explore .g-da{animation:flick 1s steps(1) infinite}.v-C.run.c-explore .g-db{animation:flick2 1s steps(1) infinite}
+
+@media (prefers-reduced-motion: reduce){.run,.run *{animation:none!important}}
+</style>
+</head>
+<body>
+<h1>JDM agent icons: prototype</h1>
+<p class="note" id="note"></p>
+<div class="cols">
+  <div class="pane light" id="light"></div>
+  <div class="pane dark" id="dark"></div>
+</div>
+<div class="state" id="state"></div>
+<div id="bar"><button id="prev" aria-label="Previous variant">←</button><span id="label"></span><button id="next" aria-label="Next variant">→</button></div>
+
+<script>
+const VARIANTS = { A: 'Side view, cruising', B: 'Rear view', C: 'Side view, racing' }
+const NOTES = {
+  A: 'Side profile, facing right. Wheels spin (two frames, 0.25s), the body bobs on its suspension. One small signature each: R34 afterfire, Supra headlight flash, RX-7 pop-ups wink, Impreza kicks dust, AE86 runs at double pace, Pajero hops, the kei truck\'s load wobbles.',
+  B: 'Rear view: the taillights are the identity (R34\'s four rounds, the FD\'s triple rounds, the Pajero\'s spare wheel). The body sways, brake lights pulse, the exhaust puffs; R34 and FD backfire.',
+  C: 'Side profile with a scrolling road and bigger tricks: R34 and Supra spit flames (Supra lifts its nose), the FD brap-brap rotary flame, the Impreza jumps, the AE86 shakes in tire smoke, the Pajero bounces through dust.',
+}
+const ORDER = ['fable', 'heavy', 'careful', 'medium', 'light', 'explore', 'other']
+const NAMES = { fable: 'Skyline GT-R R34', heavy: 'Supra A80', careful: 'RX-7 FD', medium: 'Impreza WRX STI', light: 'AE86 Trueno', explore: 'Pajero Evo Dakar', other: 'Kei truck' }
+const KIND = { fable: 'fable', heavy: 'heavy', careful: 'careful', medium: 'medium', light: 'light', explore: 'explorer', other: 'reviewer' }
+// Paint is the tier colour, as the crab's costume accent is; the Pajero gets desert sand, the explorer has no tier colour.
+const PAINT = { fable: '#7F77DD', heavy: '#D85A30', careful: '#BA7517', medium: '#378ADD', light: '#1D9E75', explore: '#C9A66B', other: '#888780' }
+const TIER_COLOR = { ...PAINT, explore: '#888780' }
+
+const shade = (hex, k) => '#' + [1, 3, 5].map(i => Math.round(parseInt(hex.slice(i, i + 2), 16) * k).toString(16).padStart(2, '0')).join('')
+const BASE = { k: '#1F1E1D', K: '#2E2D2B', w: '#2B3440', g: '#8FB3CC', l: '#FFF4C2', L: '#D23A2E', s: '#C9CCD2', e: '#8E929A', n: '#F2F0E8', d: '#3A3A3C', r: '#D23A2E' }
+const pal = id => ({ ...BASE, p: PAINT[id], q: shade(PAINT[id], 0.72) })
+
+const problems = []
+const check = (id, view, rows, w) => rows.forEach((r, i) => r.length !== w && problems.push(`${id} ${view} row ${i} is ${r.length} wide, want ${w}`))
+const stamp = (f, x, y, rows, map, cls) => rows.forEach((row, dy) => [...row].forEach((ch, dx) => map[ch] && f(x + dx, y + dy, 1, 1, map[ch], cls)))
+
+// --- side view: rows r0..r6 at y15..21, then the arches (r7, r8) the wheels tuck into; wheels at x3 and x20, y22..26; the ground is y27.
+const R7 = 'qqkkkkkkkqqqqqqqqqqkkkkkkkqqqs'
+const R8 = '..k.....kqqqqqqqqqqk.....k....'
+// A silver rim whose two dark spokes swap diagonals: two frames read as spinning.
+const WA = ['.kkk.', 'kdrrk', 'krhrk', 'krrdk', '.kkk.']
+const WB = ['.kkk.', 'krrdk', 'krhrk', 'kdrrk', '.kkk.']
+
+const flame = f => {
+  f(0, 23, 1, 1, '#F5C542', 'fla'); f(1, 23, 1, 1, '#E8742C', 'fla')
+  f(0, 24, 1, 1, '#E8742C', 'flb'); f(1, 23, 1, 1, '#F5C542', 'flb'); f(0, 23, 1, 1, '#F5C542', 'flb')
+}
+const dust = (f, c = '#C9B79C') => {
+  f(0, 25, 1, 1, c, 'g-da'); f(1, 26, 2, 1, c, 'g-da'); f(2, 24, 1, 1, shade(c, 0.85), 'g-da')
+  f(0, 23, 1, 1, shade(c, 0.85), 'g-db'); f(1, 25, 1, 1, c, 'g-db'); f(0, 26, 1, 1, c, 'g-db')
+}
+
+const SIDE = {
+  // R34: boxy, upright, a wing on short posts, the round taillight at the back.
+  fable: {
+    rows: ['pppppp........................', '.k..k...pppppppppp............', '.k..k..pwwwwwwkwgwp...........', 'pppppppwwwwwwwkwggwwp.........', 'Lpppppppppppppppppppppppppp...', 'Lppppppppppppppppppppppppppppl', 'ppppppppppppppppppppppppppppps'],
+    extra: f => flame(f),
+  },
+  // Supra: the tall hoop wing at the very back, a rounder, lower nose.
+  heavy: {
+    rows: ['ppppppp.......................', 'k....k....ppppppppp...........', 'k....k...pwwwwwkwgwp..........', 'pppppppppwwwwwwkwggwp.........', 'Lppppppppppppppppppppppp......', 'Lpppppppppppppppppppppppppppl.', 'ppppppppppppppppppppppppppppps'],
+    extra: (f, m) => { f(28, 20, 1, 1, '#FFFFFF', 'hl'); f(29, 20, 1, 1, '#FFF4C2', 'hl'); flame(f) },
+  },
+  // RX-7 FD: low and curvy, a bubble cockpit, a ducktail, pop-up headlights.
+  careful: {
+    rows: ['..............................', '..............................', '..........pppppp..............', '........ppwwwwkwgp............', 'ppp....ppwwwwwwkwggp..........', 'Lppppppppppppppppppppppppppp..', 'Lpppppppppppppppppppppppppppps'],
+    extra: (f, m) => { stamp(f, 22, 19, ['ppl'], m, 'pop'); flame(f) },
+  },
+  // Impreza: a four-door with a big rally wing, a hood scoop, gold wheels.
+  medium: {
+    rows: ['pppppp........................', '.kk..kk.ppppppppppp...........', '..k..k.pwwwwwkwwwwgp..........', 'pppppppwwwwwwkwwwwggp.........', 'Lppppppppppppppppppppkkkpp....', 'Lppppppppppppppppppppppppppppl', 'ppppppppppppppppppppppppppppps'],
+    rim: '#E0B13A',
+    extra: f => dust(f),
+  },
+  // AE86 Trueno: a boxy hatch, two-tone with a dark lower half, pop-ups always up.
+  light: {
+    rows: ['..............................', '........pppppppppp............', '.....ppwwwwwwwkwwgp...........', '...ppwwwwwwwwwkwwggp..........', 'Lppppppppppppppppppppppppp....', 'Lpppppppppppppppppppppppppppps', 'KKKKKKKKKKKKKKKKKKKKKKKKKKKKKs'],
+    r7: 'KKkkkkkkkKKKKKKKKKKkkkkkkkKKKs',
+    r8: '..k.....kKKKKKKKKKKk.....k....',
+    extra: (f, m) => {
+      stamp(f, 21, 18, ['ppl'], m, 'pop')
+      const c = '#D6D5D0'
+      f(0, 24, 2, 2, c, 'g-sa'); f(2, 23, 1, 1, c, 'g-sa'); f(0, 21, 1, 1, c, 'g-sa')
+      f(0, 22, 2, 2, c, 'g-sb'); f(1, 25, 2, 1, c, 'g-sb'); f(2, 26, 1, 1, c, 'g-sb')
+    },
+  },
+  // Pajero Evo Dakar: tall, a roof rack, a snorkel, a rally stripe.
+  explore: {
+    rows: ['......k.k.k.k.k.k.k...........', '.....kkkkkkkkkkkkkkkk.........', '.....pppppppppppppppppp.k.....', '.....pwwwwwkwwwwwwkwggp.k.....', 'Lppppppppppppppppppppppppppp..', 'Lrrrrrrrrrrrrrrrrrrrrrrrrrrrrl', 'ppppppppppppppppppppppppppppps'],
+    extra: f => dust(f, '#D8C49A'),
+  },
+  // Kei truck: a cab-over at the front, a flatbed with something strapped down.
+  other: {
+    rows: ['..............................', '..............................', '...................pppppppp...', '...................pwwwwwgpp..', '...................pwwwwwggpp.', 'sssssssssssssssssspppppppppppl', 'Lppppppppppppppppppppppppppppl'],
+    extra: f => stamp(f, 4, 17, ['bbbbbb', 'bBBBBb', 'bbbbbb'], { b: '#A0703F', B: '#7A4A26' }, 'cg'),
+  },
+}
+
+const drawSide = (f, id, v) => {
+  const c = SIDE[id]
+  const m = pal(id)
+  const rows = [...c.rows, c.r7 ?? R7, c.r8 ?? R8]
+  check(id, 'side', rows, 30)
+  stamp(f, 0, 15, rows, m)
+  const wm = { k: '#34332F', r: c.rim ?? '#C9CCD2', d: '#3A3A3C', h: '#8E929A' }
+  for (const x of [3, 20]) { stamp(f, x, 22, WA, wm, 'wa'); stamp(f, x, 22, WB, wm, 'wb') }
+  c.extra?.(f, m, v)
+  if (v === 'C') {
+    for (const x of [1, 9, 17, 25]) f(x, 27, 4, 1, '#B4B4B0', 'g-ra')
+    for (const x of [5, 13, 21]) f(x, 27, 4, 1, '#B4B4B0', 'g-rb')
+    f(29, 27, 1, 1, '#B4B4B0', 'g-rb')
+  }
+}
+
+// --- rear view: 26-wide rows centred in the box, the last row is the tires, the ground is y26.
+const REAR = {
+  fable: ['pppppppppppppppppppppppppp', '.k.....pppppppppppp.....k.', '.k....pwwwwwwwwwwwwp....k.', 'pppppppppppppppppppppppppp', 'pLLppLLppppppppppppLLppLLp', 'pLLppLLpppnnnnnnpppLLppLLp', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkqqqeeqqqqqqqqqqqqeeqkkk', 'kkk....................kkk'],
+  heavy: ['..pppppppppppppppppppppp..', '..k......pppppppp......k..', '..k.....pwwwwwwwwp.....k..', 'pppppppppppppppppppppppppp', 'dLLdppppppppppppppppppdLLd', 'dLLdpppppnnnnnnnnpppppdLLd', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkqqqqqeeqqqqqqeeqqqqqkkk', 'kkk....................kkk'],
+  careful: ['......pppppppppppppp......', '.....pwwwwwwwwwwwwwwp.....', '..pppppppppppppppppppppp..', 'pppppppppppppppppppppppppp', 'dLdLdLppppppppppppppdLdLdL', 'ppppppppppnnnnnnpppppppppp', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkqqqqqqqqqeeqqqqqqqqqkkk', 'kkk....................kkk'],
+  medium: ['pppppppppppppppppppppppppp', '..k....pppppppppppp....k..', '..k...pwwwwwwwwwwwwp...k..', 'pppppppppppppppppppppppppp', 'LLLLsppppppppppppppppsLLLL', 'LLLLppppppnnnnnnppppppLLLL', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkqqqqqqqqqqqqqqqqeeqqkkk', 'kkk....................kkk'],
+  light: ['.....pppppppppppppppp.....', '....pwwwwwwwwwwwwwwwwp....', '...pwwwwwwwwwwwwwwwwwwp...', 'pppppppppppppppppppppppppp', 'LLLLLLLLddddddddddLLLLLLLL', 'KKKKKKKKKKnnnnnnKKKKKKKKKK', 'KKKKKKKKKKKKKKKKKKKKKKKKKK', 'kkkKKKKKeeKKKKKKKKKKKKKkkk', 'kkk....................kkk'],
+  explore: ['..kkkkkkkkkkkkkkkkkkkkkk..', '..pppppppppppppppppppppp..', '..pwwwwwwwwwwwwwwwwwwwwp..', '..pwwwwwwwwwwwwwwwwwwwwp..', 'pppppppppppppppppppppppppp', 'LLpppppppkkkkkkkkpppppppLL', 'LLpppppppkkssssskkppppppLL', 'rrrrrrrrrkkssssskkrrrrrrrr', 'pppppppppkkkkkkkkppppppppp', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkkqqqqqqqqqqqqqqeeqqkkkk', 'kkkk..................kkkk'],
+  other: ['....pppppppppppppppppp....', '....pwwwwwwwwwwwwwwwwp....', '....pwwwwwwwwwwwwwwwwp....', '....pppppppppppppppppp....', 'ssssssssssssssssssssssssss', 'pppppppppppppppppppppppppp', 'pppppppppnnnnnnnnppppppppp', 'LLppppppppppppppppppppppLL', 'qqqqqqqqqqqqqqqqqqqqqqqqqq', 'kkkqqqqqqqqqqqqqqqqqqqqkkk', 'kkk....................kkk'],
+}
+
+const drawRear = (f, id) => {
+  const rows = REAR[id]
+  check(id, 'rear', rows, 26)
+  const m = pal(id)
+  const y0 = 26 - rows.length
+  const body = rows.slice(0, -1)
+  stamp(f, 2, y0, body, m)
+  stamp(f, 2, y0 + rows.length - 1, rows.slice(-1), m, 'tire')
+  stamp(f, 2, y0, body, { L: '#FF7A63' }, 'brk')
+  body.forEach((row, dy) => [...row].forEach((ch, dx) => {
+    if (ch !== 'e') return
+    const x = 2 + dx, y = y0 + dy
+    f(x, y + 2, 1, 1, '#B4B4B0', 'g-pf'); f(x, y + 3, 1, 1, '#D6D5D0', 'g-pf')
+    f(x, y, 1, 1, '#F5C542', 'fla'); f(x, y + 1, 1, 1, '#E8742C', 'fla')
+    f(x, y, 1, 1, '#E8742C', 'flb')
+  }))
+}
+
+// Builds one icon like crab() does: ground marks, then the car (body with its props, then the wheels).
+const icon = (id, v, { x = 0, y = 0, scale = 1.1, dim = false, run = true } = {}) => {
+  const groups = new Map([['bd', []]])
+  const f = (cx, cy, w, h, c, cls = 'bd') => {
+    if (!groups.has(cls)) groups.set(cls, [])
+    groups.get(cls).push(`<rect x="${cx}" y="${cy}" width="${w}" height="${h}" fill="${c}"/>`)
+  }
+  v === 'B' ? drawRear(f, id) : drawSide(f, id, v)
+  const g = cls => `<g class="${cls}">${groups.get(cls).join('')}</g>`
+  const keys = [...groups.keys()]
+  const ground = keys.filter(k => k.startsWith('g-'))
+  const wheels = keys.filter(k => ['wa', 'wb', 'tire'].includes(k))
+  const props = keys.filter(k => k !== 'bd' && !ground.includes(k) && !wheels.includes(k))
+  const body = `<g class="bd">${groups.get('bd').join('')}${props.map(g).join('')}</g>`
+  return `<g transform="translate(${x},${y}) scale(${scale})" opacity="${dim ? 0.45 : 1}" shape-rendering="crispEdges"><g class="c-${id} v-${v}${run ? ' run' : ''}">${ground.map(g).join('')}<g class="car">${body}${wheels.map(g).join('')}</g></g></g>`
+}
+
+// --- mock panel rows, laid out as agentSvg / plannedSvg / compactSvg and the band lay theirs out.
+const FONT = "-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif"
+const W = 340
+const mark = (status, color) =>
+  status === 'running' ? `<circle class="live" cx="${W - 8}" cy="16" r="3.5" fill="${color}"/>`
+  : status === 'done' ? `<path d="M${W - 13} 16l3.5 3.5 6.5-7" fill="none" stroke="#3B9C5F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`
+  : `<circle cx="${W - 8}" cy="16" r="5" fill="none" stroke="#9a9a96" stroke-width="1.4"/>`
+
+const agentRow = (v, a) => {
+  const color = TIER_COLOR[a.id]
+  const barW = W - 42 - 22
+  const fill = Math.round(barW * a.done / a.total)
+  return `<svg width="${W}" height="66" viewBox="0 0 ${W} 66">${icon(a.id, v, { y: 14, run: a.status === 'running' })}
+<text class="t" x="42" y="18" font-family="${FONT}" font-size="13" font-weight="600">${a.title}</text>
+<text x="42" y="34" font-family="${FONT}" font-size="11"><tspan fill="${color}">${KIND[a.id]}</tspan><tspan class="s">  ${NAMES[a.id]}</tspan></text>
+<text class="t" x="42" y="49" font-family="${FONT}" font-size="11">${a.done}/${a.total} · ${a.note}</text>
+<rect class="k" x="42" y="55" width="${barW}" height="4" rx="2"/><rect x="42" y="55" width="${fill}" height="4" rx="2" fill="${color}"/>
+${mark(a.status, color)}<line class="ln" x1="0" y1="65.5" x2="${W}" y2="65.5"/></svg>`
+}
+
+const plannedRow = (v, id, title) => `<svg width="${W}" height="46" viewBox="0 0 ${W} 46">${icon(id, v, { y: 6, dim: true, run: false })}
+<text class="s" x="42" y="18" font-family="${FONT}" font-size="13" font-weight="600">${title}</text>
+<text x="42" y="34" font-family="${FONT}" font-size="11"><tspan fill="${TIER_COLOR[id]}">${KIND[id]}</tspan><tspan class="m">  planned</tspan></text>
+${mark('planned')}<line class="ln" x1="0" y1="45.5" x2="${W}" y2="45.5"/></svg>`
+
+const compactRow = v => `<svg width="${W}" height="32" viewBox="0 0 ${W} 32">${ORDER.map((id, i) => icon(id, v, { x: i * 36 })).join('')}</svg>`
+
+const band = v => {
+  const BW = W - 120
+  return `<svg width="${W}" height="22" viewBox="0 0 ${W} 22"><circle cx="5" cy="11" r="4" fill="#378ADD"/>
+<text class="t" x="16" y="15.5" font-family="${FONT}" font-size="13" font-weight="500">Export flow</text>
+<rect class="k" x="96" y="3" width="${BW - 20}" height="16" rx="8"/><rect x="96" y="3" width="${Math.round((BW - 20) * 0.6)}" height="16" rx="8" fill="#378ADD"/>
+<text class="s" x="${W - 28}" y="15.5" font-family="${FONT}" font-size="12.5" text-anchor="end">60%</text>
+${icon('other', v, { x: W - 25, y: -0.5, scale: 0.8 })}</svg>`
+}
+
+const RUNS = [
+  { id: 'fable', title: 'Redesign the sync protocol', done: 2, total: 6, note: 'reading the spec', status: 'running' },
+  { id: 'heavy', title: 'Untangle cache invalidation', done: 3, total: 5, note: 'tracing writes', status: 'running' },
+  { id: 'careful', title: 'Migrate the billing schema', done: 1, total: 4, note: 'expand step', status: 'running' },
+  { id: 'medium', title: 'Add CSV export', done: 4, total: 6, note: 'writing tests', status: 'running' },
+  { id: 'light', title: 'Rename config keys', done: 5, total: 5, note: 'done', status: 'done' },
+  { id: 'explore', title: 'Map the payments module', done: 2, total: 4, note: 'reading docs', status: 'running' },
+  { id: 'other', title: 'Review: Standards', done: 1, total: 3, note: 'diff 1 of 3', status: 'running' },
+]
+
+const pane = v => `
+<h2>Up close (4×), running</h2>
+<div class="gallery">${ORDER.map(id => `<div class="card"><svg width="120" height="112" viewBox="0 0 120 112">${icon(id, v, { scale: 4 })}</svg><b>${NAMES[id]}</b><span style="color:${TIER_COLOR[id]}">${KIND[id]}</span></div>`).join('')}</div>
+<h2>Agents panel, real size</h2>
+${RUNS.map(a => agentRow(v, a)).join('')}
+${plannedRow(v, 'medium', '7. Wire the export button')}
+<h2>Compact panel</h2>${compactRow(v)}
+<h2>Progress bar above the prompt</h2>${band(v)}`
+
+const params = new URLSearchParams(location.search)
+let current = VARIANTS[params.get('variant')] ? params.get('variant') : 'A'
+const keys = Object.keys(VARIANTS)
+
+const render = () => {
+  problems.length = 0
+  document.getElementById('light').innerHTML = pane(current)
+  document.getElementById('dark').innerHTML = pane(current)
+  document.getElementById('note').textContent = NOTES[current]
+  document.getElementById('label').textContent = `${current} (${VARIANTS[current]})`
+  document.getElementById('state').textContent =
+    `variant=${current}  ${VARIANTS[current]}\n` +
+    ORDER.map(id => `${KIND[id].padEnd(9)} → ${NAMES[id]} (${PAINT[id]})`).join('\n') +
+    (problems.length ? `\n\nSPRITE PROBLEMS:\n${[...new Set(problems)].join('\n')}` : '\n\nsprites: all rows the right width')
+  const url = new URL(location.href)
+  url.searchParams.set('variant', current)
+  history.replaceState(null, '', url)
+}
+const step = d => { current = keys[(keys.indexOf(current) + d + keys.length) % keys.length]; render() }
+document.getElementById('prev').onclick = () => step(-1)
+document.getElementById('next').onclick = () => step(1)
+addEventListener('keydown', e => {
+  if (e.target.closest?.('input,textarea,[contenteditable]')) return
+  if (e.key === 'ArrowLeft') step(-1)
+  if (e.key === 'ArrowRight') step(1)
+})
+render()
+</script>
+</body>
+</html>
