@@ -22,7 +22,7 @@ Mods are built on function hooks (`hooks/register.tsx`), an early-access Claude 
 ## What it shows
 
 - **Progress bar**: the flow's title, phase, accepted tickets out of planned, and a button with the crew size that opens the panel. It appears once `/orchestrate-spec` reports a plan or a `dev-workflow` agent starts.
-- **Agents panel** (`/agents-info` toggles it; `/agents-info open` opens it without toggling): running, finished and planned subagents with model, effort, step progress, context, estimated cost and time. Each tier has its own crab costume; `explorer` is the pirate.
+- **Agents panel** (`/agents-info` toggles it; `/agents-info open` opens it without toggling): running, finished and planned subagents with model, effort, step progress, context, estimated cost and time. Each tier has its own crab costume; `explorer` is the pirate. With `icons: jdm` each tier drives a JDM car instead (see Settings).
 
 It recognises these agents, with or without the `dev-workflow:` prefix:
 
@@ -41,11 +41,23 @@ Cost is a rough estimate from token counts and a built-in price table (`PRICES` 
 
 ## Settings
 
-`language`: `auto` (default), `en`, `ru` or `he`. `autoOpen`: `workflow` (default) opens the panel when a `dev-workflow` agent starts or a plan is reported; `any` also opens it, once per session, for any other subagent. Set them in `/config`, or for a mod loaded by hand:
+`language`: `auto` (default), `en`, `ru` or `he`. `autoOpen`: `workflow` (default) opens the panel when a `dev-workflow` agent starts or a plan is reported; `any` also opens it, once per session, for any other subagent. `icons`: `crab` (default) or `jdm`. Set them in `/config`, or for a mod loaded by hand:
 
 ```json
-{ "pluginConfigs": { "dev-progress": { "options": { "autoOpen": "any" } } } }
+{ "pluginConfigs": { "dev-progress": { "options": { "autoOpen": "any", "icons": "jdm" } } } }
 ```
+
+With `icons: jdm` the crabs become side-view pixel cars, painted in the tier's colour. While an agent runs, its wheels turn and its body bobs, and each car has one move of its own:
+
+| Agent | Car | Its move |
+| --- | --- | --- |
+| `tier-fable` | Nissan Skyline GT-R (R34) | afterfire from the exhaust |
+| `tier-heavy` | Toyota Supra (A80) | flashes its headlights |
+| `tier-careful` | Mazda RX-7 (FD) | the pop-up headlights wink |
+| `tier-medium` | Subaru Impreza WRX STI | kicks up dust |
+| `tier-light` | Toyota AE86 Trueno | runs at double pace |
+| `explorer` | Mitsubishi Pajero Evo, in desert sand | hops over bumps |
+| anything else, and the progress bar | kei truck | the load in the bed wobbles |
 
 ## Overlap with other mods
 

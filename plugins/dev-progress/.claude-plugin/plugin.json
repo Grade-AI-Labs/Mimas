@@ -1,6 +1,6 @@
 {
   "name": "dev-progress",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Progress bar above the prompt for /orchestrate-spec, plus an agents panel (/agents-info): running, finished and planned subagents with model, task progress, context, cost and time. Forked from savvy-progress.",
   "author": { "name": "Olof Brogeby" },
   "types": "./types/index.d.ts",
@@ -18,6 +18,13 @@
       "description": "workflow: when a dev-workflow agent starts or a plan is reported; any: also when any other subagent starts",
       "default": "workflow",
       "options": ["workflow", "any"]
+    },
+    "icons": {
+      "type": "string",
+      "title": "Agent icons",
+      "description": "crab: Clawd in a costume per tier; jdm: a JDM car per tier (Skyline R34, Supra, RX-7, Impreza, AE86, Pajero, kei truck)",
+      "default": "crab",
+      "options": ["crab", "jdm"]
     }
   },
   "license": "MIT"
