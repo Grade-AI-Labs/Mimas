@@ -173,7 +173,7 @@ This repo is also a Claude Code plugin marketplace, `mimas`:
 | Plugin | What it does |
 | --- | --- |
 | [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills (vendored, unchanged) plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
-| [`dev-progress`](./plugins/dev-progress) | Mod: a progress bar above the prompt and a live agents panel that `/orchestrate-spec` and its agents report to. Forked from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress). |
+| [`dev-progress`](./plugins/dev-progress) | Mod: a progress bar above the prompt and a live agents panel that `/orchestrate-spec` and its agents report to, drawn as crabs or, with `icons: jdm`, JDM cars. Forked from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress). |
 
 Install:
 

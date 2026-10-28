@@ -13,8 +13,8 @@
     {
       "name": "dev-progress",
       "source": "./plugins/dev-progress",
-      "description": "Mod: progress bar above the prompt and a live agents panel for /orchestrate-spec; shows any subagents. Forked from savvy-progress.",
-      "version": "0.1.0",
+      "description": "Mod: progress bar above the prompt and a live agents panel for /orchestrate-spec; shows any subagents, as crabs or JDM cars. Forked from savvy-progress.",
+      "version": "0.2.0",
       "category": "mod"
     }
   ]

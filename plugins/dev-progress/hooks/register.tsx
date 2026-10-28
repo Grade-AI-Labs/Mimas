@@ -345,7 +345,7 @@ const rowSvg = (f: Flow, W: number, isWorking: boolean): string => {
 <text x="${pillX + pillW / 2}" y="${BAR_H / 2 + 4}" text-anchor="middle"${rtl ? ' direction="rtl"' : ''} font-family="${FONT}" font-size="11" font-weight="600" fill="#ffffff">${xml(text)}</text>
 </g>
 <text class="m" ${percentAt} font-family="${FONT}" font-size="12.5" font-variant-numeric="tabular-nums">${percent}</text>
-${CRAB_CSS}${crab(rx(W - CRAB_W + 1, crabW), 0, 'other', false, isWorking, 0.8, rtl)}
+${iconCss()}${icon(rx(W - CRAB_W + 1, crabW), 0, 'other', false, isWorking, 0.8, rtl)}
 </svg>`
 }
 
@@ -650,6 +650,126 @@ const crab = (x: number, y: number, costume: string, dim = false, isWalking = fa
   return `<g transform="${place}" opacity="${dim ? 0.45 : 1}" shape-rendering="crispEdges"><g class="c-${costume}${isWalking ? ' run' : ''}">${body}${group('la')}${group('lb')}</g></g>`
 }
 
+// --- JDM cars, the `icons: jdm` alternative: side views facing right on the crab's
+// 30-wide grid, drawn and moved by the same rules. Classes and keyframes carry a `j`
+// so they never meet the crab's.
+
+// Paint is the tier's color; the explorer has none, so its Pajero gets desert sand.
+const CAR_PAINT: Record<string, string> = { explore: '#C9A66B' }
+const shade = (hex: string, k: number): string =>
+  '#' + [1, 3, 5].map(i => Math.round(parseInt(hex.slice(i, i + 2), 16) * k).toString(16).padStart(2, '0')).join('')
+// p is the paint and q its shadow, filled in per car.
+const CAR_INK: Record<string, string> = { k: INK, K: '#2E2D2B', w: '#2B3440', g: '#8FB3CC', l: '#FFF4C2', L: '#D23A2E', s: '#C9CCD2', r: '#D23A2E' }
+
+// Rows r0..r6 sit at y15..21; r7 and r8 are the arches the wheels tuck into.
+const CAR_R7 = 'qqkkkkkkkqqqqqqqqqqkkkkkkkqqqs'
+const CAR_R8 = '..k.....kqqqqqqqqqqk.....k....'
+// A silver rim whose two dark spokes swap diagonals: two frames read as a turning wheel.
+const WHEEL_A = ['.kkk.', 'kdrrk', 'krhrk', 'krrdk', '.kkk.']
+const WHEEL_B = ['.kkk.', 'krrdk', 'krhrk', 'kdrrk', '.kkk.']
+
+type Car = { rows: string[]; r7?: string; r8?: string; rim?: string; extra?: (f: Fill, m: Record<string, string>) => void }
+
+const CARS: Record<string, Car> = {
+  // Fable: Skyline GT-R R34, boxy with a wing on short posts; afterfire from the exhaust.
+  fable: {
+    rows: ['pppppp........................', '.k..k...pppppppppp............', '.k..k..pwwwwwwkwgwp...........', 'pppppppwwwwwwwkwggwwp.........', 'Lpppppppppppppppppppppppppp...', 'Lppppppppppppppppppppppppppppl', 'ppppppppppppppppppppppppppppps'],
+    extra: f => {
+      f(0, 23, 1, 1, '#F5C542', 'jfa'); f(1, 23, 1, 1, '#E8742C', 'jfa')
+      f(0, 23, 1, 1, '#F5C542', 'jfb'); f(1, 23, 1, 1, '#F5C542', 'jfb'); f(0, 24, 1, 1, '#E8742C', 'jfb')
+    },
+  },
+  // Heavy: Supra A80, the tall hoop wing and a rounder nose; flashes its headlights.
+  heavy: {
+    rows: ['ppppppp.......................', 'k....k....ppppppppp...........', 'k....k...pwwwwwkwgwp..........', 'pppppppppwwwwwwkwggwp.........', 'Lppppppppppppppppppppppp......', 'Lpppppppppppppppppppppppppppl.', 'ppppppppppppppppppppppppppppps'],
+    extra: f => { f(28, 20, 1, 1, '#FFFFFF', 'jhl'); f(29, 20, 1, 1, '#FFF4C2', 'jhl') },
+  },
+  // Careful: RX-7 FD, low and curvy with a ducktail; the pop-up headlights wink.
+  careful: {
+    rows: ['..............................', '..............................', '..........pppppp..............', '........ppwwwwkwgp............', 'ppp....ppwwwwwwkwggp..........', 'Lppppppppppppppppppppppppppp..', 'Lpppppppppppppppppppppppppppps'],
+    extra: (f, m) => stamp(f, 22, 19, ['ppl'], m, 'jpop'),
+  },
+  // Medium: Impreza WRX STI, a rally wing, a hood scoop and gold wheels; kicks up dust.
+  medium: {
+    rows: ['pppppp........................', '.kk..kk.ppppppppppp...........', '..k..k.pwwwwwkwwwwgp..........', 'pppppppwwwwwwkwwwwggp.........', 'Lppppppppppppppppppppkkkpp....', 'Lppppppppppppppppppppppppppppl', 'ppppppppppppppppppppppppppppps'],
+    rim: '#E0B13A',
+    extra: f => {
+      f(0, 25, 1, 1, '#C9B79C', 'jg-da'); f(1, 26, 2, 1, '#C9B79C', 'jg-da'); f(2, 24, 1, 1, '#AB9C85', 'jg-da')
+      f(0, 23, 1, 1, '#AB9C85', 'jg-db'); f(1, 25, 1, 1, '#C9B79C', 'jg-db'); f(0, 26, 1, 1, '#C9B79C', 'jg-db')
+    },
+  },
+  // Light: AE86 Trueno, a two-tone hatch with its pop-ups up; runs at double pace.
+  light: {
+    rows: ['..............................', '........pppppppppp............', '.....ppwwwwwwwkwwgp...........', '...ppwwwwwwwwwkwwggp..........', 'Lppppppppppppppppppppppppp....', 'Lpppppppppppppppppppppppppppps', 'KKKKKKKKKKKKKKKKKKKKKKKKKKKKKs'],
+    r7: 'KKkkkkkkkKKKKKKKKKKkkkkkkkKKKs',
+    r8: '..k.....kKKKKKKKKKKk.....k....',
+    extra: (f, m) => stamp(f, 21, 18, ['ppl'], m),
+  },
+  // Explore: Pajero Evo Dakar, tall with a roof rack, a snorkel and a rally stripe; hops over bumps.
+  explore: {
+    rows: ['......k.k.k.k.k.k.k...........', '.....kkkkkkkkkkkkkkkk.........', '.....pppppppppppppppppp.k.....', '.....pwwwwwkwwwwwwkwggp.k.....', 'Lppppppppppppppppppppppppppp..', 'Lrrrrrrrrrrrrrrrrrrrrrrrrrrrrl', 'ppppppppppppppppppppppppppppps'],
+  },
+  // Other: a kei truck, a cab-over with a box strapped to the bed that wobbles.
+  other: {
+    rows: ['..............................', '..............................', '...................pppppppp...', '...................pwwwwwgpp..', '...................pwwwwwggpp.', 'sssssssssssssssssspppppppppppl', 'Lppppppppppppppppppppppppppppl'],
+    extra: f => stamp(f, 4, 17, ['bbbbbb', 'bBBBBb', 'bbbbbb'], { b: '#A0703F', B: '#7A4A26' }, 'jcg'),
+  },
+}
+
+// The two wheel frames swap four times a second; periods divide one second, as the crab's do.
+const CAR_CSS = `<style>
+.jwb,.jfa,.jfb,.jhl,.jpop,.jg-da,.jg-db{opacity:0}
+.run .jwa{animation:j-a .25s steps(1) infinite}.run .jwb{animation:j-b .25s steps(1) infinite}
+@keyframes j-a{50%{opacity:0}}@keyframes j-b{50%{opacity:1}}
+.run .jbd{animation:j-bob .5s steps(1) infinite -.125s}
+.run g{transform-box:fill-box}
+@keyframes j-bob{50%{transform:translateY(1px)}}
+.j-fable.run .jfa{animation:j-fa 1s steps(1) infinite}.j-fable.run .jfb{animation:j-fb 1s steps(1) infinite}
+@keyframes j-fa{75%{opacity:1}87.5%{opacity:0}}@keyframes j-fb{87.5%{opacity:1}}
+.j-heavy.run .jhl{animation:j-flash 1s steps(1) infinite}
+@keyframes j-flash{0%{opacity:1}12.5%{opacity:0}25%{opacity:1}37.5%{opacity:0}}
+.j-careful.run .jpop{animation:j-wink 1s steps(1) infinite}
+@keyframes j-wink{0%{opacity:1}50%{opacity:0}}
+.j-medium.run .jg-da{animation:j-b .5s steps(1) infinite}.j-medium.run .jg-db{opacity:1;animation:j-a .5s steps(1) infinite}
+.j-light.run .jwa,.j-light.run .jwb{animation-duration:.125s}.j-light.run .jbd{animation-duration:.25s}
+.j-explore.run .jcar{animation:j-hop 1s steps(1) infinite}
+@keyframes j-hop{25%{transform:translateY(-1px)}50%{transform:translateY(-2px)}75%{transform:translateY(-1px)}}
+.j-other.run .jcg{animation:j-jig .5s steps(1) infinite -.25s}
+@keyframes j-jig{50%{transform:translateY(-1px)}}
+@media (prefers-reduced-motion: reduce){.run,.run g{animation:none!important}}
+</style>`
+
+// Same arguments as `crab`. Wheels and ground marks stay outside the body, so only
+// the body rides the suspension; props nest inside it, as the crab's do.
+const car = (x: number, y: number, costume: string, dim = false, isDriving = false, scale = CRAB_SCALE, mirror = false): string => {
+  const spec = CARS[costume] ?? CARS.other
+  const paint = CAR_PAINT[costume] ?? colorOf(costume)
+  const m = { ...CAR_INK, p: paint, q: shade(paint, 0.72) }
+  const groups = new Map<string, string[]>([['jbd', []]])
+  const f: Fill = (cx, cy, w, h, c, cls = 'jbd') => {
+    if (!groups.has(cls)) groups.set(cls, [])
+    groups.get(cls)?.push(`<rect x="${cx}" y="${cy}" width="${w}" height="${h}" fill="${c}"/>`)
+  }
+  stamp(f, 0, 15, [...(spec?.rows ?? []), spec?.r7 ?? CAR_R7, spec?.r8 ?? CAR_R8], m)
+  const wheel = { k: '#34332F', r: spec?.rim ?? '#C9CCD2', d: '#3A3A3C', h: '#8E929A' }
+  for (const wx of [3, 20]) {
+    stamp(f, wx, 22, WHEEL_A, wheel, 'jwa')
+    stamp(f, wx, 22, WHEEL_B, wheel, 'jwb')
+  }
+  spec?.extra?.(f, m)
+  const group = (cls: string) => `<g class="${cls}">${(groups.get(cls) ?? []).join('')}</g>`
+  const ground = [...groups.keys()].filter(k => k.startsWith('jg-'))
+  const props = [...groups.keys()].filter(k => k !== 'jbd' && k !== 'jwa' && k !== 'jwb' && !ground.includes(k))
+  const body = `<g class="jbd">${(groups.get('jbd') ?? []).join('')}${props.map(group).join('')}</g>`
+  const place = mirror ? `translate(${x + CRAB_BOX * scale},${y}) scale(${-scale},${scale})` : `translate(${x},${y}) scale(${scale})`
+  return `<g transform="${place}" opacity="${dim ? 0.45 : 1}" shape-rendering="crispEdges"><g class="j-${costume}${isDriving ? ' run' : ''}">${ground.map(group).join('')}<g class="jcar">${body}${group('jwa')}${group('jwb')}</g></g></g>`
+}
+
+// The `icons` option, read once at register: crabs unless it says jdm.
+let icons: 'crab' | 'jdm' = 'crab'
+const icon = (...args: Parameters<typeof crab>): string => (icons === 'jdm' ? car(...args) : crab(...args))
+const iconCss = (): string => (icons === 'jdm' ? CAR_CSS : CRAB_CSS)
+
 const statusMark = (x: number, y: number, status: string, color: string): string => {
   if (status === 'running') return `<circle class="live" cx="${x}" cy="${y}" r="3.5" fill="${color}"/>`
   if (status === 'done') return `<path d="M${x - 5} ${y}l3.5 3.5 6.5-7" fill="none" stroke="#3B9C5F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`
@@ -677,10 +797,10 @@ const crabWidth = (scale: number): number => Math.round(CRAB_BOX * scale * 100) 
 
 // A panel crab at x in a row of width W: on the mirrored side and facing left in Hebrew.
 const rowCrab = (W: number, x: number, y: number, costume: string, dim = false, isWalking = false): string =>
-  crab(mx(W, x, crabWidth(CRAB_SCALE)), y, costume, dim, isWalking, CRAB_SCALE, isRtl())
+  icon(mx(W, x, crabWidth(CRAB_SCALE)), y, costume, dim, isWalking, CRAB_SCALE, isRtl())
 
 const svg = (W: number, H: number, body: string): string =>
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${PANE_CSS}${CRAB_CSS}${body}</svg>`
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${PANE_CSS}${iconCss()}${body}</svg>`
 
 // The pane's own title already says "Agents": the header names the flow, if any.
 const headerSvg = (W: number, title: string, t: ReturnType<typeof totals>): string => {
@@ -809,6 +929,7 @@ async function autoOpen($: EngineInterface, key: string): Promise<void> {
 }
 
 export const register: Register = (on, options) => {
+  icons = options.icons === 'jdm' ? 'jdm' : 'crab'
   on('session.start', async ($, e, next) => {
     const started = await next(e)
     lang = await detectLang($, options.language)
