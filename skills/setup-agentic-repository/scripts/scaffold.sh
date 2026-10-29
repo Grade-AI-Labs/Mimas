@@ -194,7 +194,7 @@ else
   log "created: $DOCS_DIR/AGENT_WORKFLOW.md (platform: $PLATFORM)"
 fi
 
-CREATED_FILES=$(echo "[$FILES_JSON]" | grep -o '"created"' | wc -l)
+CREATED_FILES=$(echo "[$FILES_JSON]" | { grep -o '"created"' || true; } | wc -l)
 
 # Summary
 log ""

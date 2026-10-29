@@ -1,7 +1,7 @@
 {
   "name": "dev-workflow",
-  "version": "0.2.0",
-  "description": "Matt Pocock's engineering skills (vendored, unchanged) plus tiered worker agents and /orchestrate-spec: the orchestrator tiers each ticket by model and effort, delegates across the ready frontier, and reviews every result before merging.",
+  "version": "0.3.0",
+  "description": "Matt Pocock's engineering skills (forked, with Mimas's setup-agentic-repository and review skills in place of his setup) plus tiered worker agents and /orchestrate-spec: the orchestrator tiers each ticket by model and effort, delegates across the ready frontier, and reviews every result before merging.",
   "author": { "name": "Olof Brogeby" },
   "license": "MIT",
   "keywords": ["skills", "orchestration", "subagents", "tdd", "code-review", "grilling"]

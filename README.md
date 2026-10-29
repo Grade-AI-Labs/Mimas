@@ -172,7 +172,7 @@ This repo is also a Claude Code plugin marketplace, `mimas`:
 
 | Plugin | What it does |
 | --- | --- |
-| [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills (vendored, unchanged) plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
+| [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills with Mimas's `setup-agentic-repository` and review skills in place of his setup, plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
 | [`dev-progress`](./plugins/dev-progress) | Mod: a progress bar above the prompt and a live agents panel that `/orchestrate-spec` and its agents report to, drawn as crabs or, with `icons: jdm`, JDM cars. Forked from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress). |
 
 Install:
@@ -197,24 +197,24 @@ To offer the plugins to everyone working in a repo, add this to that repo's
 }
 ```
 
-The plugin ships Matt's upstream `domain-modeling`, `grill-me`,
-`grill-with-docs`, `handoff`, `to-spec` and `to-tickets`, not the Mimas
-adaptations in `skills/`. Plugin skills are namespaced
+`dev-workflow` ships its own copies of `setup-agentic-repository`,
+`review-policy-builder`, `review-policy-rule-builder` and `agentic-review`,
+adapted to Matt's layout (`docs/agents/`, `GLOSSARY.md`, `docs/adr/`,
+`CODING_STANDARDS.md`). The originals in `skills/` keep the Mimas
+`agents-docs/` + `CONTEXT.md` layout for use without the plugin; the plugin's
+setup offers to migrate a repo from one to the other. Its `domain-modeling`,
+`grill-me`, `grill-with-docs`, `handoff`, `to-spec` and `to-tickets` are
+Matt's, not the Mimas adaptations. Plugin skills are namespaced
 (`/dev-workflow:to-spec`), but if you also install the Mimas skills, both
 versions of the model-invoked ones can trigger.
 
-### Updating the vendored skills
+### Upstream
 
-```bash
-scripts/sync-upstream.sh          # or: scripts/sync-upstream.sh <ref>
-```
-
-The script needs `git` and `node`. It replaces every vendored skill in
-`plugins/dev-workflow/skills/` with upstream's promoted set, leaves
-`orchestrate-spec` alone, and records the commit in
-`plugins/dev-workflow/UPSTREAM`. Review the diff, then bump `version` in both
-`plugins/dev-workflow/.claude-plugin/plugin.json` and the `dev-workflow`
-entry in `.claude-plugin/marketplace.json` before committing.
+`plugins/dev-workflow/skills/` is a fork of Matt's promoted skills at the
+commit in `plugins/dev-workflow/UPSTREAM`. It is no longer synced
+automatically; bring upstream changes over by hand. Changes to Matt's
+`setup-matt-pocock-skills` templates belong in
+`plugins/dev-workflow/skills/setup-agentic-repository/templates/`.
 
 ## Requirements
 
