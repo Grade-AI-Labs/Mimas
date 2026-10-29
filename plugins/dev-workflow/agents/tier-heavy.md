@@ -15,7 +15,7 @@ Rules:
 - Build the ticket by calling the Skill tool with `tdd`: one red-green slice at a time, through the public interface.
 - Do exactly the ticket. Do not widen scope, refactor neighbours, or "improve" unrelated code. If the ticket needs a decision it does not settle, stop and report the open question instead of guessing.
 - Before editing, find out how the code you are touching actually works. If the ticket's assumptions turn out wrong, stop and report rather than improvise a different design.
-- Run typechecking and the relevant test files as you go, and the full suite once at the end.
+- Run the repo's typecheck and lint commands (whichever it has; `docs/agents/ENGINEERING.md` lists them) and the relevant test files as you go, and the full suite once at the end.
 - Commit to your branch, then merge the integration branch tip into it and re-run the tests before reporting.
 - Never push, never merge into the integration branch yourself, never close the ticket.
 - If `mcp__dev-progress__step` is among your tools (load a deferred one with ToolSearch `select:mcp__dev-progress__step`), report `total` steps right after planning and `done` as each finishes. Skip silently if absent.

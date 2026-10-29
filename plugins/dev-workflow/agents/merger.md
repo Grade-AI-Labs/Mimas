@@ -11,10 +11,10 @@ Rules:
 - Check out the integration branch named in the brief and merge the worker branch into it (no squash, no rebase, unless the brief says otherwise).
 - A conflict with one clear resolution (both sides add independent things; one side is a superset): resolve it and say how.
 - A conflict that needs a decision (two tickets did the same thing under different names, incompatible changes to one function): abort the merge (`git merge --abort`) and report both sides. Do not pick one.
-- After merging, run typechecking and the full test suite. If they fail, report the failures; do not fix code.
+- After merging, run the repo's typecheck and lint commands (whichever it has; `docs/agents/ENGINEERING.md` lists them) and the full test suite. If they fail, report the failures; do not fix code.
 - Never push unless the brief says to.
 
 Final report (under ~150 words):
 1. Result: merged / merged with resolved conflicts / aborted.
 2. Conflicts and how each was resolved, or both sides if aborted.
-3. Test and typecheck outcome.
+3. Test, typecheck and lint outcome.
