@@ -19,6 +19,7 @@ Building blocks for `CODING_STANDARDS.md` (standards, focus areas) and `{{DOCS_D
 ```bash
 npx tsc --noEmit
 ```
+If the root `tsconfig.json` is solution-style (`references`, often with `"files": []`), `tsc --noEmit` checks nothing and exits 0: use the `typecheck` script from `package.json`, or `npx tsc -b`, here and in the critical rule below.
 
 AGENTS.md critical rule:
 > ### TypeScript correctness (MANDATORY)

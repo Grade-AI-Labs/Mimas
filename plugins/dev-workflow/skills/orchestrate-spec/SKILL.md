@@ -15,13 +15,13 @@ Spec from the user: $ARGUMENTS
 
 ## 0. Preconditions
 
-- The issue tracker should have been provided to you (`docs/agents/issue-tracker.md`). If not, tell the user to run `/setup-agentic-repository` and stop.
+- The issue tracker should have been provided to you (`docs/agents/issue-tracker.md`). If not, tell the user to run `/dev-workflow:setup-agentic-repository` and stop.
 - The worker agents must exist. The Agent tool lists them as `explorer`, `tier-fable`, `tier-heavy`, `tier-careful`, `tier-medium`, `tier-light`, `merger`, `reviewer`, or with the `dev-workflow:` prefix when installed as a plugin. Use the names exactly as listed. If they are missing, stop and tell the user.
 - A spec reference is required. If none was passed, ask for it.
 
 ## 1. Read and tier (orchestrator only)
 
-1. Fetch the spec and every ticket linked to it, following the tracker doc. Read `GLOSSARY.md` and any ADRs the spec points at.
+1. Fetch the spec and every ticket linked to it, following the tracker doc. Read `GLOSSARY.md` and any ADRs the spec points at. If the repo has review policies, read `docs/agents/review/policies/POLICY_INDEX.md`, `global-policy.md` and the module policies for the modules the tickets touch: a ticket that conflicts with a rule gets the resolution in its brief as a decision (section 4).
 2. Build the **task graph** from each ticket's blocking edges. The **frontier** is every ticket whose blockers are all done.
 3. If the codebase is unfamiliar in the areas the tickets touch, spawn one `explorer` first. It writes notes to a directory **outside the repo** (for example `$TMPDIR/<spec-slug>-notes/`); every later brief points at that directory instead of restating it.
 4. Tier every ticket using the table in section 3.
@@ -29,7 +29,7 @@ Spec from the user: $ARGUMENTS
 
 ## 2. Integration branch
 
-Create the integration branch from main (`<spec-slug>` or what the user asked for). If the tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in section 5, marked as closing the spec and tickets.
+Create the integration branch from main (`<spec-slug>` or what the user asked for) and check it out in the main checkout. Keep it checked out there until section 7: `isolation: "worktree"` branches each worker from the main checkout's `HEAD`, so this is what gives a newly unblocked ticket its blockers' merged code. If the tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in section 5, marked as closing the spec and tickets.
 
 ## 3. Tiering
 
@@ -56,9 +56,10 @@ For every ticket on the frontier, spawn its tier agent **in the background**, wi
 Briefs are sparse **context pointers**, not restatements. Each brief contains:
 
 - the ticket reference (and how to fetch it, per the tracker doc), and the spec reference;
-- the integration branch name;
+- the integration branch name, and that the worker's branch must contain its tip before work starts (`git merge --ff-only <integration>` if it doesn't);
 - the explorer notes directory, if any;
-- anything you decided in section 1 that is not in the ticket (a clarified acceptance criterion, a seam to test at);
+- anything you decided in section 1 that is not in the ticket (a clarified acceptance criterion, a seam to test at, the resolution of a policy conflict);
+- that the ticket's acceptance criteria outrank the brief: if a brief sentence contradicts one, follow the ticket and flag the conflict in the report;
 - the ticket's **title verbatim** as the Agent tool's `description`.
 
 The worker builds the ticket with `/tdd`, merges the integration branch tip into its own branch, and reports. While workers run, prepare the next briefs; never implement in parallel with them.
@@ -75,7 +76,7 @@ For each finished ticket:
 4. Re-run the verification yourself when it is cheap, or when the report is vague.
 5. Decide:
    - **Accept**: spawn `merger` to merge the worker branch into the integration branch and run the test suite there. Then resolve the ticket the way the tracker closes work.
-   - **Return**: send the same worker (SendMessage) or a higher tier a precise list of defects, not a re-explanation of the ticket.
+   - **Return**: send the same worker (SendMessage) or a higher tier a precise list of defects, not a re-explanation of the ticket. If SendMessage fails (a finished foreground worker may have no transcript to resume), brief a fresh worker of the same tier in the same worktree and branch: the ticket reference, the defect list, and that the previous attempt's commits are already there.
    - **Fix it yourself** only for a one-line correction where a round trip would cost more than the fix.
 
 Cap at two return rounds per ticket; after that, re-tier, re-plan, or ask the user.
@@ -86,16 +87,16 @@ Each accepted merge may grow the frontier: go back to section 4 for the newly un
 
 When every ticket is merged, run the two-axis review over the integration branch with the fixed point at the main branch's merge-base:
 
-- Call the Skill tool with `code-review`, or, to keep the review out of your context, spawn two `reviewer` agents in parallel, one per axis (**Standards** and **Spec**), each given the diff command, the commit list, and its axis brief from the `code-review` skill.
-- If the repo has review policies (`docs/agents/review/policies/POLICY_INDEX.md`), the **Standards** axis is the `agentic-review` skill instead: call it with the integration branch, the main branch as base, and an output directory outside the repo (`$TMPDIR/<spec-slug>-review/`, next to the explorer notes) so its artifacts never land on the integration branch. It routes the diff to one specialist per module, enforces the policies, and fails closed if a specialist doesn't report. The **Spec** axis stays a `reviewer` agent. Treat an `incomplete` result as a blocker to fix, not a pass.
+- Call the Skill tool with `dev-workflow:code-review` (not the built-in `code-review`), or, to keep the review out of your context, spawn two `reviewer` agents in parallel, one per axis (**Standards** and **Spec**), each given the diff command, the commit list, and its axis brief from the `dev-workflow:code-review` skill.
+- If the repo has review policies (`docs/agents/review/policies/POLICY_INDEX.md`), the **Standards** axis is the `dev-workflow:agentic-review` skill instead: call it with the integration branch as the head ref, the main branch as base, and an output directory outside the repo (`$TMPDIR/<spec-slug>-review/`, next to the explorer notes) so its artifacts never land on the integration branch. It routes the diff to one specialist per module, enforces the policies, and fails closed if a specialist doesn't report. The **Spec** axis stays a `reviewer` agent. Treat an `incomplete` result as a blocker to fix, not a pass.
 
 Triage the findings yourself. Send every finding worth fixing to **one** worker in one brief, tiered by the worst finding. Review that fix as in section 5.
 
 ## 7. Close
 
 1. If a draft PR exists, mark it ready for review; the `pr` skill shapes its body. Otherwise report the integration branch.
-2. Remove every worker worktree.
-3. Report to the user: what landed, what was verified, what was left out and why, and one line on which tiers ran. If `agentic-review` ran, give the path of its result file. Suggest `/retro` if any ticket needed a return round.
+2. Remove every worker worktree, and delete each merged worker branch (`git branch -d`).
+3. Report to the user: what landed, what was verified, what was left out and why, and one line on which tiers ran. If `agentic-review` ran, give the path of its result file. Suggest `/dev-workflow:retro` if any ticket needed a return round.
 
 ## Progress bar (optional)
 

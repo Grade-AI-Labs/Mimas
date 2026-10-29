@@ -26,7 +26,10 @@ VALID_SOURCE = {"derived", "user-specified", "adr"}
 VALID_STATUS = {"active", "deprecated", "needs-decision"}
 MODULE_FILE_RE = re.compile(r"^module-(?P<slug>[a-z0-9-]+)\.md$")
 ID_GLOBAL_RE = re.compile(r"^RP-GLOBAL-[0-9]{3,}$")
-ID_GENERIC_RE = re.compile(r"^RP-[A-Z0-9_]+-[0-9]{3,}$")
+ID_GENERIC_RE = re.compile(r"^RP-[A-Z0-9_]+(?:-[A-Z0-9_]+)*-[0-9]{3,}$")
+VALID_CHECK_TYPES = {"inheritance_suffix"}
+VALID_APPLY_SCOPES = {"changed-files", "all-files"}
+VALID_MATCH_STRATEGIES = {"same-stem-suffix", "any-base-with-suffix"}
 
 
 def parse_yaml_blocks(text: str) -> list[str]:
@@ -47,6 +50,67 @@ def parse_top_level_fields(block: str) -> dict[str, str]:
         key, value = line.split(":", 1)
         fields[key.strip()] = value.strip().strip('"')
     return fields
+
+
+def parse_automation(block: str) -> dict[str, str] | None:
+    """Flatten the nested `automation:` mapping into dotted keys, e.g. `selector.class_name_suffix`."""
+    lines = block.splitlines()
+    start = next((i for i, line in enumerate(lines) if re.match(r"^automation:\s*$", line)), None)
+    if start is None:
+        return None
+    flat: dict[str, str] = {}
+    stack: list[tuple[int, str]] = []
+    for raw_line in lines[start + 1:]:
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        if not raw_line.startswith((" ", "\t")):
+            break
+        indent = len(raw_line) - len(raw_line.lstrip())
+        content = raw_line.strip()
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        if content.startswith("- "):
+            if stack:
+                key = ".".join(k for _, k in stack)
+                flat[key] = (flat.get(key, "") + "," + content[2:].strip()).lstrip(",")
+            continue
+        if ":" not in content:
+            flat.setdefault("__malformed__", content)
+            continue
+        key, value = (part.strip() for part in content.split(":", 1))
+        path = ".".join([k for _, k in stack] + [key])
+        if value:
+            flat[path] = value.strip('"').strip("'")
+        else:
+            stack.append((indent, key))
+            flat.setdefault(path, "")
+    return flat
+
+
+def validate_automation(auto: dict[str, str], idx: int) -> list[str]:
+    errs: list[str] = []
+    if "__malformed__" in auto:
+        errs.append(f"rule {idx}: automation: cannot parse line '{auto['__malformed__']}'")
+    check_type = auto.get("check_type")
+    if not check_type:
+        errs.append(f"rule {idx}: automation.check_type is required")
+        return errs
+    if check_type not in VALID_CHECK_TYPES:
+        errs.append(f"rule {idx}: unsupported automation.check_type '{check_type}' (supported: {', '.join(sorted(VALID_CHECK_TYPES))})")
+        return errs
+    scope = auto.get("apply_scope")
+    if scope and scope not in VALID_APPLY_SCOPES:
+        errs.append(f"rule {idx}: invalid automation.apply_scope '{scope}'")
+    for key in ("selector.class_name_suffix", "expectation.base_class_suffix"):
+        if not auto.get(key):
+            errs.append(f"rule {idx}: automation.{key} is required for inheritance_suffix")
+    strategy = auto.get("expectation.match_strategy")
+    if strategy and strategy not in VALID_MATCH_STRATEGIES:
+        errs.append(f"rule {idx}: invalid automation.expectation.match_strategy '{strategy}' (one of: {', '.join(sorted(VALID_MATCH_STRATEGIES))})")
+    exclude = auto.get("selector.exclude")
+    if exclude and exclude.startswith("[") != exclude.endswith("]"):
+        errs.append(f"rule {idx}: automation.selector.exclude must be a list")
+    return errs
 
 
 def validate_block(fields: dict[str, str], idx: int) -> tuple[list[str], list[str]]:
@@ -134,6 +198,9 @@ def main() -> int:
         fields = parse_top_level_fields(block)
         parsed_fields.append(fields)
         block_errors, block_warnings = validate_block(fields, i)
+        automation = parse_automation(block)
+        if automation is not None:
+            block_errors.extend(validate_automation(automation, i))
         errors.extend(block_errors)
         warnings.extend(block_warnings)
 

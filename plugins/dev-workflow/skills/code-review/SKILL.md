@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-The issue tracker should have been provided to you. If not, tell the user to run `/setup-agentic-repository`.
+The issue tracker should have been provided to you. If not, tell the user to run `/dev-workflow:setup-agentic-repository`.
 
 ## Process
 
@@ -19,6 +19,8 @@ The issue tracker should have been provided to you. If not, tell the user to run
 Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it.
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+
+If the working tree has uncommitted changes (as when `/implement` reviews before committing), review them too: the diff command becomes `git diff $(git merge-base <fixed-point> HEAD)` (merge-base against the working tree), and the untracked files from `git ls-files --others --exclude-standard` go to both sub-agents to read in full.
 
 Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
 

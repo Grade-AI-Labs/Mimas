@@ -64,14 +64,14 @@ When creating or changing anything:
 2. Write failing tests (RED)
 3. Run tests and confirm failure ([exact test command])
 4. Write minimal code to pass tests (GREEN)
-5. Refactor while keeping tests green
+5. Refactor during review, not inside the red → green loop (see `/tdd`)
 
 This applies to all code — routes, services, domain logic, validation, database queries, and any other logic. The `/tdd` skill drives this loop.
 
 [If the project has static type checking, add a second MANDATORY rule.
 Use the exact command discovered. Examples:
 
-For TypeScript:
+For TypeScript (with a solution-style root `tsconfig.json` — `references`, often `"files": []` — use the `typecheck` script or `npx tsc -b` instead, since `tsc --noEmit` checks nothing there):
 "### TypeScript correctness (MANDATORY)
 Before completing any task:
 1. Run `npx tsc --noEmit`

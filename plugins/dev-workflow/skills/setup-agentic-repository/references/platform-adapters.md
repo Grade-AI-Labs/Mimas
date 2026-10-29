@@ -209,3 +209,16 @@ ENGINEERING.md — Task tracking section:
 - No external issue tracker: specs and tickets live as markdown files under `.scratch/<feature-slug>/`, as `{{DOCS_DIR}}/issue-tracker.md` describes
 - Reference the ticket file in commit messages and PR descriptions when one exists
 ```
+
+### Other trackers
+
+**Detection:** the user picks "Other" and describes their tracker (`--tracker other`)
+
+ENGINEERING.md — Issue linking section, written from the user's description:
+```
+## Issue linking
+
+- Reference tickets in commit messages and PR descriptions as <the tracker's id format, e.g. NOTION-42 or a URL>
+- <How the tracker links commits or PRs to tickets, if it does; otherwise "Links are added by hand">
+```
+If the description doesn't say how tickets are referenced, ask; don't invent an id format.

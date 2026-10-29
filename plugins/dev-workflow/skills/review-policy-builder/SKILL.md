@@ -17,13 +17,13 @@ This skill is interview-first and evidence-grounded:
 - write structured policy artifacts in `<docs-dir>/review/policies/`
 - define review audit governance in `POLICY_INDEX.md` for specialist attestation and completion rules
 
-Read [references/policy-contract.md](references/policy-contract.md) before writing policy files. It is the canonical schema and includes onion/clean-architecture templates.
+Read [references/policy-contract.md](references/policy-contract.md) before writing policy files. It is the canonical schema and includes onion/clean-architecture templates. [references/review-policy-builder-flow.md](references/review-policy-builder-flow.md) shows the phases as one diagram.
 
 ---
 
 ## Phase 1 — Verify prerequisites and locate `<docs-dir>`
 
-This skill runs after `/setup-agentic-repository`.
+This skill runs after `/dev-workflow:setup-agentic-repository`.
 
 1. Read root `AGENTS.md`.
 2. Discover `<docs-dir>` from the docs paths listed in `AGENTS.md` (typically `docs/agents/`).
@@ -37,7 +37,7 @@ This skill runs after `/setup-agentic-repository`.
    - `GLOSSARY.md` or `GLOSSARY-MAP.md`
    - `docs/adr/*.md` (and `<context-path>/docs/adr/*.md` in multi-context repos)
 
-If required files are missing, fail fast with actionable remediation: run `/setup-agentic-repository` first.
+If required files are missing, fail fast with actionable remediation: run `/dev-workflow:setup-agentic-repository` first.
 
 ---
 

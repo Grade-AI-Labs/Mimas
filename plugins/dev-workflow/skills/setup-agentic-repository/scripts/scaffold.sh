@@ -53,12 +53,13 @@ USAGE
 }
 
 # Copy file if destination doesn't exist, substituting {{DOCS_DIR}} along the way.
-# Prints "created" or "skipped".
+# Prints "created", "skipped" (exists, same as the template) or "differs"
+# (exists and differs: compare it with the template and add what's missing).
 copy_if_missing() {
   local src="$1" dst="$2"
   mkdir -p "$(dirname "$dst")"
   if [[ -f "$dst" ]]; then
-    echo "skipped"
+    if sed "s|{{DOCS_DIR}}|$DOCS_DIR|g" "$src" | cmp -s - "$dst"; then echo "skipped"; else echo "differs"; fi
   else
     sed "s|{{DOCS_DIR}}|$DOCS_DIR|g" "$src" > "$dst"
     echo "created"
@@ -111,10 +112,10 @@ if [[ "$DOCS_DIR" == *".."* ]]; then
   echo "{\"error\": \"--docs-dir must be a relative path inside the repo, got: $DOCS_DIR\"}"; exit 1
 fi
 
-TARGET="$(cd "$TARGET" && pwd)"
 if [[ ! -d "$TARGET" ]]; then
   echo "{\"error\": \"Target directory does not exist: $TARGET\"}"; exit 1
 fi
+TARGET="$(cd "$TARGET" && pwd)"
 
 # --- scaffold ---
 
@@ -148,51 +149,73 @@ for pair in \
   "triage-labels.md:triage-labels.md"; do
   src="${pair%%:*}"; dst="${pair#*:}"
   STATUS=$(copy_if_missing "$TEMPLATES_DIR/$src" "$TARGET/$DOCS_DIR/$dst")
-  add_file_entry "$DOCS_DIR/$dst" "$STATUS"
+  add_file_entry "$DOCS_DIR/$dst" "$STATUS" ", \"template\": \"templates/$src\""
   log "$STATUS: $DOCS_DIR/$dst"
 done
 
 # 4. $DOCS_DIR/issue-tracker.md — the chosen tracker's operations ("other" is written by the LLM)
 if [[ "$TRACKER" == "other" ]]; then
-  log "pending: $DOCS_DIR/issue-tracker.md (tracker: other — write it from the user's description)"
+  if [[ -f "$TARGET/$DOCS_DIR/issue-tracker.md" ]]; then STATUS="skipped"; else STATUS="pending"; fi
+  add_file_entry "$DOCS_DIR/issue-tracker.md" "$STATUS" ", \"tracker\": \"other\""
+  log "$STATUS: $DOCS_DIR/issue-tracker.md (tracker: other — write it from the user's description)"
 else
   STATUS=$(copy_if_missing "$TEMPLATES_DIR/issue-trackers/$TRACKER.md" "$TARGET/$DOCS_DIR/issue-tracker.md")
-  add_file_entry "$DOCS_DIR/issue-tracker.md" "$STATUS" ", \"tracker\": \"$TRACKER\""
+  add_file_entry "$DOCS_DIR/issue-tracker.md" "$STATUS" ", \"tracker\": \"$TRACKER\", \"template\": \"templates/issue-trackers/$TRACKER.md\""
   log "$STATUS: $DOCS_DIR/issue-tracker.md (tracker: $TRACKER)"
 fi
 
 # 5. $DOCS_DIR/AGENT_WORKFLOW.md — composed from base + platform section, then DOCS_DIR substituted
-if [[ -f "$TARGET/$DOCS_DIR/AGENT_WORKFLOW.md" ]]; then
-  add_file_entry "$DOCS_DIR/AGENT_WORKFLOW.md" "skipped"
-  log "skipped: $DOCS_DIR/AGENT_WORKFLOW.md (already exists)"
+PLATFORM_SECTION=""
+SECTION_FILE="$TEMPLATES_DIR/workflow-sections/$PLATFORM.md"
+if [[ "$PLATFORM" != "generic" && -f "$SECTION_FILE" ]]; then
+  PLATFORM_SECTION="$(cat "$SECTION_FILE")"
+fi
+
+# Replace placeholder with platform section (or remove it)
+BASE="$(cat "$TEMPLATES_DIR/AGENT_WORKFLOW.base.md")"
+if [[ -n "$PLATFORM_SECTION" ]]; then
+  COMPOSED="${BASE/\{\{PLATFORM_SECTION\}\}/$PLATFORM_SECTION}"
 else
-  PLATFORM_SECTION=""
-  SECTION_FILE="$TEMPLATES_DIR/workflow-sections/$PLATFORM.md"
-  if [[ "$PLATFORM" != "generic" && -f "$SECTION_FILE" ]]; then
-    PLATFORM_SECTION="$(cat "$SECTION_FILE")"
-  fi
-
-  # Replace placeholder with platform section (or remove it)
-  BASE="$(cat "$TEMPLATES_DIR/AGENT_WORKFLOW.base.md")"
-  if [[ -n "$PLATFORM_SECTION" ]]; then
-    COMPOSED="${BASE/\{\{PLATFORM_SECTION\}\}/$PLATFORM_SECTION}"
-  else
-    COMPOSED="${BASE/\{\{PLATFORM_SECTION\}\}
+  COMPOSED="${BASE/\{\{PLATFORM_SECTION\}\}
 /}"
-  fi
+fi
+# Substitute {{DOCS_DIR}} placeholder after composition
+COMPOSED="$(printf '%s\n' "$COMPOSED" | sed "s|{{DOCS_DIR}}|$DOCS_DIR|g")"
 
-  # Substitute {{DOCS_DIR}} placeholder after composition
-  printf '%s\n' "$COMPOSED" | sed "s|{{DOCS_DIR}}|$DOCS_DIR|g" > "$TARGET/$DOCS_DIR/AGENT_WORKFLOW.md"
+if [[ -f "$TARGET/$DOCS_DIR/AGENT_WORKFLOW.md" ]]; then
+  if printf '%s\n' "$COMPOSED" | cmp -s - "$TARGET/$DOCS_DIR/AGENT_WORKFLOW.md"; then STATUS="skipped"; else STATUS="differs"; fi
+  add_file_entry "$DOCS_DIR/AGENT_WORKFLOW.md" "$STATUS" ", \"platform\": \"$PLATFORM\", \"template\": \"templates/AGENT_WORKFLOW.base.md\""
+  log "$STATUS: $DOCS_DIR/AGENT_WORKFLOW.md (already exists)"
+else
+  printf '%s\n' "$COMPOSED" > "$TARGET/$DOCS_DIR/AGENT_WORKFLOW.md"
   add_file_entry "$DOCS_DIR/AGENT_WORKFLOW.md" "created" ", \"platform\": \"$PLATFORM\""
   log "created: $DOCS_DIR/AGENT_WORKFLOW.md (platform: $PLATFORM)"
 fi
 
 CREATED_FILES=$(echo "[$FILES_JSON]" | { grep -o '"created"' || true; } | wc -l | tr -d ' ')
 
-# Summary
+# Summary: name only the LLM-generated files that don't exist yet
+MISSING=""
+for f in AGENTS.md CODING_STANDARDS.md "$DOCS_DIR/ENGINEERING.md" "$DOCS_DIR/FEATURES.md"; do
+  [[ -f "$TARGET/$f" ]] || MISSING="$MISSING${MISSING:+, }$f"
+done
+# An AGENTS.md without the `## Agent skills` block predates this setup (a legacy or hand-written one): regenerate it.
+if [[ -f "$TARGET/AGENTS.md" ]] && ! grep -q '^## Agent skills' "$TARGET/AGENTS.md"; then
+  MISSING="AGENTS.md (exists without ## Agent skills: rewrite it)${MISSING:+, }$MISSING"
+fi
+if [[ "$TRACKER" == "other" && ! -f "$TARGET/$DOCS_DIR/issue-tracker.md" ]]; then
+  MISSING="$MISSING${MISSING:+, }$DOCS_DIR/issue-tracker.md"
+fi
 log ""
 log "Scaffolded $CREATED_FILES files in $DOCS_DIR/."
-log "LLM still needs to generate: AGENTS.md, CODING_STANDARDS.md, $DOCS_DIR/ENGINEERING.md, $DOCS_DIR/FEATURES.md, GLOSSARY.md or GLOSSARY-MAP.md if there are terms to record$([[ "$TRACKER" == "other" ]] && echo ", $DOCS_DIR/issue-tracker.md")."
+if [[ -n "$MISSING" ]]; then
+  log "LLM still needs to generate: $MISSING (and GLOSSARY.md or GLOSSARY-MAP.md if there are terms to record)."
+else
+  log "All LLM-generated files exist: reconcile them with the repo, don't regenerate."
+fi
+if [[ "$FILES_JSON" == *'"differs"'* ]]; then
+  log "Files marked \"differs\": compare each with its template and add missing sections without overwriting local edits."
+fi
 
 # JSON report to stdout
 cat <<REPORT

@@ -37,13 +37,13 @@ To offer it to everyone working in a repo, see the project-scope snippet in the 
   | `tier-medium` | Opus / medium | Standard tracer-bullet ticket (default) |
   | `tier-light` | Opus / low | Mechanical: expand/contract steps, config |
   | `merger` | Opus / medium | Merges an accepted branch, aborts on judgement conflicts |
-  | `reviewer` | Opus / high, read-only | One axis of `code-review` (Standards or Spec) |
+  | `reviewer` | Opus / high, read-only | One axis of `code-review` (Standards or Spec), or one `agentic-review` specialist |
 
   Without Fable access, change `model:` in `agents/tier-fable.md` (to `opus`, say).
 
 ## Setup
 
-Run `/setup-agentic-repository` once per repo. It writes everything Matt's setup writes, in the same places, so his skills run unchanged, and adds the Mimas instruction tree on top:
+Run `/dev-workflow:setup-agentic-repository` once per repo. Before the first run, remove any standalone copy of `setup-agentic-repository` (for example `~/.claude/skills/setup-agentic-repository`, or the same folder under `~/.agents/skills/` that it may link to): it uses the old `agents-docs/` layout, and the unscoped `/setup-agentic-repository` runs it instead of the plugin's. The skills in this plugin point at the qualified name for the same reason. It writes everything Matt's setup writes, in the same places, so his skills run unchanged, and adds the Mimas instruction tree on top:
 
 | Path | What it is |
 | --- | --- |
@@ -63,7 +63,7 @@ It also offers to migrate a repo that has Mimas's older `agents-docs/` + `CONTEX
 For stricter, module-aware review:
 
 1. `/review-policy-builder` writes `docs/agents/review/policies/`: module-scoped and machine-checkable rules, one file per module in `AGENTS.md`'s `## Modules` (or per `GLOSSARY-MAP.md` context). `/review-policy-rule-builder` edits single rules later.
-2. `/agentic-review` reviews a branch with one specialist per module against those policies and fails closed when a specialist doesn't report. When policies exist, `/orchestrate-spec` uses it for the final Standards axis.
+2. `/agentic-review` reviews a branch with one specialist per module against those policies and fails closed when a specialist doesn't report. Machine-checkable rules (`automation.check_type: inheritance_suffix`) run through a shipped checker, `skills/agentic-review/scripts/check_inheritance_suffix.py` (Python 3, standard library only), so the same diff always gets the same result. When policies exist, `/orchestrate-spec` uses it for the final Standards axis, passing the integration branch as the head ref.
 
 `/retro` sends module-scoped or machine-checkable rules to `/review-policy-rule-builder`, and judgement calls to `CODING_STANDARDS.md`.
 

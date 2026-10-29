@@ -113,22 +113,22 @@ When multiple specialists report the same root cause:
 
 ## Specialist Attestation Schema (Required)
 
-The orchestrator must emit one attestation entry per dispatched specialist:
+The orchestrator must emit one attestation entry per required specialist, dispatched or not:
 
 ```yaml
-specialist_slug: backend-api
+specialist_slug: module-orders
 specialist_type: module|cross-cut
 assigned_scope: "backend/orders/** (5 files)"
 status: findings-submitted|no-actionable-findings|failed|skipped|missing
 signed_at: 2026-05-20T09:12:45Z
 attestation_text: I reviewed the assigned scope and reported all actionable findings I could verify from the provided artifacts.
-output_artifact_path: <review-dir>/review-result-<...>.specialists/backend-api.md
+output_artifact_path: <review-dir>/review-result-<...>.specialists/module-orders.md
 ```
 
 Notes:
 - `status` must be one of the listed values.
 - `signed_at` is recorded by the orchestrator at specialist result capture time.
-- When specialist output is absent, emit `status: missing` and document reason in report blockers.
+- When specialist output is absent, or a required specialist was never dispatched, emit `status: missing` and document reason in report blockers.
 
 ## Completion-State Rules (Fail-Closed)
 
@@ -140,11 +140,11 @@ When `completion_state` is `incomplete`, emit explicit blocker list entries that
 
 ## Manifest Contract (Machine-Audit Output)
 
-The orchestrator must write `review-manifest-<YYYYMMDD>-<HHMMSS>-<scope>.json` with at least:
+The orchestrator must write `review-manifest-<run-id>-<scope>.json` with at least:
 
 ```json
 {
-  "run_id": "20260520-091245-feature-orders",
+  "run_id": "20260520-091245",
   "target": {
     "mode": "pr|local",
     "base_ref": "origin/main",

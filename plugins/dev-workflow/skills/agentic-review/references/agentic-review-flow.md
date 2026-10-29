@@ -21,9 +21,9 @@ graph TD
 
     J --> M[Phase 3 build module map and specialist roster]
     L --> M
-    M --> N{Context map present}
+    M --> N{GLOSSARY-MAP.md present}
     N -- Yes --> O[One module specialist per context]
-    N -- No --> P[Single module specialist from context file]
+    N -- No --> P[One specialist per AGENTS.md module or one repo wide]
     O --> Q[Route changed files to module and cross cut specialists]
     P --> Q
     Q --> R[Load policy files and set audit governance mode]
@@ -33,7 +33,7 @@ graph TD
     T --> U[Run deterministic policy automation checks]
     U --> V{Automatable rules found}
     V -- No --> W[Skip deterministic checks]
-    V -- Yes --> X[Evaluate inheritance suffix rules]
+    V -- Yes --> X[Run scripts check_inheritance_suffix.py]
     X --> Y{Automation metadata malformed}
     Y -- Yes --> Z[Mark unknown and continue]
     Y -- No --> AA[Convert failures to findings]

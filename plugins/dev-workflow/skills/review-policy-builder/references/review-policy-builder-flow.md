@@ -6,7 +6,7 @@ This diagram visualizes what happens when a user runs `review-policy-builder`.
 flowchart TD
     A([User runs review-policy-builder]) --> B[Phase 1: Verify prerequisites and locate docs-dir]
     B --> C{Required files present?}
-    C -- No --> D[[Fail fast with remediation: run /setup-agentic-repository]]
+    C -- No --> D[[Fail fast with remediation: run /dev-workflow:setup-agentic-repository]]
     C -- Yes --> E[Phase 2: Load baseline truth from AGENTS/CODING_STANDARDS/GLOSSARY/ADR docs]
     E --> F[Phase 3: Mine inheritance convention candidates from code]
     F --> G[Phase 4: Structured interview for missing policy decisions]

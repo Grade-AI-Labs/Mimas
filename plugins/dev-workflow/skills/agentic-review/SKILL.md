@@ -10,13 +10,15 @@ metadata:
 
 Run end-to-end code review using the repository's agentic setup. This skill is the review orchestrator that executes after `/setup-agentic-repository`: it discovers module boundaries from `GLOSSARY-MAP.md` or the `## Modules` list in `AGENTS.md`, applies coding standards from `CODING_STANDARDS.md`, optionally enforces project policy from `<docs-dir>/review/policies/`, runs deterministic policy automation checks (v1 inheritance conventions), builds immutable canonical review artifacts under `<review-dir>` (default `<docs-dir>/review/`), routes work to specialists, records specialist attestations, and consolidates findings into one deduplicated severity-ordered report with an explicit completion state.
 
-Read [references/review-contract.md](references/review-contract.md) before dispatching specialists. It defines severity levels, required finding schema, specialist prompt skeleton, attestation schema, policy-compliance reporting, and deduplication/output rules.
+Read [references/review-contract.md](references/review-contract.md) before dispatching specialists. It defines severity levels, required finding schema, specialist prompt skeleton, attestation schema, policy-compliance reporting, and deduplication/output rules. [references/agentic-review-flow.md](references/agentic-review-flow.md) shows the phases below as one diagram.
+
+`<skill-dir>` below is this skill's base directory, as Claude Code printed it when it loaded the skill.
 
 ---
 
 ## Phase 1 — Verify prerequisites and discover `<docs-dir>`
 
-This skill assumes `/setup-agentic-repository` has already been run.
+This skill assumes `/dev-workflow:setup-agentic-repository` has already been run.
 
 1. Read root `AGENTS.md`.
 2. Discover `<docs-dir>` from the docs paths listed there (typically `docs/agents/`, but `--docs-dir` may have overridden this).
@@ -25,7 +27,7 @@ This skill assumes `/setup-agentic-repository` has already been run.
    - `AGENTS.md`
    - `<docs-dir>/AGENT_WORKFLOW.md`
 
-If either is missing, stop and tell the user to run `/setup-agentic-repository` first. Do not scaffold missing setup files from this skill.
+If either is missing, stop and tell the user to run `/dev-workflow:setup-agentic-repository` first. Do not scaffold missing setup files from this skill.
 
 Also look for `CODING_STANDARDS.md` at the repo root and `<docs-dir>/ENGINEERING.md`. Proceed without them, but record each missing one in `Testing gaps / unverified areas` and in the standards-compliance section of the report. `GLOSSARY.md`/`GLOSSARY-MAP.md` and ADRs (`docs/adr/`, plus `<context-path>/docs/adr/` in multi-context repos) are created lazily; never require them.
 
@@ -42,14 +44,16 @@ Artifact directory (`<review-dir>`):
 
 ## Phase 2 — Resolve review target (PR-first, local fallback)
 
+Stamp the run first: `<run-id>` is `<YYYYMMDD>-<HHMMSS>` in UTC (`date -u +%Y%m%d-%H%M%S`), taken once now and reused for every artifact and temporary path of this run. All other timestamps (`signed_at`, the run timestamp) are UTC ISO-8601.
+
 Default model:
 - Prefer PR-style review of branch changes into base branch.
 - Fall back to local change review when PR comparison is unavailable or inappropriate.
 
 Resolution order:
-1. Parse user overrides from the prompt (explicit base branch or explicit local-only request).
+1. Parse user overrides from the prompt: an explicit base branch, an explicit head ref (for example the integration branch `/orchestrate-spec` passes), or an explicit local-only request.
 2. If explicit local-only was requested, force `local` mode.
-3. Detect current branch (`git rev-parse --abbrev-ref HEAD`).
+3. Resolve the head: the explicit head ref if one was given, otherwise the current branch (`git rev-parse --abbrev-ref HEAD`). Don't check out a different branch in the user's checkout.
 4. Build ordered base candidates:
    - user-provided base ref (if any)
    - remote default branch (`git symbolic-ref --quiet --short refs/remotes/origin/HEAD`)
@@ -58,8 +62,9 @@ Resolution order:
    - `main`
    - `master`
 5. Select the first existing candidate (`git rev-parse --verify --quiet <ref>`).
-6. If current branch is not base and a base ref exists, use PR-style scope:
-   - compare `base...HEAD`
+6. If the head is not the base and a base ref exists, use PR-style scope:
+   - compare `<base>...<head>` everywhere (`git diff <base>...<head>`, `git diff --name-only <base>...<head>`)
+   - when the head is not what's checked out, add a detached worktree of it outside the repo (`git worktree add --detach "$TMPDIR/agentic-review-<run-id>" <head>`) and use it as `<head-checkout>` for reading files and running checks; remove it at the end of Phase 7. Otherwise `<head-checkout>` is the repo root
 7. Otherwise use local scope:
    - unstaged diff (`git diff`)
    - staged diff (`git diff --cached`)
@@ -97,6 +102,8 @@ Routing rules:
 - Route files to module specialists by subtree ownership from the module paths above.
 - Route files to cross-cut specialists by pattern and semantics (migrations, auth, API surface, testing changes/gaps).
 - Every changed file must be assigned to at least one specialist. Docs-only files that no module owns (`GLOSSARY.md`, `docs/`, `.scratch/`) go to the module specialist whose feature they describe; if none fits, list them in the routing table as `docs-only` — that counts as routed.
+- Test files outside every module subtree (a top-level `tests/`, say) go to the module whose code they exercise (by import or name) and to `tests-regressions`.
+- Name module specialists `module-<slug>`, where `<slug>` is the module's policy slug (`module-<slug>.md`) or, without policies, the last segment of its path. Cross-cut specialists keep the names above. Use the same slugs for diff files, raw outputs and attestations.
 - Multi-match files must be assigned to all matching specialists (broader coverage is preferred to under-routing).
 
 Policy routing additions (when policy exists):
@@ -106,6 +113,7 @@ Policy routing additions (when policy exists):
 - If a changed file maps to multiple module policies, attach all relevant policies.
 - Build an automated-rule roster from policy rules that include machine metadata (for example `automation.check_type`).
 - If `POLICY_INDEX.md` includes a `Review Audit Contract` section, load it and apply its audit-governance fields.
+  `required_specialist_categories.module: always` means every module **with changed files** always gets a required specialist; modules the diff doesn't touch get none.
 - If no audit contract is present, apply built-in defaults:
   - `audit_contract_version: 1`
   - `completion_mode: fail-closed`
@@ -118,23 +126,27 @@ Policy routing additions (when policy exists):
 
 ## Phase 4 — Create canonical review artifacts and run automated policy checks
 
+Every artifact of the run carries the `<run-id>` stamped in Phase 2 and a `<scope>`: the head branch name (slashes as `-`) or `local`.
+
 Create artifacts under `<review-dir>/`:
 
 - Plan file (execution input source of truth):
-  - `review-plan-<YYYYMMDD>-<branch-or-local>.md`
+  - `review-plan-<run-id>-<scope>.md`
 - Diff directory (execution input):
-  - `review-plan-<YYYYMMDD>-<branch-or-local>.diffs/`
-  - one `.diff` file per specialist/module assignment
+  - `review-plan-<run-id>-<scope>.diffs/`
+  - one `.diff` file per specialist/module assignment, plus `changed-files.txt` (one path per line)
+- Deterministic policy-check output:
+  - `review-plan-<run-id>-<scope>.policy-checks.json`
 - Specialist raw-output directory:
-  - `review-result-<YYYYMMDD>-<HHMMSS>-<scope>.specialists/`
-  - one artifact per specialist slug (for example `backend-api.md`, `security-authz.md`)
+  - `review-result-<run-id>-<scope>.specialists/`
+  - one artifact per specialist slug (for example `module-orders.md`, `security-authz.md`)
 - Human-readable result file:
-  - `review-result-<YYYYMMDD>-<HHMMSS>-<scope>.md`
+  - `review-result-<run-id>-<scope>.md`
 - Machine-readable manifest file:
-  - `review-manifest-<YYYYMMDD>-<HHMMSS>-<scope>.json`
+  - `review-manifest-<run-id>-<scope>.json`
 
 Retention rule:
-- Artifacts are immutable history. Never overwrite prior `review-result-*` or `review-manifest-*` files.
+- Artifacts are immutable history. Never overwrite any prior review artifact: a second review of the same branch on the same day gets a new `<run-id>`. If a name already exists, take a fresh timestamp.
 
 The plan file is the canonical execution source of truth and must contain:
 - target summary (mode, base/head refs, branch)
@@ -146,7 +158,7 @@ The plan file is the canonical execution source of truth and must contain:
 - automated policy-check roster (rule id, scope, check type, severity, apply scope)
 - automated policy-check results (`pass|fail|unknown`) with evidence paths
 - artifact paths
-- coverage checklist (all files assigned, all specialists dispatched)
+- coverage checklist (all files assigned, all specialists dispatched). Write the plan before dispatch, with every item above but the dispatch box; tick that box when you update the plan after Phase 5
 
 The result file is the canonical human audit output and must contain:
 - run metadata (mode, refs, branch, timestamp, run id)
@@ -173,35 +185,31 @@ The manifest file is the machine-audit output and must include top-level fields:
 
 Diff artifact rules:
 - Keep full diffs in the `.diffs/` directory, not in the summary.
-- Name files clearly by specialist slug (for example `backend-api.diff`, `security-authz.diff`).
+- Name files clearly by specialist slug (for example `module-orders.diff`, `security-authz.diff`).
 - Ensure each specialist receives only relevant diff slices plus shared global context as needed.
 
-Automated policy checks (pre-specialist, deterministic):
-1. Parse active policy rules from global/module files.
-2. Select rules with `automation.check_type` metadata. V1 required support:
-   - `inheritance_suffix`
-3. Validate automation metadata before evaluation:
-   - parser must handle nested/indented keys in YAML blocks (for example, if using regex extraction, support leading whitespace)
-   - required fields for `inheritance_suffix`:
-     - `automation.selector.class_name_suffix`
-     - `automation.expectation.base_class_suffix`
-   - if required metadata is missing or malformed, do not fail the run:
-     - mark the rule `unknown`
-     - include reason/evidence (`malformed automation metadata`)
-     - continue processing remaining rules
-4. Build target file set:
-   - default from `automation.apply_scope = changed-files`
-   - module scoping based on policy routing ownership
-5. Evaluate each targeted file for each applicable rule:
-   - find classes matching `automation.selector.class_name_suffix`
-   - skip class names listed in `automation.selector.exclude`
-   - verify the base class against `automation.expectation.match_strategy`: `same-stem-suffix` (default) needs `<Stem><base suffix>` for `<Stem><selector suffix>`; `any-base-with-suffix` needs any direct base whose name ends in `<base suffix>`. An unknown strategy makes the rule `unknown`, not `fail`
-6. Record compliance status per rule:
-   - `pass`: no violations found in targeted files
-   - `fail`: at least one violation with concrete file+line evidence
-   - `unknown`: parse/analysis could not determine compliance for one or more targets
-7. Convert `fail` results into standard findings with policy rule reference.
-8. Send `unknown` results to `Testing gaps / unverified areas` with concrete validation steps.
+Automated policy checks (pre-specialist, deterministic): run the checker this skill ships. Never write your own, so two runs over the same diff always agree.
+
+```bash
+python3 <skill-dir>/scripts/check_inheritance_suffix.py \
+  --policies-dir <docs-dir>/review/policies \
+  --repo <head-checkout> \
+  --changed-files <review-dir>/review-plan-<run-id>-<scope>.diffs/changed-files.txt \
+  --output <review-dir>/review-plan-<run-id>-<scope>.policy-checks.json
+```
+
+What it does, so you can read its output:
+1. Parses the active rules in `global-policy.md` and `module-*.md`, including nested `automation` metadata, and selects those with `automation.check_type`. V1 supports `inheritance_suffix`; any other check type comes back `unknown`.
+2. Validates the metadata: `automation.selector.class_name_suffix` and `automation.expectation.base_class_suffix` are required, and `match_strategy` must be `same-stem-suffix` (default) or `any-base-with-suffix`. Missing or malformed metadata makes the rule `unknown` with the reason; the other rules still run.
+3. Builds each rule's target files from `automation.apply_scope` (default `changed-files`; `all-files` is every tracked file), limited for module rules to the subtrees `POLICY_INDEX.md` routes to that module file.
+4. Finds classes ending in the selector suffix (Python via `ast`; TypeScript/JavaScript, Java and C# via regex), skips `selector.exclude`, and checks the direct bases: `same-stem-suffix` needs `<Stem><base suffix>` for `<Stem><selector suffix>`; `any-base-with-suffix` needs any base ending in `<base suffix>`.
+5. Reports per rule `pass` (no violations), `fail` (each violation with file, line, class, bases and expectation) or `unknown` (malformed metadata, no route for a module rule, or a target it couldn't parse, such as a syntax error or a Kotlin file), with `evaluated`, `skipped_excluded` and `unknown_targets` lists.
+
+Then:
+- Record each rule's status in the plan, with the JSON file as its evidence path.
+- Convert each `fail` violation into a standard finding that cites the rule id.
+- Send each `unknown` to `Testing gaps / unverified areas` with its reason and how to verify it by hand.
+- If `python3` is unavailable or the script exits non-zero, mark every automated rule `unknown` with the error as the reason, and say so in the report.
 
 Backward compatibility:
 - If no rules include automation metadata, skip deterministic checks and proceed with baseline specialist review.
@@ -210,7 +218,7 @@ Backward compatibility:
 
 ## Phase 5 — Dispatch specialists in parallel
 
-Dispatch specialists in parallel batches of up to 5.
+Dispatch specialists in parallel batches of up to 5, each as a `reviewer` agent (`dev-workflow:reviewer` when installed as a plugin): its definition covers specialist work, with this skill's contract taking precedence over its axis rules. If the agent isn't listed, use a general-purpose subagent with the same brief.
 
 For each specialist, provide:
 - its scoped diff artifact
@@ -236,7 +244,7 @@ Specialist requirements (strict):
 If a specialist finds no actionable issues, it should explicitly return "no actionable findings" plus any testing/verification gaps.
 
 Specialist attestation requirements (strict):
-- For every dispatched specialist, the orchestrator must record an attestation object with:
+- For every required specialist, dispatched or not, the orchestrator must record an attestation object with the fields below. The specialist supplies only `status` and `attestation_text`; you fill in the rest:
   - `specialist_slug`
   - `specialist_type` (`module` or `cross-cut`)
   - `assigned_scope` (owned module/subtree and reviewed file count)
@@ -246,7 +254,7 @@ Specialist attestation requirements (strict):
   - `output_artifact_path`
 - `attestation_text` fixed statement:
   - `"I reviewed the assigned scope and reported all actionable findings I could verify from the provided artifacts."`
-- For missing specialist output, still emit an attestation row with status `missing` and an explicit reason.
+- For missing specialist output, or a required specialist that was never dispatched, still emit an attestation row with status `missing` and an explicit reason.
 
 ---
 
@@ -300,7 +308,7 @@ If no actionable findings exist, say so explicitly and still provide attestation
 
 Before completing:
 - Confirm every changed file appears in the routing table.
-- Confirm every specialist output was collected or explicitly marked failed/skipped.
+- Confirm every specialist output was collected or explicitly marked `failed`, `skipped` or `missing`.
 - Confirm every required specialist has an attestation row.
 - Confirm policy files were loaded when `POLICY_INDEX.md` is present.
 - Confirm automatable policy rules were executed or explicitly marked `unknown` with reason.
@@ -309,4 +317,4 @@ Before completing:
 - Confirm severity vocabulary is only: `critical`, `high`, `medium`, `low`.
 - Confirm `completion_state` is set and fail-closed rules were applied correctly.
 
-Do not commit changes. The user reviews artifacts and findings before any commit.
+Remove the head worktree from Phase 2 if you added one. Do not commit changes. The user reviews artifacts and findings before any commit.

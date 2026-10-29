@@ -7,7 +7,7 @@
       "name": "dev-workflow",
       "source": "./plugins/dev-workflow",
       "description": "Matt Pocock's engineering skills with Mimas's setup and review skills, plus tiered worker agents and a /orchestrate-spec orchestrator.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "category": "skill"
     },
     {

@@ -7,7 +7,9 @@ description: Creates or updates `agentic-review` policy rules, in a repo set up 
 
 Adds a new rule or updates an existing rule in global or module policy files under `<docs-dir>/review/policies/`.
 
-Read [references/policy-rule-checklist.md](references/policy-rule-checklist.md) before editing any policy file.
+Read [references/policy-rule-checklist.md](references/policy-rule-checklist.md) before editing any policy file. The rule schema, the `automation` shape and the file templates live in the policy contract, [../review-policy-builder/references/policy-contract.md](../review-policy-builder/references/policy-contract.md).
+
+`<skill-dir>` below is this skill's base directory, as Claude Code printed it when it loaded the skill.
 
 ## Quick start
 
@@ -27,12 +29,12 @@ Example user prompts:
 ## Workflow
 
 1. **Locate target policy file**
-   - Resolve `<docs-dir>` from the docs paths in `AGENTS.md` (typically `docs/agents/`; fallback: the directory holding `AGENT_WORKFLOW.md`). If neither exists, tell the user to run `/setup-agentic-repository`.
+   - Resolve `<docs-dir>` from the docs paths in `AGENTS.md` (typically `docs/agents/`; fallback: the directory holding `AGENT_WORKFLOW.md`). If neither exists, tell the user to run `/dev-workflow:setup-agentic-repository`.
    - Ask whether the target is `global` or `module` if not explicit.
    - Route to `global-policy.md` for global scope and `module-<slug>.md` for module scope.
-   - If file missing, create it using the appropriate template.
+   - If file missing, create it from the matching template in the policy contract (`global-policy.md` or `module-<slug>.md`).
 
-2. **Run AskTheUser interview**
+2. **Run the `AskUserQuestion` interview**
    - Collect:
      - rule scope (`global` or `module`)
      - policy domain/module
@@ -77,14 +79,14 @@ Example user prompts:
     - Always update after policy file edits:
       - `- Updated: YYYY-MM-DD`
    - Update `## Needs Decision` when rule status is `needs-decision`.
-    - Update `## Automated Checks` only when automation changed and based on AskTheUser decision:
+    - Update `## Automated Checks` only when automation changed and based on the `AskUserQuestion` decision:
       - `Yes`: upsert/remove row keyed by rule ID.
       - `No`: leave unchanged and report explicit user override.
    - If a global rule is added/deprecated/needs-decision, ensure index reflects it in relevant sections.
 
 6. **Validate and report**
    - Validate against checklist in `references/policy-rule-checklist.md`.
-   - If available, run `python skills/review-policy-rule-builder/scripts/validate_policy_rule.py <policy-file>`.
+   - Run `python3 <skill-dir>/scripts/validate_policy_rule.py <policy-file>`. It checks the required fields, scope, id format and `inheritance_suffix` automation metadata; fix every error it reports.
    - Report created/updated rule IDs, file path, and any unresolved ambiguity.
 
 ## Guardrails
@@ -95,7 +97,7 @@ Example user prompts:
 - Keep policy language testable and evidence-oriented.
 - If user input conflicts with ADR constraints, mark `status: needs-decision` and note conflict.
 
-## AskTheUser prompt snippet
+## `AskUserQuestion` prompt snippet
 
 Use this prompt when `automation` metadata was added, changed, or removed:
 

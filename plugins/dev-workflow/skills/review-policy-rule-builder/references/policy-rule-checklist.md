@@ -30,7 +30,7 @@ Optional fields:
 
 ## Interview minimums
 
-Confirm these inputs via AskTheUser:
+Confirm these inputs via `AskUserQuestion`:
 
 - target domain/module
 - plain-language rule description

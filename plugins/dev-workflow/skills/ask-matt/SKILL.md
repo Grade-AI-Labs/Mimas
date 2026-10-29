@@ -94,6 +94,6 @@ Off the main flow entirely.
 
 ## Precondition
 
-**`/setup-agentic-repository`**: run before your first engineering flow. It configures the issue tracker, triage labels, and doc layout the other skills assume, and scaffolds `AGENTS.md`, `CODING_STANDARDS.md` and the agent docs under `docs/agents/`. GitHub, GitLab, Azure DevOps, Jira, Linear and local markdown trackers all work.
+**`/dev-workflow:setup-agentic-repository`**: run before your first engineering flow. It configures the issue tracker, triage labels, and doc layout the other skills assume, and scaffolds `AGENTS.md`, `CODING_STANDARDS.md` and the agent docs under `docs/agents/`. GitHub, GitLab, Azure DevOps, Jira, Linear and local markdown trackers all work.
 
 **`/review-policy-builder`**, then **`/agentic-review`**: optional. Write module-scoped and machine-checkable review rules, then review a branch with one specialist per module against them. Once policies exist, `/code-review` reads them too.

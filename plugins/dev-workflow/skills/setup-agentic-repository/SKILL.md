@@ -70,7 +70,7 @@ Launch these three subagents simultaneously (one tool call with multiple Agent i
   - Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, scopes like `feat(api):`)
   - Ticket-key prefixes/suffixes (`AB#123`, `PROJ-456`, `#789`) — this confirms or overrides the platform-based tracker guess
   - Imperative vs. past tense, line-length norms, anything else consistent across 10+ commits
-  - If commits are inconsistent, say so — don't invent a convention. If every commit follows one pattern but there are fewer than ~10, document it and note the small sample
+  - If commits are inconsistent, say so — don't invent a convention. If every commit follows one pattern but there are fewer than ~10, document it and note the small sample in words ("fewer than ten commits"), never an exact count, which the setup commit itself makes stale
 - Issue tracker hints from those same commit messages (`#123` → GitHub Issues, `AB#456` → Azure DevOps, `PROJ-789` → Jira/Linear)
 - Whether `CLAUDE.md`, `AGENTS.md`, or `README.md` exist and have meaningful content (report a brief summary of what they contain), and whether either already has an `## Agent skills` block
 - Prior setup output: `docs/agents/` (from this skill or `setup-matt-pocock-skills`), `GLOSSARY.md` / `GLOSSARY-MAP.md`, `docs/adr/` and any `*/docs/adr/`, `.scratch/` (a local-markdown tracker in use), `.out-of-scope/`
@@ -85,9 +85,10 @@ For existing files:
 - Pull project description from README into root `AGENTS.md` intro
 - Incorporate documented conventions into `ENGINEERING.md` / `CODING_STANDARDS.md`
 - If an existing `AGENTS.md` is empty or placeholder, replace it
+- If `AGENTS.md` already has an `## Agent skills` block and a `## Modules` section, this is a re-run: reconcile each generated file with the repo as it is now (new modules, changed commands, a new tracker) and leave correct content alone. Don't regenerate.
 - An existing `CLAUDE.md` (or `CLAUDE.local.md`) needs a decision in Phase 2: while one exists, Claude Code ignores `AGENTS.md`
 - If an `## Agent skills` block exists, update it in place rather than adding a second one
-- Existing `docs/agents/*.md` files are kept; the scaffold skips them
+- Existing `docs/agents/*.md` files are kept; the scaffold skips them, and reports each one that differs from its template as `differs` (see Phase 3)
 
 ---
 
@@ -166,8 +167,13 @@ If the user picks "Needs corrections" or "Use our own names", wait for their ans
 **Duplicate skills.** If Subagent C found any, list each path. Offer to remove the ones inside this repo with `git rm -r` (one yes for the lot). Never change anything outside the repo yourself: for folders under `~/.claude/skills/` and a `mattpocock-skills` plugin enabled in `~/.claude/settings.json`, give the user the exact command or setting to change, since they affect every project on the machine. Whatever stays, warn that it may trigger instead of the plugin's version.
 
 **Legacy domain docs.** If `CONTEXT.md` / `CONTEXT-MAP.md` files or an `agents-docs/` tree exist, offer to migrate them, and do it only on a yes:
-- `git mv` each `CONTEXT.md` to `GLOSSARY.md` and `CONTEXT-MAP.md` to a root `GLOSSARY-MAP.md`, then rewrite each into the `/domain-modeling` glossary format: the vocabulary becomes `## Language` entries (`**Term**:` definition, `_Avoid_:` aliases); cross-context relationships move to the map's `## Relationships`. Boundaries/IO and invariants are not glossary content: move them to the matching `docs/agents/features/<area>.md`, or show them to the user if no feature doc fits.
-- `git mv` `agents-docs/adr/` to `docs/adr/`, and the other `agents-docs/` files to their `docs/agents/` counterparts, splitting `ENGINEERING.md`'s coding standards out into `CODING_STANDARDS.md`. Drop `AGENTS_CONTEXT.md` and `AGENTS_ADRS.md`: `docs/agents/domain.md` and `/domain-modeling` replace them.
+- **With a `CONTEXT-MAP.md`** (multi-context): `git mv` each `CONTEXT.md` to `GLOSSARY.md` beside it and `CONTEXT-MAP.md` to a root `GLOSSARY-MAP.md`; cross-context relationships go to the map's `## Relationships`.
+- **Without one** (single-context, the default): merge every `CONTEXT.md` into one root `GLOSSARY.md`, a `###` subsection per module, and `git rm` the originals. Relationships between modules fold into the definitions of the terms involved.
+- Either way, rewrite the vocabulary into the `/domain-modeling` glossary format: `## Language` entries (`**Term**:` definition, `_Avoid_:` aliases).
+- Boundaries/IO and invariants are not glossary content. Move them to `docs/agents/features/<area>.md`, one per module or feature area, created from this skill's `templates/feature-template.md` when it doesn't exist, and link each from `docs/agents/FEATURES.md` when you write it in Phase 4. This is the one case where setup writes feature docs (see *Feature index* in Phase 4); nothing migrated should survive only in the chat.
+- `git mv` `agents-docs/adr/` to `docs/adr/`, `agents-docs/LESSONS.md` and `agents-docs/ENGINEERING.md` to `docs/agents/`, and any written feature docs (`agents-docs/features/*.md` other than `feature-template.md`) and `FEATURES.md` to the same paths under `docs/agents/`. Split `ENGINEERING.md`'s coding standards out into `CODING_STANDARDS.md`.
+- `git rm` the rest of `agents-docs/`: `AGENT_WORKFLOW.md`, `AGENTS_FEATURES.md`, `features/feature-template.md`, `AGENTS_CONTEXT.md` and `AGENTS_ADRS.md` are verbatim templates or are replaced by `docs/agents/domain.md` and `/domain-modeling`; the scaffold writes current versions in Phase 3.
+- In every moved file, ADRs included, rewrite paths only: `agents-docs/` → `docs/agents/` (`docs/adr/` for ADRs) and `CONTEXT.md` → `GLOSSARY.md`. Links to the dropped `AGENTS_CONTEXT.md` or `AGENTS_ADRS.md` point at `docs/agents/domain.md` instead. Then `grep -rn "agents-docs\|CONTEXT\.md"` over the repo (outside `.git/`) should find only mentions of the migration itself, such as a feature doc's changelog row.
 
 ### 2b. Org guidelines (optional)
 
@@ -212,7 +218,7 @@ The script creates:
 | `docs/agents/features/feature-template.md` | Copied verbatim — template for future feature docs |
 | `docs/agents/LESSONS.md` | Copied verbatim — lessons-file format and one seeded example |
 
-The script is idempotent — re-running skips existing files.
+The script is idempotent — re-running skips existing files. Each skipped file is reported as `skipped` (identical to its template) or `differs`. For every `differs` file, diff it against the template named in the report and add the sections it lacks — for `issue-tracker.md` that's typically **Blocking**, **Close** and *Wayfinding operations*, which `/to-tickets`, `/wayfinder` and `/orchestrate-spec` need — without overwriting local edits. A line that says the same thing in different words takes the template's wording; a line with repo-specific content (a project key, a custom label, an extra rule) is a local edit and stays. A Matt-era `issue-tracker.md` lacks those sections.
 
 ---
 
@@ -247,7 +253,7 @@ Domain language lives in `GLOSSARY.md`, in the format the `/domain-modeling` ski
 
 ### Feature index
 
-`docs/agents/FEATURES.md` should start minimal. Only add entries if you found feature domains with **meaningful implementation** — not just a route stub or empty handler. Even when you add entries, only add index entries — do not create the `docs/agents/features/<area>.md` files themselves, and don't link to them yet: write each entry as `- <area> — <one-line description> (_not documented yet_)`. `find-features` / `document-features` turn them into links when they write the files.
+`docs/agents/FEATURES.md` should start minimal. Feature docs written by a legacy migration (Phase 2) are linked normally. Otherwise, only add entries if you found feature domains with **meaningful implementation** — not just a route stub or empty handler. Even when you add entries, only add index entries — do not create the `docs/agents/features/<area>.md` files themselves, and don't link to them yet: write each entry as `- <area> — <one-line description> (_not documented yet_)`. `find-features` / `document-features` turn them into links when they write the files.
 
 ### Platform-specific content in AGENTS.md and ENGINEERING.md
 
@@ -266,7 +272,7 @@ The discovery phase captures a few signals beyond stack and platform — make su
 
 - **Formatter and linter** (Subagent A): list both as distinct commands in the `docs/agents/ENGINEERING.md` commands section. If the project runs them as one script, say so; otherwise document each. Mention the formatter in the completion checklist alongside typecheck/tests.
 - **Pre-commit hooks** (Subagent C): if hooks were found, document the framework and install step (`pre-commit install`, `lefthook install`, or "Husky installs automatically on `pnpm install`") in `docs/agents/ENGINEERING.md` under setup, and add a short note in `AGENTS.md` so agents know commits will be gated. Name what each hook runs so agents understand why a commit was rejected.
-- **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `docs/agents/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent, omit this section rather than imposing Conventional Commits by default. A consistent pattern from fewer than ~10 commits is documented, with a note on the small sample.
+- **Commit conventions** (Subagent C): if a clear pattern was detected, document it in `docs/agents/ENGINEERING.md` (commit-message section) with one example matching the repo's actual style. If commits are inconsistent, omit this section rather than imposing Conventional Commits by default. A consistent pattern from fewer than ~10 commits is documented, with a note on the small sample in words ("fewer than ten commits"), not an exact count.
 - **Subdomains** (Subagent B): each detected subdomain gets a line in `AGENTS.md`'s `## Modules` section. Distinctive domain terms seen along the way are glossary candidates (see *Glossary* above).
 - **Framework focus areas** (Subagent A): the matching "Focus areas" from `tech-adapters.md` go into `CODING_STANDARDS.md` as review checks.
 
@@ -277,7 +283,7 @@ The other skills follow these two files literally, so they must be runnable as w
 - **Project settings**: the Azure DevOps, Jira and Linear templates open with a *Project settings* section of `[bracketed]` defaults. Replace each with the real value — organization and project from the remote URL, the work item type and done state of the process (Azure DevOps); the site and project key from commit messages (Jira); the team key (Linear). Ask the user for any you can't discover. GitHub, GitLab and local need no edits.
 - **Check the tracker is reachable**: for Azure DevOps, run `az boards work-item show --id <any known id>` (it needs the `azure-devops` CLI extension and `az login`); for Jira or Linear, confirm their MCP tools are among your tools and fetch one known issue. If it fails, tell the user exactly what to install or connect: the other skills will hit the same wall.
 - **Local markdown**: `.scratch/` is the tracker, so it is committed like any other doc. Don't gitignore it.
-- **Triage labels**: if the user named their own labels, edit the "Label in our tracker" column to match.
+- **Triage labels**: if the user named their own labels, edit the "Label in our tracker" column to match. If the tracker has no labels (local markdown, or an "other" tracker without them), say in `issue-tracker.md` where the role string goes instead — the `Status:` line for local markdown, or the tracker's own status or tag field — and keep the role strings as they are.
 - **Create missing labels**: on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
 
 ### Ignore worker worktrees
@@ -292,7 +298,7 @@ The block in `AGENTS.md` (see `references/file-templates.md`) is how the other s
 
 The scaffold script copies `docs/agents/LESSONS.md` verbatim, and the seeded example uses `npx tsc --noEmit` as a placeholder typecheck command. After the script runs, edit the example so it matches this project's actual typecheck command:
 
-- **TypeScript** → leave `npx tsc --noEmit` (or substitute the exact script from `package.json`, e.g. `pnpm typecheck`)
+- **TypeScript** → leave `npx tsc --noEmit` (or substitute the exact script from `package.json`, e.g. `pnpm typecheck`). If the root `tsconfig.json` has `references` (a solution-style config, often with `"files": []`), `tsc --noEmit` checks nothing: use the `typecheck` script or `npx tsc -b`
 - **Python (mypy)** → swap to `mypy .` (or the project's exact invocation)
 - **Python (pyright)** → swap to `pyright`
 - **Go** → swap to `go vet ./...`
