@@ -21,7 +21,7 @@
       "name": "atlassian-mcp",
       "source": "./plugins/atlassian-mcp",
       "description": "MCP: Atlassian's hosted Rovo MCP server for Jira, Confluence and Compass, signed in with your own account through OAuth.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "mcp"
     },
     {

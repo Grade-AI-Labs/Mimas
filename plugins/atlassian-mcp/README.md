@@ -1,8 +1,13 @@
 # atlassian-mcp
 
-Adds [Atlassian's hosted Rovo MCP server](https://github.com/atlassian/atlassian-mcp-server) v2
-(`https://mcp.atlassian.com/v2/mcp`) to Claude Code: Jira, Confluence and
+Adds [Atlassian's hosted Rovo MCP server](https://github.com/atlassian/atlassian-mcp-server)
+(`https://mcp.atlassian.com/v1/mcp`) to Claude Code: Jira, Confluence and
 Compass tools.
+
+The URL is the one the Atlassian connector in the Claude directory uses, so on
+claude.ai and in Cowork the plugin reuses that connector instead of adding a
+new one that a claude.ai Owner has to approve. Atlassian serves its v2 tools
+on this URL too.
 
 ```
 /plugin install atlassian-mcp@mimas
