@@ -1,6 +1,6 @@
 ---
 name: review-policy-builder
-description: Build and maintain project-specific review policy for `agentic-review` after `/setup-agentic-repository` by combining repository docs (`AGENTS.md`, `CODING_STANDARDS.md`, `GLOSSARY.md`/`GLOSSARY-MAP.md`, ADRs), repository-mined conventions, and structured user input, then writing machine-usable policy files under `<docs-dir>/review/policies/`, including audit-governance metadata consumed by `agentic-review`. Use when the user wants architecture integrity checks (onion/clean/hexagonal), module-specific review rules, dependency-direction policy, naming/inheritance convention enforcement, stricter project/domain review standards, or explicit auditability requirements for specialist review coverage.
+description: Build and maintain project-specific review policy for `agentic-review` after `/setup-agentic-repository` by combining repository docs (`AGENTS.md`, `CODING_STANDARDS.md`, `GLOSSARY.md`/`GLOSSARY-MAP.md`, ADRs), repository-mined conventions, and structured user input, then writing machine-usable policy files under `{docs-dir}/review/policies/`, including audit-governance metadata consumed by `agentic-review`. Use when the user wants architecture integrity checks (onion/clean/hexagonal), module-specific review rules, dependency-direction policy, naming/inheritance convention enforcement, stricter project/domain review standards, or explicit auditability requirements for specialist review coverage.
 metadata:
   author: Antti Karjalainen
   url: https://github.com/akarjis

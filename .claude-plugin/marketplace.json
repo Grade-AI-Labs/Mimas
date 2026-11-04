@@ -7,14 +7,14 @@
       "name": "dev-workflow",
       "source": "./plugins/dev-workflow",
       "description": "Matt Pocock's engineering skills with Mimas's setup and review skills, plus tiered worker agents and a /orchestrate-spec orchestrator.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "category": "skill"
     },
     {
       "name": "dev-progress",
       "source": "./plugins/dev-progress",
       "description": "Mod: progress bar above the prompt and a live agents panel for /orchestrate-spec; shows any subagents, as crabs or JDM cars. Forked from savvy-progress.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "mod"
     },
     {
