@@ -1,9 +1,8 @@
 {
   "name": "dev-progress",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Progress bar above the prompt for /orchestrate-spec, plus an agents panel (/agents-info): running, finished and planned subagents with model, task progress, context, cost and time. Forked from savvy-progress.",
   "author": { "name": "Olof Brogeby" },
-  "types": "./types/index.d.ts",
   "userConfig": {
     "language": {
       "type": "string",

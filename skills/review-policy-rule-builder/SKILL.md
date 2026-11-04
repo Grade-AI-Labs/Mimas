@@ -1,6 +1,6 @@
 ---
 name: review-policy-rule-builder
-description: Creates or updates `agentic-review` policy rules in `<docs-dir>/review/policies/global-policy.md` and `module-<slug>.md` using a structured interview and contract-safe merge behavior. Use when the user asks to add, modify, refine, deprecate, or clarify global or module review policy rules, or mentions rule severity, intent, evidence, automation metadata, or policy IDs like `RP-GLOBAL-###` and `RP-<MODULE>-###`.
+description: Creates or updates `agentic-review` policy rules in `{docs-dir}/review/policies/global-policy.md` and `module-{slug}.md` using a structured interview and contract-safe merge behavior. Use when the user asks to add, modify, refine, deprecate, or clarify global or module review policy rules, or mentions rule severity, intent, evidence, automation metadata, or policy IDs like `RP-GLOBAL-###` and `RP-{MODULE}-###`.
 ---
 
 # Review Policy Rule Builder
