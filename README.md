@@ -174,6 +174,8 @@ This repo is also a Claude Code plugin marketplace, `mimas`:
 | --- | --- |
 | [`dev-workflow`](./plugins/dev-workflow) | Matt Pocock's promoted skills with Mimas's `setup-agentic-repository` and review skills in place of his setup, plus tiered worker agents and a `/orchestrate-spec` orchestrator that tiers each ticket by model and effort and reviews every result before merging. |
 | [`dev-progress`](./plugins/dev-progress) | Mod: a progress bar above the prompt and a live agents panel that `/orchestrate-spec` and its agents report to, drawn as crabs or, with `icons: jdm`, JDM cars. Forked from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress). |
+| [`atlassian-mcp`](./plugins/atlassian-mcp) | MCP: Atlassian's hosted Rovo MCP server, with Jira, Confluence and Compass tools. |
+| [`slack-mcp`](./plugins/slack-mcp) | MCP: Slack's hosted MCP server, for searching, reading and posting in Slack. |
 
 Install:
 
@@ -181,7 +183,13 @@ Install:
 /plugin marketplace add Grade-AI-Labs/Mimas
 /plugin install dev-workflow@mimas
 /plugin install dev-progress@mimas
+/plugin install atlassian-mcp@mimas
+/plugin install slack-mcp@mimas
 ```
+
+The MCP plugins hold no credentials. After installing one, run `/mcp` and sign
+in with your own account; your workspace or site admin may have to approve the
+integration first.
 
 Or in one step: `/plugin install dev-workflow --marketplace Grade-AI-Labs/Mimas`.
 

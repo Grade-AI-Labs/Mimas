@@ -1,0 +1,9 @@
+{
+  "name": "slack-mcp",
+  "displayName": "Slack MCP",
+  "version": "0.1.0",
+  "description": "Slack's hosted MCP server: search, read and post in channels, threads, canvases and DMs, signed in with your own Slack account through OAuth.",
+  "author": { "name": "Olof Brogeby" },
+  "license": "MIT",
+  "keywords": ["mcp", "slack", "chat"]
+}

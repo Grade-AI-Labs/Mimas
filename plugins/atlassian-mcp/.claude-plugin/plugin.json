@@ -1,0 +1,9 @@
+{
+  "name": "atlassian-mcp",
+  "displayName": "Atlassian MCP",
+  "version": "0.1.0",
+  "description": "Atlassian's hosted Rovo MCP server: Jira, Confluence and Compass tools, signed in with your own Atlassian account through OAuth.",
+  "author": { "name": "Olof Brogeby" },
+  "license": "MIT",
+  "keywords": ["mcp", "atlassian", "jira", "confluence", "compass"]
+}

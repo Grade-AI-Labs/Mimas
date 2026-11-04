@@ -16,6 +16,20 @@
       "description": "Mod: progress bar above the prompt and a live agents panel for /orchestrate-spec; shows any subagents, as crabs or JDM cars. Forked from savvy-progress.",
       "version": "0.2.0",
       "category": "mod"
+    },
+    {
+      "name": "atlassian-mcp",
+      "source": "./plugins/atlassian-mcp",
+      "description": "MCP: Atlassian's hosted Rovo MCP server for Jira, Confluence and Compass, signed in with your own account through OAuth.",
+      "version": "0.1.0",
+      "category": "mcp"
+    },
+    {
+      "name": "slack-mcp",
+      "source": "./plugins/slack-mcp",
+      "description": "MCP: Slack's hosted MCP server for searching, reading and posting in Slack, signed in with your own account through OAuth.",
+      "version": "0.1.0",
+      "category": "mcp"
     }
   ]
 }
